@@ -1,0 +1,44 @@
+{
+  "name": "gamz360-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "npm i ; pm2 restart 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xclad01/gamz360-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xclad01/gamz360-backend/issues"
+  },
+  "homepage": "https://github.com/Xclad01/gamz360-backend#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "https": "^1.0.0",
+    "javascript-fortuna": "^1.0.10",
+    "js-combinatorics": "^0.5.5",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "log4js": "^6.9.1",
+    "mongodb": "^6.1.0",
+    "mongoose": "^5.13.14",
+    "morgan": "^1.10.0",
+    "multer": "^1.3.1",
+    "node-schedule": "^2.1.1",
+    "nodemon": "^3.0.1",
+    "randomstring": "^1.3.0",
+    "redis": "^4.6.10",
+    "socket.io": "^4.7.2",
+    "underscore": "^1.13.6"
+  }
+}

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Event Test</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+      body {
+        padding-top: 50px;
+      }
+
+      #snackbar {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: red;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+      }
+
+      #snackbar.show {
+        visibility: visible;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      }
+
+      @-webkit-keyframes fadein {
+        from {
+          bottom: 0;
+          opacity: 0;
+        }
+
+        to {
+          bottom: 30px;
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadein {
+        from {
+          bottom: 0;
+          opacity: 0;
+        }
+
+        to {
+          bottom: 30px;
+          opacity: 1;
+        }
+      }
+
+      @-webkit-keyframes fadeout {
+        from {
+          bottom: 30px;
+          opacity: 1;
+        }
+
+        to {
+          bottom: 0;
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeout {
+        from {
+          bottom: 30px;
+          opacity: 1;
+        }
+
+        to {
+          bottom: 0;
+          opacity: 0;
+        }
+      }
+    </style>
+    <script type="text/javascript">
+      // document.getElementById("login").style.display = "none";
+      const socket = io();
+      import { commonHelper } from "../helper/commonHelper";
+      // const commonHelper = require('../helper/commonHelper');
+      let decryptObj = commonHelper.decrypt(en);
+      function FillData(en) {
+        logger.info("decryptObj", decryptObj);
+        logger.info("FillData : en :", en);
+        if (en === "SP") {
+          var mobileNumber = document.getElementById("mobileNumber").value;
+          var data = {
+            mobileNumber: mobileNumber,
+          };
+          socket.emit("req", { en: en, data: data });
+        }
+        if (en === "testEvent") {
+          var eventData = document.getElementById("eventData").value;
+          logger.info("Test Event data : ", eventData);
+          var data = eventData;
+          var tdata = JSON.parse(data);
+          logger.info("Test Event data : ", tdata);
+          socket.emit("req", tdata);
+        }
+        if (en === "PIC") {
+          var eventData = document.getElementById("eventData").value;
+          logger.info("Test Event data : ", eventData);
+          var data = eventData;
+          var tdata = JSON.parse(data);
+          logger.info("Test Event data : ", tdata);
+          socket.emit("req", tdata);
+        } else {
+          var eventData = document.getElementById("eventData").value;
+          logger.info("all Event data : ", eventData);
+          var data = eventData;
+          var tdata = JSON.parse(data);
+          logger.info("Test Event data : ", tdata);
+          socket.emit("req", { en: en, data: data });
+        }
+      }
+      socket.on("req", function (data) {
+        let response = data;
+        // logger.info(response)
+        //   handleEventResponse(response);
+        //   if(["COUC","CTD","LIVE_COUNTERS"].indexOf(response.eventName)  ===  -1 ){
+        let div = document.createElement("pre");
+        div.id = "content" + new Date().getTime();
+        div.style =
+          "color:black; font-size: 12px; font-weight: bold;border: 3px solid #0000FF; background-color: #fffaf0d1";
+        div.innerHTML = JSON.stringify(response, undefined, 4);
+        document.getElementById("response").append(div);
+
+        $(function () {
+          $("#response").animate(
+            {
+              scrollTop: $("#response").get(0).scrollHeight,
+            },
+            1000
+          );
+        });
+        //   }
+      });
+      socket.on("connect", () => {
+        alert("User Is Connect!");
+        logger.info("Socket Is connected!!"); // false
+      });
+      socket.on("disconnect", function (data) {
+        alert("User Is disconnect!");
+        logger.info("Socket disconnect....!");
+        // window.location.reload();
+      });
+      function handleEventResponse(response) {
+        logger.info("Response : ", JSON.stringify(response), response.flag);
+        if (response.flag) {
+        } else {
+          // show_random_toast();
+          if (
+            typeof response.flag !== "undefined" &&
+            typeof response.msg !== "undefined"
+          ) {
+            let sn = document.getElementById("snackbar");
+            sn.innerHTML = response.msg;
+            sn.className = "show";
+            setTimeout(function () {
+              sn.className = sn.className.replace("show", "");
+            }, 3000);
+          }
+        }
+      }
+      function show_random_toast() {
+        $.toast({
+          title: "hello",
+          subtitle: "11 mins ago",
+          content: "number register",
+          type: "error",
+          delay: 5000,
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- <ul class="pages">
+    <li class="chat page">
+      <div class="chatArea">
+        <ul class="messages"></ul>
+      </div>
+      <input class="inputMessage" placeholder="Type here..."/>
+    </li>
+    <li class="login page">
+      <div class="form">
+        <h3 class="title">What's your nickname?</h3>
+        <input class="usernameInput" type="text" maxlength="14" />
+      </div>
+    </li>
+  </ul> -->
+
+    <div style="width: 100%; height: 600px">
+      <div style="width: 100%; height: 100%; background-color: black">
+        <div class="login" id="login">
+          <form name="login">
+            <table align="center" style="height: 86px">
+              <tr>
+                <td style="color: white">Enter mobile Number ::</td>
+                <td>
+                  <input
+                    type="text"
+                    name="mobileNumber"
+                    id="mobileNumber"
+                    value=""
+                  />
+                </td>
+                <td></td>
+                <td>
+                  <input
+                    type="button"
+                    name="login"
+                    id="login"
+                    onclick="FillData('SP')"
+                    value="Login"
+                  />
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+        <div class="eventTest" style="align-self: center">
+          <form name="eventTest">
+            <table align="center" style="width: 100%; height: 500px">
+              <tr>
+                <td style="color: white; width: 20%">Enter Simple Request:</td>
+                <td rowspan="3" style="width: 80%">
+                  <div
+                    name="response"
+                    id="response"
+                    style="
+                      margin-left: auto;
+                      border: 1px solid white;
+                      overflow-y: scroll;
+                      overflow-x: scroll;
+                      margin-top: 0px;
+                      margin-bottom: 0px;
+                      height: 90%;
+                      width: 90%;
+                    "
+                  ></div>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 20%">
+                  <textarea
+                    rows="1000"
+                    cols="1000"
+                    name="eventData"
+                    id="eventData"
+                    style="
+                      background-color: black;
+                      color: white;
+                      overflow: scroll;
+                      margin-top: 0px;
+                      margin-bottom: 0px;
+                      height: 300px;
+                      width: 300px;
+                    "
+                  ></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 20%" align="center">
+                  <input
+                    type="button"
+                    name="request"
+                    id="request"
+                    onclick="FillData('testEvent')"
+                    value="Send"
+                  />
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="snackbar"></div>
+
+    <!-- <script src="/main.js"></script> -->
+  </body>
+</html>
