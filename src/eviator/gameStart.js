@@ -53,6 +53,30 @@ module.exports.startAviator = async (tbId) => {
     //Genrate Rendom Number 
     //
 
+    try {
+        logger.info("startAviator tbId : ", tbId);
+        if (tb.gameState != "GameStartTimer") return false;
+
+        let wh = {
+            _id: tbId
+        }
+        let update = {
+            $set: {
+                gameState: "StartEviator",
+                rendomNumber:5
+            }
+        }
+        logger.info("startAviator UserInfo : ", wh, update);
+
+        const tabInfo = await AviatorTables.findOneAndUpdate(wh, update, { new: true });
+        logger.info("startAviator tabInfo :: ", tabInfo);
+
+        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: rendomNumber });
+
+    } catch (error) {
+        logger.error("startAviator.js error ->", error)
+    }
+
 }       
 
 
