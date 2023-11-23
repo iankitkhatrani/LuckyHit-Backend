@@ -18,8 +18,9 @@ const db = mongoose.connection;
 //mongoose.set('debug', process.env.MONGOOSE_SET);
 
 
+
 // When successfully connected
-db.on('connected', function () {
+db.on('connected',async () => {
   logger.info('Mongoose connection open');
 });
 

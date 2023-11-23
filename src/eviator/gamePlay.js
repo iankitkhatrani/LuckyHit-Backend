@@ -65,6 +65,9 @@ module.exports.action = async (requestData, client) => {
         let updateData = {
             $set: {
 
+            },
+            $inc:{
+                
             }
         }
         let chalvalue = tabInfo.currentBet;
@@ -83,11 +86,12 @@ module.exports.action = async (requestData, client) => {
         await walletActions.deductWallet(client.uid, -chalvalue, 2, "eviator action", tabInfo, client.id, client.seatIndex);
 
         if(requestData.actionplace == 1)
-        updateData.$set["chalValue"] = chalvalue;
+        updateData.$set["playerInfo.$.chalValue"] = chalvalue;
         else
-        updateData.$set["chalValue1"] = chalvalue;
+        updateData.$set["playerInfo.$.chalValue1"] = chalvalue;
 
 
+        updateData.$inc["totalbet"] = chalvalue;
         updateData.$set["turnDone"] = true;
         commandAcions.clearJob(tabInfo.job_id);
 
@@ -121,8 +125,6 @@ module.exports.action = async (requestData, client) => {
     }
 }
 
-
-
 /*
     winamount : 10,
     actionplace:1 || 2
@@ -141,7 +143,6 @@ module.exports.CHECKOUT = async (requestData, client) => {
 
         const wh = {
             _id: MongoID(client.tbid.toString()),
-            status:"openforbet"
         }
         const project = {
 
@@ -180,11 +181,11 @@ module.exports.CHECKOUT = async (requestData, client) => {
         await walletActions.deductWallet(client.uid, winAmount, 2, "eviator Win", tabInfo, client.id, client.seatIndex);
 
         if(requestData.actionplace == 1)
-        updateData.$set["chalValue"] = 0;
+        updateData.$set["playerInfo.$.chalValue"] = 0;
         else
-        updateData.$set["chalValue1"] = 0;
+        updateData.$set["playerInfo.$.chalValue1"] = 0;
 
-
+        
         updateData.$set["turnDone"] = true;
         commandAcions.clearJob(tabInfo.job_id);
 

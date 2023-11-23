@@ -48,37 +48,21 @@ module.exports.leaveTable = async (requestData, client) => {
             activePlayer: -1
         }
     }
-    if (tb.activePlayer == 2 && tb.gameState == "GameStartTimer") {
-        let jobId = CONST.GAME_START_TIMER + ":" + tb._id.toString();
-        commandAcions.clearJob(jobId)
-        updateData["$set"]["gameState"] = "";
-    }
-    if (tb.activePlayer == 1) {
-        let jobId = "LEAVE_SINGLE_USER:" + tb._id;
-        commandAcions.clearJob(jobId)
-    }
+    // if (tb.activePlayer == 2 && tb.gameState == "GameStartTimer") {
+    //     let jobId = CONST.GAME_START_TIMER + ":" + tb._id.toString();
+    //     commandAcions.clearJob(jobId)
+    //     updateData["$set"]["gameState"] = "";
+    // }
+    // if (tb.activePlayer == 1) {
+    //     let jobId = "LEAVE_SINGLE_USER:" + tb._id;
+    //     commandAcions.clearJob(jobId)
+    // }
 
-    if (tb.gameState == "RoundStated") {
-        if (client.seatIndex == tb.turnSeatIndex) {
-            commandAcions.clearJob(tb.jobId)
-        }
-        if (playerInfo.cards.length == 3) {
-            if (["action", "blind"].indexOf(playerInfo.playStatus) != -1) {
-
-                let userTrack = {
-                    _id: playerInfo._id,
-                    username: playerInfo.username,
-                    cards: playerInfo.cards,
-                    seatIndex: playerInfo.seatIndex,
-                    totalBet: playerInfo.totalBet,
-                    playStatus: "leaveTable"
-                }
-                updateData["$push"] = {
-                    "gameTracks": userTrack
-                }
-            }
-        }
-    }
+    // if (tb.gameState == "RoundStated") {
+    //     if (client.seatIndex == tb.turnSeatIndex) {
+    //         commandAcions.clearJob(tb.jobId)
+    //     }
+    // }
 
     logger.info("leaveTable updateData : ", wh, updateData);
 
@@ -95,7 +79,7 @@ module.exports.leaveTable = async (requestData, client) => {
     commandAcions.sendEventInTable(tb._id.toString(), CONST.LEAVE_TABLE, response);
 
 
-    await this.manageOnUserLeave(tbInfo);
+    //await this.manageOnUserLeave(tbInfo);
 }
 
 module.exports.manageOnUserLeave = async (tb, client) => {

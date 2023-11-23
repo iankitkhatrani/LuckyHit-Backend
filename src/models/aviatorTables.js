@@ -6,7 +6,6 @@ const collectionName = 'aviatorTables';
 const PlayingTablesSchema = new Schema({
     gameId: { type: String, default: "" },
     activePlayer: { type: Number, default: 0 },
-
     playerInfo: [],
     gameState: { type: String, default: "" },
     turnStartTimer: { type: Date },
@@ -18,7 +17,8 @@ const PlayingTablesSchema = new Schema({
     isLastUserFinish: { type: Boolean, default: false },
     isFinalWinner: { type: Boolean, default: false },
     history:[],
-    betamount:[]
+    betamount:[],
+    totalbet:{ type: Number, default: 0 },
 }, { versionKey: false });
 
 module.exports = mongoose.model(collectionName, PlayingTablesSchema, collectionName);

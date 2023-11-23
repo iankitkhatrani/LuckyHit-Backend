@@ -7,9 +7,11 @@ const IdCounter = mongoose.model("idCounter")
 const commandAcions = require("../helper/socketFunctions");
 const CONST = require("../../constant");
 const logger = require("../../logger");
-const cardDealActions = require("./cardDeal");
 const roundStartActions = require("./roundStart");
 const walletActions = require("./updateWallet");
+const { config } = require("dotenv");
+
+const botLogic = require("./botLogic");
 
 // const leaveTableActions = require("./leaveTable");
 
@@ -19,12 +21,16 @@ module.exports.gameTimerStart = async (tb) => {
         if (tb.gameState != "") return false;
 
         let wh = {
-            _id: tb._id
+            _id: tb._id,
+            "playerInfo.seatIndex": {$ne:-1}
         }
         let update = {
             $set: {
                 gameState: "GameStartTimer",
-                "GameTimer.GST": new Date()
+                "GameTimer.GST": new Date(),
+                "totalbet":0,
+                "playerInfo.$.chalValue":0,
+                "playerInfo.$.chalValue1":0
             }
         }
         logger.info("gameTimerStart UserInfo : ", wh, update);
@@ -49,21 +55,42 @@ module.exports.gameTimerStart = async (tb) => {
 
 module.exports.startAviator = async (tbId) => {
 
-
-    //Genrate Rendom Number 
-    //
-
     try {
-        logger.info("startAviator tbId : ", tbId);
-        if (tb.gameState != "GameStartTimer") return false;
 
+        const tb = await AviatorTables.findOne({
+            _id: MongoID(tbId.toString()),
+        }, {})
+
+        logger.info("startAviator tbId : ", tbId);
+        if (tb == null || tb.gameState != "GameStartTimer") return false;
+
+
+        //Genrate Rendom Number 
+        logger.info("startAviator config.AVIATORLOGIC : ", config.AVIATORLOGIC);
+        logger.info("startAviator tb.totalbet : ", tb.totalbet);
+
+
+        // NORMAL 
+        let Number = this.generateNumber(0,60)
+
+        if(config.AVIATORLOGIC == "Client"){ // Client SIDE
+            if(tb.totalbet >= 5){
+                let Number = this.generateNumber(0,2)
+            }else if(tb.totalbet < 5){
+                let Number = this.generateNumber(0,5)
+            }
+        }else if(config.AVIATORLOGIC == "User"){  // User SIDE
+            let Number = this.generateNumber(0,10)
+        }   
+
+        
         let wh = {
             _id: tbId
         }
         let update = {
             $set: {
                 gameState: "StartEviator",
-                rendomNumber:5
+                rendomNumber:Number
             }
         }
         logger.info("startAviator UserInfo : ", wh, update);
@@ -71,7 +98,21 @@ module.exports.startAviator = async (tbId) => {
         const tabInfo = await AviatorTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("startAviator tabInfo :: ", tabInfo);
 
-        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: rendomNumber });
+        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: Number });
+
+        setTimeout(async ()=> {
+            // Clear destory 
+            const tabInfonew = await AviatorTables.findOneAndUpdate(wh, {
+                $set: {
+                    gameState: "",
+                    rendomNumber:0
+                }
+            }, { new: true });
+
+            gameStartActions.gameTimerStart(tabInfonew);
+        },Number * 1000);
+
+        botLogic.PlayRobot(tabInfo,tabInfo.playerInfo,Number)
 
     } catch (error) {
         logger.error("startAviator.js error ->", error)
@@ -79,59 +120,27 @@ module.exports.startAviator = async (tbId) => {
 
 }       
 
+module.exports.generateNumber=async(minRange,maxRange)=>{
+    // Generate a random decimal number between 0 (inclusive) and 1 (exclusive)
+    const randomDecimal = Math.random().toFixed(2);
+    console.log('Random Decimal:', randomDecimal);
 
-
-module.exports.collectBoot = async (tbId) => {
-    try {
-
-        logger.info("collectBoot tbId : ", tbId);
-        let wh = {
-            _id: tbId
-        };
-        let tb = await AviatorTables.findOne(wh, {}).lean();
-        logger.info("collectBoot tb : ", tb);
-
-        let playerInfo = await this.resetUserData(tb._id, tb.playerInfo);
-        logger.info("collectBoot playerInfo : ", playerInfo, tb.maxSeat);
-
-        let finalPlayerInfo = await this.checkUserInRound(playerInfo, tb);
-        logger.info("collectBoot finalPlayerInfo : ", finalPlayerInfo);
-
-        if (finalPlayerInfo.length < 2) {
-            return false;
-        }
-        let gameId = await this.getCount("gameId");
-
-        let update = {
-            $set: {
-                gameState: "CollectBoot",
-                gameId: gameId.toString(),
-                dealerSeatIndex: 0,
-                chalValue: Number(tb.boot)
-            }
-        }
-        logger.info("collectBootvalue update : ", gameId, update);
-        let tbInfo = await AviatorTables.findOneAndUpdate(wh, update, { new: true });
-
-        let seatIndexs = await this.deduct(tbInfo, finalPlayerInfo);
-
-        let response = {
-            bet: tbInfo.boot,
-            seatIndexs: seatIndexs,
-            gameId: gameId
-        }
-        commandAcions.sendEventInTable(tbInfo._id.toString(), CONST.COLLECT_BOOT, response);
-
-        let tbid = tbInfo._id;
-        let jobId = commandAcions.GetRandomString(10);
-        let delay = commandAcions.AddTime(3);
-        const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
-
-        await cardDealActions.cardDealStart(tbid)
-    } catch (error) {
-        logger.error("collectBoot error ->", error)
+    // Generate a random whole number between a specified range (min and max)
+    function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
+    const randomWholeNumber = getRandomInt(minRange, maxRange);
+    console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
+
+    console.log('Random Whole Number:', randomWholeNumber+parseFloat(randomDecimal));
+
+    return randomWholeNumber+parseFloat(randomDecimal)
 }
+
+
 
 module.exports.deduct = async (tabInfo, playerInfo) => {
     try {

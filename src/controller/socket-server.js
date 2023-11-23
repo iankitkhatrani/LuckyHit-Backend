@@ -125,25 +125,18 @@ myIo.init = function (server) {
                     }
 
 
-                    case CONST.SHOW: {
-                        gamePlayActions.show(payload.data, socket);
-                        break;
-                    }
-
+                
                     case CONST.ACTION: {
                         gamePlayActions.action(payload.data, socket);
                         break;
                     }
 
-                    case CONST.PACK: {
-                        gamePlayActions.cardPack(payload.data, socket);
+                    case CONST.CHECKOUT: {
+                        gamePlayActions.CHECKOUT(payload.data, socket);
                         break;
                     }
 
-                    case CONST.SEE_CARD: {
-                        gamePlayActions.seeCard(payload.data, socket);
-                        break;
-                    }
+                    
 
                     case CONST.LEAVE_TABLE: {
                         gamePlayActions.leaveTable(payload.data, socket);

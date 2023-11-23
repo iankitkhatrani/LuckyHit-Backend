@@ -213,7 +213,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
 
         delete client.JT;
 
-        if (tableInfo.activePlayer == 2 && tableInfo.gameState == "") {
+        if (tableInfo.gameState == "") {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
             clearJob(jobId)
@@ -221,11 +221,14 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
             await gameStartActions.gameTimerStart(tableInfo);
         }else{
 
-            setTimeout(()=>{
-                botLogic.JoinRobot(tableInfo,betInfo)
-            },2000)
-  
+            if(tableInfo.activePlayer <= 2){
+                setTimeout(()=>{
+                    botLogic.JoinRobot(tableInfo,betInfo)
+                },2000)
+            }
         }
+  
+        //}
     } catch (error) {
         console.info("findEmptySeatAndUserSeat", error);
     }

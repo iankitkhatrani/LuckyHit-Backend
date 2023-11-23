@@ -33,7 +33,6 @@ const GameUserSchema = new Schema(
     lastLoginDate: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },
     modifiedAt: { type: Date, default: Date.now },
-    isVIP: { type: Number, default: 0 },
     Iscom: { type: Number, default: 0 },
   },
   { versionKey: false }
