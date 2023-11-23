@@ -8,11 +8,11 @@ const logger = (module.exports = require('../../logger'));
 const CONST = require('../../constant');
 const signupActions = require('../helper/signups/index');
 const commonHelper = require('../helper/commonHelper');
-const gamePlayActions = require('../eviator/');
+const gamePlayActions = require('../aviator/');
 const { registerUser } = require('../helper/signups/signupValidation');
 const mainCtrl = require('./mainController');
 const { sendEvent, sendDirectEvent } = require('../helper/socketFunctions');
-const { userReconnect } = require('../eviator/reConnectFunction');
+const { userReconnect } = require('../aviator/reConnectFunction');
 const { getBannerList } = require('./adminController');
 
 

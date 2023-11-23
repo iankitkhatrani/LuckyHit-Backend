@@ -83,7 +83,7 @@ module.exports.action = async (requestData, client) => {
         }
         chalvalue = Number(Number(chalvalue).toFixed(2))
 
-        await walletActions.deductWallet(client.uid, -chalvalue, 2, "eviator action", tabInfo, client.id, client.seatIndex);
+        await walletActions.deductWallet(client.uid, -chalvalue, 2, "aviator action", tabInfo, client.id, client.seatIndex);
 
         if(requestData.actionplace == 1)
         updateData.$set["playerInfo.$.chalValue"] = chalvalue;
@@ -178,7 +178,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
     
         winAmount = Number(Number(requestData.winamount).toFixed(2))
 
-        await walletActions.deductWallet(client.uid, winAmount, 2, "eviator Win", tabInfo, client.id, client.seatIndex);
+        await walletActions.deductWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
 
         if(requestData.actionplace == 1)
         updateData.$set["playerInfo.$.chalValue"] = 0;
@@ -218,4 +218,3 @@ module.exports.CHECKOUT = async (requestData, client) => {
         logger.info("Exception action : ", e);
     }
 }
-

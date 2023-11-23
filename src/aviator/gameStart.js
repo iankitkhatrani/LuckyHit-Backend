@@ -75,12 +75,12 @@ module.exports.startAviator = async (tbId) => {
 
         if(config.AVIATORLOGIC == "Client"){ // Client SIDE
             if(tb.totalbet >= 5){
-                let Number = this.generateNumber(0,2)
+                 Number = this.generateNumber(0,2)
             }else if(tb.totalbet < 5){
-                let Number = this.generateNumber(0,5)
+                 Number = this.generateNumber(0,5)
             }
         }else if(config.AVIATORLOGIC == "User"){  // User SIDE
-            let Number = this.generateNumber(0,10)
+             Number = this.generateNumber(0,10)
         }   
 
         
@@ -151,7 +151,7 @@ module.exports.deduct = async (tabInfo, playerInfo) => {
             if (playerInfo[i] != {} && typeof playerInfo[i].seatIndex != "undefined" && playerInfo[i].status == "play") {
                 seatIndexs.push(playerInfo[i].seatIndex);
 
-                await walletActions.deductWallet(playerInfo[i]._id,-Number(tabInfo.boot), 1, "eviator Bet", tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex);
+                await walletActions.deductWallet(playerInfo[i]._id,-Number(tabInfo.boot), 1, "aviator Bet", tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex);
 
                 let update = {
                     $inc: {
