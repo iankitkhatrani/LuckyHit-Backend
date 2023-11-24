@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const MongoID = mongoose.Types.ObjectId;
 const GameUser = mongoose.model('users');
 const IdCounter = mongoose.model('idCounter');
@@ -57,6 +58,12 @@ module.exports.referralReward = async (referal_code) => {
 
 module.exports.getUserDefaultFields = async (data, client) => {
   logger.info('getUserDefaultFields get User Default Fields -->', data);
+
+  console.log("data password  1-->", data.password);
+  const hashedPassword = await bcrypt.hash(data.password, 10)
+  data.password = hashedPassword;
+  console.log("data password  2-->", data.password);
+
   const setUserDetail = {
     id: 0,
     deviceId: data.deviceId,
@@ -65,6 +72,7 @@ module.exports.getUserDefaultFields = async (data, client) => {
     status: data.status ? data.status : '',
     mobileNumber: data.mobileNumber ? data.mobileNumber : '',
     email: data.email ? data.email : '',
+    password: data.password ? data.password : '',
     isVIP: data.isVIP ? 1 : 0,
     uniqueId: '',
     loginType: data.loginType,
