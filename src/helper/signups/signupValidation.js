@@ -74,12 +74,16 @@ const userLogin = async (requestData, socket) => {
     //let otpsend = await smsActions.sendOTP(requestData, socket);
     //csl('LOGIN Otp Send :: ', JSON.stringify(otpsend));
     //let response = { mobileNumber: requestData.mobileNumber, status: true };
+    if (bcrypt.compare(data.password, password)) {
+      await userSesssionSet(resp, socket);
 
-    await userSesssionSet(resp, socket);
+      let response = await filterBeforeSendSPEvent(resp);
 
-    let response = await filterBeforeSendSPEvent(resp);
+      commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
+    } else {
+      commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
 
-    commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
+    }
 
 
   } else {
@@ -191,7 +195,7 @@ const resendOTP = async (requestData_, socket) => {
 const registerUser = async (requestBody, socket) => {
   try {
     logger.info('Register User Request Body =>', requestBody);
-    const { mobileNumber, deviceId, isVIP } = requestBody;
+    const { mobileNumber } = requestBody;
 
     let query = { mobileNumber: mobileNumber };
     let result = await Users.findOne(query, {});

@@ -117,11 +117,6 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
         let userInfo = await GameUser.findOne(user_wh, {}).lean();
         logger.info("findEmptySeatAndUserSeat userInfo : ", userInfo)
 
-        // let wh = {
-        //     _id : table._id.toString()
-        // };
-        // let tbInfo = await AviatorTables.findOne(wh,{}).lean();
-        // logger.info("findEmptySeatAndUserSeat tbInfo : ", tbInfo)
         let totalWallet = Number(userInfo.chips) + Number(userInfo.winningChips)
         let playerDetails = {
             seatIndex: seatIndex,

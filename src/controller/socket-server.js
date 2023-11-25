@@ -74,12 +74,8 @@ myIo.init = function (server) {
                     case CONST.VERIFY_OTP: {
                         try {
                             const result = await mainCtrl.verifyOTP(payload.data);
-                            if (result.status && payload.data.otpType === 'signup') {
-                                sendEvent(socket, CONST.VERIFY_OTP, result.data);
-                                await registerUser(payload.data, socket);
-                            }
-                            else if (result.status && payload.data.otpType == 'login') {
-                                await signupActions.userLogin(payload.data, socket);
+                            if (result.status) {
+                                sendEvent(socket, CONST.VERIFY_OTP, { verified: true });
                             }
                             else {
                                 sendEvent(socket, CONST.VERIFY_OTP, { verified: false });
