@@ -7,6 +7,8 @@ const commonHelper = require('../../helper/commonHelper');
 const mainCtrl = require('../../controller/adminController');
 const logger = require('../../../logger');
 
+const pushNotifications = require('../../aviator/pushnotification');
+
 
 /**
 * @api {get} /admin/socialURLsList
@@ -19,12 +21,17 @@ const logger = require('../../../logger');
 router.post('/sendNotification', async (req, res) => {
     try {
         console.info('requet => ', req.body);
+        if(req.body.title != undefined && req.body.title != null && req.body.notification != undefined && req.body.notification != null){
         
-        //await Users.find({}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
+            pushNotifications.sendAllUser({title:req.body.title,body:req.body.notification})
 
-        logger.info('admin/dahboard.js post dahboard  error => ');
+            logger.info('admin/dahboard.js post dahboard  error => ');
 
-        res.json({ falgs:true });
+            res.json({ falgs:true });
+        }else{
+            logger.error('admin/dahboard.js post bet-list req.body => ', req.body);
+            res.status(config.INTERNAL_SERVER_ERROR).json(req.body);
+        }
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
