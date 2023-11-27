@@ -9,7 +9,6 @@ const logger = require('../../../logger');
 
 const pushNotifications = require('../../aviator/pushnotification');
 
-
 /**
 * @api {get} /admin/socialURLsList
 * @apiName  add-bet-list

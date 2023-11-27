@@ -4,6 +4,7 @@ const router = express.Router();
 const config = require('../../../config');
 const logger = require('../../../logger');
 const { getBannerList } = require('../../controller/adminController');
+const Banners = mongoose.model('banner');
 
 /**
 * @api {get} /admin/socialURLsList
@@ -19,23 +20,8 @@ router.get('/bannerList', async (req, res) => {
         //get Data from controller
         //let res = await getBannerList();
 
-        const bannerListData = [
-            {
-                id: 1,
-                title: "Important Announcement",
-                imageUrl: "https://wallpapers.com/images/hd/youtube-banner-gaming-557nnzh0ovcuj01c.jpg",
-                date: "2023-11-15",
-            },
-            {
-                id: 2,
-                title: "New Game Release",
-                imageUrl: "https://img.freepik.com/premium-psd/gaming-youtube-banner_584197-753.jpg",
-                date: "2023-11-10",
-            }
-        ]
-
-        //await Users.find({}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
-
+        const bannerListData = await Banners.find({}, {})
+       
         logger.info('admin/dahboard.js post dahboard  error => ', bannerListData);
 
         res.json({ bannerListData });
@@ -105,9 +91,19 @@ router.post('/bannerAdd', async (req, res) => {
 
         //await Users.find({}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
 
-        logger.info('admin/dahboard.js post dahboard  error => ');
+        const newObj = new Banners(req.body);
+        const data = await newObj.save();
 
-        res.json({ falgs: true });
+        if (data) {
+            return  res.json({
+                flags:true,
+                message: 'record added',
+                data: JSON.parse(JSON.stringify(data)),
+            });
+        } else {
+            return  res.json({flags:false, status: 0, message: 'record not added', data: null });
+        }
+
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
@@ -126,7 +122,7 @@ router.delete('/bannerdelete/:id', async (req, res) => {
     try {
         console.info('requet => ', req.params);
 
-        //await Users.find({}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
+        const RecentUser = await Banners.deleteOne({ _id: new mongoose.Types.ObjectId(req.params.id) })
 
         logger.info('admin/dahboard.js post dahboard  error => ');
 

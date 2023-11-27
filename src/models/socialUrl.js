@@ -5,6 +5,7 @@ const collectionName = 'social';
 
 const SocialurlSchema = new Schema(
     {
+        id:{type:Number},
         platform: { type: String },
         url: { type: String },
         createdAt: { type: Date, default: Date.now },
