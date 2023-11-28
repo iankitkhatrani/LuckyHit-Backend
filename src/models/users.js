@@ -35,6 +35,7 @@ const GameUserSchema = new Schema(
     modifiedAt: { type: Date, default: Date.now },
     Iscom: { type: Number, default: 0 },
     fcmToken: { type: String, default: '' },
+    type: { type: String, default: 'free' }
   },
   { versionKey: false }
 );

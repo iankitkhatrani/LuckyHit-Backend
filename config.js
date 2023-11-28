@@ -36,5 +36,4 @@ module.exports = Object.freeze({
   MAIL_SERVICE: '',
   MAIL_ID: '',
   PASSWORD: '',
-  AVIATORLOGIC:"Normal"
 });

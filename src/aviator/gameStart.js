@@ -73,13 +73,13 @@ module.exports.startAviator = async (tbId) => {
         // NORMAL 
         let Number = this.generateNumber(0,60)
 
-        if(config.AVIATORLOGIC == "Client"){ // Client SIDE
+        if(CONST.AVIATORLOGIC == "Client"){ // Client SIDE
             if(tb.totalbet >= 5){
                  Number = this.generateNumber(0,2)
             }else if(tb.totalbet < 5){
                  Number = this.generateNumber(0,5)
             }
-        }else if(config.AVIATORLOGIC == "User"){  // User SIDE
+        }else if(CONST.AVIATORLOGIC == "User"){  // User SIDE
              Number = this.generateNumber(0,10)
         }   
 
@@ -127,9 +127,9 @@ module.exports.generateNumber=async(minRange,maxRange)=>{
 
     // Generate a random whole number between a specified range (min and max)
     function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     const randomWholeNumber = getRandomInt(minRange, maxRange);

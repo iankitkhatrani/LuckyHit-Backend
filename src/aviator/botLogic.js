@@ -6,6 +6,8 @@ const CONST = require("../../constant");
 const logger = require('../../logger');
 const joinTable = require("./joinTable");
 const gamePlay = require("./gamePlay");
+const GameStart = require("./gameStart");
+
 
 
 
@@ -13,13 +15,14 @@ module.exports.JoinRobot = async (tableInfo,BetInfo) => {
     try {
 
         let user_wh = {
-            Iscom: 1
+            Iscom: 1,
+            type:'free'
         }
 
         let robotInfo = await GameUser.findOne(user_wh, {});
         logger.info("JoinRobot ROBOT Info : ", robotInfo)
 
-
+        await GameUser.updateOne(user_wh, {$set:{type:"busy"}});
         await joinTable.findEmptySeatAndUserSeat(tableInfo, BetInfo, {uid:robotInfo._id});
 
     } catch (error) {
@@ -41,10 +44,30 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
             //find total Robot 
             //and check out rendom 
             //PlayerInfo rendom number 
+            let RobotPlayer = []
+            let BetArray= [10,50,100,200,150,60,160,360,1000]
 
-            
+            PlayerInfo.forEach(e => {
+                if(e.Iscom == 1){
+                    e.Number = GameStart.generateNumber(0,60);
+                    e.bet =  BetArray[this.GetRandomInt(0,BetArray.length-1)];
+                    e.winamount = 0;
 
+                    if(Number > Number){
+                        e.winamount =  e.Number * e.bet;
+                    }
+
+                    RobotPlayer.push(e)
+                }
+            })
+
+            console.log("RobotPlayer ",RobotPlayer)
+
+            // Genrate Rendome Number 
+            // 0 to Number
             
+            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.ROBOTPLAY, { RobotPlayer: RobotPlayer });
+   
 
         }else{
             logger.info("PlayRobot else  Robot ", tableInfo,PlayerInfo);
@@ -54,4 +77,9 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
     } catch (error) {
         logger.info("Play Robot ", error);
     }
+}
+
+
+module.exports.GetRandomInt=(min,max)=>{
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }

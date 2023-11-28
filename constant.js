@@ -54,6 +54,7 @@ const CONST = {
   CHECKOUT: "CHECKOUT",
   STARTAVIATOR: "STARTAVIATOR",
   WALLET_UPDATE: 'WU',
+  ROBOTPLAY : 'ROBOTPLAY',
 
   COLLECT_BOOT: "CB",
   USER_CARD: "UC",
@@ -265,6 +266,9 @@ const CONST = {
   COUNTRY_CODE: process.env.COUNTRY_CODE || '+91',
 
   MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+
+  AVIATORLOGIC:"Normal"
+  
 };
 
 module.exports = CONST;
