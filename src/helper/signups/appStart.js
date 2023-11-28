@@ -74,6 +74,7 @@ module.exports.getUserDefaultFields = async (data, client) => {
     email: data.email ? data.email : '',
     password: data.password ? data.password : '',
     isVIP: data.isVIP ? 1 : 0,
+    Iscom: data.Iscom ? 1 : 0,
     uniqueId: '',
     loginType: data.loginType,
     avatar: data.avatar,

@@ -6,7 +6,7 @@ const config = require('../../../config');
 const commonHelper = require('../../helper/commonHelper');
 const mainCtrl = require('../../controller/adminController');
 const logger = require('../../../logger');
-const { registerUser } = require('../../helper/signups/signupValidation');
+const { registerUser, getRegisterUserDetails } = require('../../helper/signups/signupValidation');
 
 
 /**
@@ -21,7 +21,7 @@ router.get('/BotList', async (req, res) => {
     try {
         //console.info('requet => ', req);
 
-        const userList = await Users.find({Iscom:1}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, isVIP: 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
+        const userList = await Users.find({ Iscom: 1 }, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, isVIP: 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
 
         logger.info('admin/dahboard.js post dahboard  error => ', userList);
 
@@ -68,26 +68,31 @@ router.get('/BotData', async (req, res) => {
 router.post('/BotAdd', async (req, res) => {
     try {
 
-        console.log("req ",req.body)
+        console.log("req ", req.body)
         //currently send rendom number and generate 
         let number = await createPhoneNumber()
         let response = {
             mobileNumber: Number(number),
             deviceId: `${number}`,
             isVIP: 0,
-            country:req.body.country,
-            username:req.body.playerName,
-            Iscom:1,
-            profileUrl:req.body.profileUrl
+            country: req.body.country,
+            name: req.body.name,
+            Iscom: 1,
+            profileUrl: req.body.profileUrl,
+            status:req.body.status
         }
 
 
-        console.log("response ",response)
-        let RecentUser = await registerUser(response)
+        console.log("response ", response)
+        // let RecentUser = await registerUser(response)
+        let RecentUser = await getRegisterUserDetails(response)
 
         logger.info('admin/dahboard.js post dahboard  error => ', RecentUser);
-
-        res.json({ status: "ok" });
+        if (RecentUser.length > 0) {
+            res.json({ status: "ok" });
+        } else {
+            res.status(config.INTERNAL_SERVER_ERROR).json(error);
+        }
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");
@@ -117,20 +122,20 @@ var storage1 = multer.diskStorage({
 });
 var upload = multer({ storage: storage1 })
 
-router.post('/ProfileUpload',upload.single('image'), async (req, res) => {
+router.post('/ProfileUpload', upload.single('image'), async (req, res) => {
     try {
-        
-        console.log("(req.file ",req.file)
 
-    
+        console.log("(req.file ", req.file)
+
+
         if (req.file.path != 'undefined' && req.file.path != '' && req.file.path != null) {
 
             res.json({ flag: true, path: req.file.path.substr(7) });
         } else {
             res.json({ flag: false, path: "" });
         }
-        
-        logger.info('admin/dahboard.js post dahboard  inf o::: => ' );
+
+        logger.info('admin/dahboard.js post dahboard  inf o::: => ');
 
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
@@ -152,23 +157,23 @@ router.post('/ProfileUpload',upload.single('image'), async (req, res) => {
 router.put('/BotUpdate', async (req, res) => {
     try {
 
-        console.log("req ",req.body)
+        console.log("req ", req.body)
         //currently send rendom number and generate 
         let response = {
-            $set:{
-                country:req.body.country,
-                username:req.body.username,
-                profileUrl:req.body.profileUrl,
-                status:req.body.status
+            $set: {
+                country: req.body.country,
+                username: req.body.username,
+                profileUrl: req.body.profileUrl,
+                status: req.body.status
             }
         }
 
-        console.log("response ",response)
+        console.log("response ", response)
 
-        console.log("response ",req.body)
+        console.log("response ", req.body)
 
 
-        const userInfo = await Users.findOneAndUpdate({_id: new mongoose.Types.ObjectId(req.body.userId)}, response, { new: true });
+        const userInfo = await Users.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(req.body.userId) }, response, { new: true });
 
         logger.info('admin/dahboard.js post dahboard  error => ', userInfo);
 
