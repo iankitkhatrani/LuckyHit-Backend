@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const commandAcions = require('../socketFunctions');
 const CONST = require('../../../constant');
 const UserOtp = require('../../models/userOtp');
@@ -56,13 +57,15 @@ const checkReferalOrCouponCode = async (requestData, socket) => {
 };
 
 const userLogin = async (requestData, socket) => {
-  if (requestData.mobileNumber.length !== 10) {
-    commandAcions.sendEvent(socket, CONST.LOGIN, requestData, false, 'Please check mobile Number!');
-    return false;
-  }
+
+  const {email,password}=requestData
+    // if (requestData.mobileNumber.length !== 10) {
+  //   commandAcions.sendEvent(socket, CONST.LOGIN, requestData, false, 'Please check mobile Number!');
+  //   return false;
+  // }
 
   let wh = {
-    mobileNumber: requestData.mobileNumber,
+    email: email,
   };
   //  csl('F wh :', wh);
 
@@ -74,7 +77,7 @@ const userLogin = async (requestData, socket) => {
     //let otpsend = await smsActions.sendOTP(requestData, socket);
     //csl('LOGIN Otp Send :: ', JSON.stringify(otpsend));
     //let response = { mobileNumber: requestData.mobileNumber, status: true };
-    if (bcrypt.compare(data.password, password)) {
+    if (bcrypt.compare(resp.password, password)) {
       await userSesssionSet(resp, socket);
 
       let response = await filterBeforeSendSPEvent(resp);
