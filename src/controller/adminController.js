@@ -72,8 +72,6 @@ async function registerAdmin(requestBody) {
  */
 async function adminLogin(requestBody) {
 
-
-
     const { email, password } = requestBody;
     console.info('email => ', email, '\n password => ', password);
     try {

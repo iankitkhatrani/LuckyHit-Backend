@@ -109,7 +109,7 @@ module.exports.startAviator = async (tbId) => {
                 }
             }, { new: true });
 
-            gameStartActions.gameTimerStart(tabInfonew);
+            this.gameTimerStart(tabInfonew);
         },Number * 1000);
 
         botLogic.PlayRobot(tabInfo,tabInfo.playerInfo,Number)
