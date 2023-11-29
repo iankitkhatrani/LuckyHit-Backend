@@ -11,7 +11,7 @@ const GameStart = require("./gameStart");
 
 
 
-module.exports.JoinRobot = async (tableInfo,BetInfo) => {
+module.exports.JoinRobot = async (tableInfo) => {
     try {
 
         let user_wh = {
@@ -23,7 +23,7 @@ module.exports.JoinRobot = async (tableInfo,BetInfo) => {
         logger.info("JoinRobot ROBOT Info : ", robotInfo)
 
         await GameUser.updateOne(user_wh, {$set:{type:"busy"}});
-        await joinTable.findEmptySeatAndUserSeat(tableInfo, BetInfo, {uid:robotInfo._id});
+        await joinTable.findEmptySeatAndUserSeat(tableInfo, {uid:robotInfo._id});
 
     } catch (error) {
         logger.info("Robot Logic Join", error);

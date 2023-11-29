@@ -22,7 +22,7 @@ module.exports.gameTimerStart = async (tb) => {
 
         let wh = {
             _id: tb._id,
-            "playerInfo.seatIndex": {$ne:-1}
+            "playerInfo.seatIndex": {$exists:true}
         }
         let update = {
             $set: {

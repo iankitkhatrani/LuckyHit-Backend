@@ -46,23 +46,23 @@ module.exports.joinTable = async (requestData, client) => {
             delete client.JT
             return false;
         }
-        await this.findTable(BetInfo, client)
+        await this.findTable( client)
     } catch (error) {
         console.info("JOIN_TABLE", error);
     }
 }
 
-module.exports.findTable = async (BetInfo, client) => {
-    logger.info("findTable BetInfo : ", JSON.stringify(BetInfo));
+module.exports.findTable = async (client) => {
+    logger.info("findTable  : ");
 
-    let tableInfo = await this.getBetTable(BetInfo);
+    let tableInfo = await this.getBetTable();
     logger.info("findTable tableInfo : ", JSON.stringify(tableInfo));
-
-    await this.findEmptySeatAndUserSeat(tableInfo, BetInfo, client);
+    console.log("tableInfo ",tableInfo)
+    await this.findEmptySeatAndUserSeat(tableInfo, client);
 }
 
-module.exports.getBetTable = async (BetInfo) => {
-    logger.info("getBetTable BetInfo : ", JSON.stringify(BetInfo));
+module.exports.getBetTable = async () => {
+    logger.info("getBetTable  : ");
     let wh = {
         activePlayer: { $gte: 1}
     }
@@ -72,16 +72,16 @@ module.exports.getBetTable = async (BetInfo) => {
     if (tableInfo.length > 0) {
         return tableInfo[0];
     }
-    let table = await this.createTable(BetInfo);
+    let table = await this.createTable({});
     return table;
 }
 
-module.exports.createTable = async (betInfo) => {
+module.exports.createTable = async () => {
     try {
         let insertobj = {
             gameId: "",
             activePlayer: 0,
-            playerInfo: [],
+            playerInfo: [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}],
             gameState: "",
             history:[],
             betamount:[10,50,100,200]
@@ -94,26 +94,26 @@ module.exports.createTable = async (betInfo) => {
         return insertInfo;
 
     } catch (error) {
-        logger.error('joinTable.js createTable error=> ', error, betInfo);
+        logger.error('joinTable.js createTable error=> ', error);
 
     }
 }
 
-module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
+module.exports.findEmptySeatAndUserSeat = async (table, client) => {
     try {
-        logger.info("findEmptySeatAndUserSeat table :=> ", table + " betInfo :=> ", betInfo + " client :=> ", client);
+        logger.info("findEmptySeatAndUserSeat table :=> ", table + " client :=> ", client);
         let seatIndex = this.findEmptySeat(table.playerInfo); //finding empty seat
         logger.info("findEmptySeatAndUserSeat seatIndex ::", seatIndex);
 
         if (seatIndex == "-1") {
-            await this.findTable(betInfo, client)
+            await this.findTable(client)
             return false;
         }
 
         let user_wh = {
             _id: client.uid
         }
-
+        console.log("user_wh ",user_wh)
         let userInfo = await GameUser.findOne(user_wh, {}).lean();
         logger.info("findEmptySeatAndUserSeat userInfo : ", userInfo)
 
@@ -168,7 +168,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
         let playerInfo = tableInfo.playerInfo[seatIndex];
 
         if (!(playerInfo._id.toString() == userInfo._id.toString())) {
-            await this.findTable(betInfo, client);
+            await this.findTable(client);
             return false;
         }
         client.seatIndex = seatIndex;
@@ -223,7 +223,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
 
             if(tableInfo.activePlayer <= 2){
                 setTimeout(()=>{
-                    botLogic.JoinRobot(tableInfo,betInfo)
+                    botLogic.JoinRobot(tableInfo)
                 },2000)
             }
         }
