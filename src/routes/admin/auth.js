@@ -3,6 +3,10 @@ const router = express.Router();
 const mainCtrl = require('../../controller/adminController');
 const { OK_STATUS, BAD_REQUEST } = require('../../../config');
 const logger = require('../../../logger');
+const mongoose = require("mongoose")
+const MongoID = mongoose.Types.ObjectId;
+const AviatorTables = mongoose.model("aviatorTables");
+
 
 /**
  * @api {post} /admin/signup-admin

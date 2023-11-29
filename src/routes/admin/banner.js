@@ -5,8 +5,6 @@ const config = require('../../../config');
 const logger = require('../../../logger');
 const { getBannerList } = require('../../controller/adminController');
 const Banners = mongoose.model('banner');
-const AviatorTables = mongoose.model("aviatorTables");
-
 
 
 
