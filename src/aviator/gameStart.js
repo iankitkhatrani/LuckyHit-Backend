@@ -82,7 +82,7 @@ module.exports.startAviator = async (tbId) => {
         }else if(CONST.AVIATORLOGIC == "User"){  // User SIDE
              Number = this.generateNumber(0,10)
         }   
-
+        console.log("Number ",Number)
         
         let wh = {
             _id: tbId
@@ -120,33 +120,26 @@ module.exports.startAviator = async (tbId) => {
 
 }       
 
-module.exports.generateNumber=async(minRange,maxRange)=>{
+module.exports.generateNumber=(minRange,maxRange)=>{
 
-    return new Promise((resolve) => {
+    // Generate a random decimal number between 0 (inclusive) and 1 (exclusive)
+    const randomDecimal = Math.random().toFixed(2);
+    console.log('Random Decimal:', randomDecimal);
 
+    const randomWholeNumber = getRandomInt(minRange, maxRange);
+    console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
 
-        // Generate a random decimal number between 0 (inclusive) and 1 (exclusive)
-        const randomDecimal = Math.random().toFixed(2);
-        console.log('Random Decimal:', randomDecimal);
+    console.log('Random Whole Number:', randomWholeNumber+parseFloat(randomDecimal));
 
-        // Generate a random whole number between a specified range (min and max)
-        function getRandomInt(min, max) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        const randomWholeNumber = getRandomInt(minRange, maxRange);
-        console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
-
-        console.log('Random Whole Number:', randomWholeNumber+parseFloat(randomDecimal));
-
-        return resolve(randomWholeNumber+parseFloat(randomDecimal))
-    })
-
+    return (randomWholeNumber+parseFloat(randomDecimal))
 }
 
-
+// Generate a random whole number between a specified range (min and max)
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 module.exports.deduct = async (tabInfo, playerInfo) => {
     try {
