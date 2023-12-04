@@ -7,7 +7,6 @@ const GameUser = mongoose.model("users");
 const CONST = require("../../constant");
 const commandAcions = require("../helper/socketFunctions");
 const roundStartActions = require("./roundStart")
-const gameFinishActions = require("./gameFinish");
 const logger = require("../../logger");
 
 
@@ -90,9 +89,9 @@ module.exports.manageOnUserLeave = async (tb, client) => {
 
     if (tb.gameState == "RoundStated" || tb.gameState == "CollectBoot") {
         if (playerInGame.length >= 2) {
-            await roundStartActions.nextUserTurnstart(tb, false);
+            //await roundStartActions.nextUserTurnstart(tb, false);
         } else if (playerInGame.length == 1) {
-            await gameFinishActions.lastUserWinnerDeclareCall(tb);
+            
         }
     } else if (["", "GameStartTimer"].indexOf(tb.gameState) != -1) {
         if (playerInGame.length == 0 && tb.activePlayer == 0) {

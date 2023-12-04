@@ -7,7 +7,6 @@ const IdCounter = mongoose.model("idCounter")
 const commandAcions = require("../helper/socketFunctions");
 const CONST = require("../../constant");
 const logger = require("../../logger");
-const roundStartActions = require("./roundStart");
 const walletActions = require("./updateWallet");
 const { config } = require("dotenv");
 
@@ -38,7 +37,7 @@ module.exports.gameTimerStart = async (tb) => {
         const tabInfo = await AviatorTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("gameTimerStart tabInfo :: ", tabInfo);
 
-        let roundTime = 10;
+        let roundTime = 5;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.GAME_START_TIMER, { timer: roundTime });
 
         let tbId = tabInfo._id;
@@ -71,7 +70,7 @@ module.exports.startAviator = async (tbId) => {
 
 
         // NORMAL 
-        let Number = this.generateNumber(0,60)
+        let Number =  this.generateNumber(0,60)
 
         if(CONST.AVIATORLOGIC == "Client"){ // Client SIDE
             if(tb.totalbet >= 5){
@@ -82,7 +81,7 @@ module.exports.startAviator = async (tbId) => {
         }else if(CONST.AVIATORLOGIC == "User"){  // User SIDE
              Number = this.generateNumber(0,10)
         }   
-
+        console.log("Number ",Number)
         
         let wh = {
             _id: tbId
@@ -110,6 +109,8 @@ module.exports.startAviator = async (tbId) => {
             }, { new: true });
 
             this.gameTimerStart(tabInfonew);
+
+            console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
         },Number * 1000);
 
         botLogic.PlayRobot(tabInfo,tabInfo.playerInfo,Number)
@@ -120,33 +121,26 @@ module.exports.startAviator = async (tbId) => {
 
 }       
 
-module.exports.generateNumber=async(minRange,maxRange)=>{
+module.exports.generateNumber=(minRange,maxRange)=>{
 
-    return new Promise((resolve) => {
+    // Generate a random decimal number between 0 (inclusive) and 1 (exclusive)
+    const randomDecimal = Math.random().toFixed(2);
+    console.log('Random Decimal:', randomDecimal);
 
+    const randomWholeNumber = getRandomInt(minRange, maxRange);
+    console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
 
-        // Generate a random decimal number between 0 (inclusive) and 1 (exclusive)
-        const randomDecimal = Math.random().toFixed(2);
-        console.log('Random Decimal:', randomDecimal);
+    console.log('Random Whole Number:', randomWholeNumber+parseFloat(randomDecimal));
 
-        // Generate a random whole number between a specified range (min and max)
-        function getRandomInt(min, max) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        const randomWholeNumber = getRandomInt(minRange, maxRange);
-        console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
-
-        console.log('Random Whole Number:', randomWholeNumber+parseFloat(randomDecimal));
-
-        return resolve(randomWholeNumber+parseFloat(randomDecimal))
-    })
-
+    return (randomWholeNumber+parseFloat(randomDecimal))
 }
 
-
+// Generate a random whole number between a specified range (min and max)
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 module.exports.deduct = async (tabInfo, playerInfo) => {
     try {
