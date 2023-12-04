@@ -104,14 +104,6 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.GET_TEEN_PATTI_ROOM_LIST: {
-                        try {
-                            await gamePlayActions.getBetList(payload.data, socket);
-                        } catch (error) {
-                            logger.error('socketServer.js GET_TEEN_PATTI_ROOM_LIST error => ', error);
-                        }
-                        break;
-                    }
 
                     case CONST.JOIN_SIGN_UP: {
                         socket.uid = payload.data.playerId;
@@ -128,6 +120,12 @@ myIo.init = function (server) {
                         await BNWgamePlayActions.joinTable(payload.data, socket);
                         break;
                     }
+
+                    case CONST.BNW_ACTION: {
+                        BNWgamePlayActions.action(payload.data, socket);
+                        break;
+                    }
+
 
                     case CONST.ACTION: {
                         gamePlayActions.action(payload.data, socket);

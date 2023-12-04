@@ -54,7 +54,7 @@ const CONST = {
   CHECKOUT: "CHECKOUT",
   STARTAVIATOR: "STARTAVIATOR",
   WALLET_UPDATE: 'WU',
-  ROBOTPLAY : 'ROBOTPLAY',
+  ROBOTPLAY: 'ROBOTPLAY',
 
   COLLECT_BOOT: "CB",
   USER_CARD: "UC",
@@ -195,7 +195,8 @@ const CONST = {
 
   //Black N White Event Name
   BNW_JOIN_TABLE: 'BJT',
-
+  BNW_ACTION: 'BA',
+  BNW_STOP_BET: 'BSBET',
 
   // Timer
   userTurnTimer: 30,
@@ -263,12 +264,19 @@ const CONST = {
     SIGNUP: 'signup',
   },
 
+
+  BLACKNWHITE: {
+    WHITE: 0,
+    BLACK: 1,
+    TIE: 2
+  },
+
   COUNTRY_CODE: process.env.COUNTRY_CODE || '+91',
 
   MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 
-  AVIATORLOGIC:"Normal"
-  
+  AVIATORLOGIC: "Normal"
+
 };
 
 module.exports = CONST;

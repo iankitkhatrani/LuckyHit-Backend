@@ -58,25 +58,12 @@ const checkReferalOrCouponCode = async (requestData, socket) => {
 
 const userLogin = async (requestData, socket) => {
 
-  const {email,password}=requestData
-    // if (requestData.mobileNumber.length !== 10) {
-  //   commandAcions.sendEvent(socket, CONST.LOGIN, requestData, false, 'Please check mobile Number!');
-  //   return false;
-  // }
-
-  let wh = {
-    email: email,
-  };
-  //  csl('F wh :', wh);
-
+  const { email, password } = requestData
+  let wh = { email: email };
   let resp = await Users.findOne(wh, {});
   logger.info('LOGIN resp :', resp);
 
   if (resp !== null) {
-    // eslint-disable-next-line no-unused-vars
-    //let otpsend = await smsActions.sendOTP(requestData, socket);
-    //csl('LOGIN Otp Send :: ', JSON.stringify(otpsend));
-    //let response = { mobileNumber: requestData.mobileNumber, status: true };
     if (bcrypt.compare(resp.password, password)) {
       await userSesssionSet(resp, socket);
 
@@ -85,9 +72,7 @@ const userLogin = async (requestData, socket) => {
       commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
     } else {
       commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
-
     }
-
 
   } else {
     commandAcions.sendEvent(socket, CONST.LOGIN, requestData, false, 'Mobile number not register!');
