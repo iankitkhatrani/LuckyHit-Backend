@@ -104,15 +104,6 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.GET_TEEN_PATTI_ROOM_LIST: {
-                        try {
-                            await gamePlayActions.getBetList(payload.data, socket);
-                        } catch (error) {
-                            logger.error('socketServer.js GET_TEEN_PATTI_ROOM_LIST error => ', error);
-                        }
-                        break;
-                    }
-
                     case CONST.JOIN_SIGN_UP: {
                         socket.uid = payload.data.playerId;
                         socket.sck = socket.id;

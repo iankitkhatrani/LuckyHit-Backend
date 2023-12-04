@@ -7,7 +7,6 @@ const IdCounter = mongoose.model("idCounter")
 const commandAcions = require("../helper/socketFunctions");
 const CONST = require("../../constant");
 const logger = require("../../logger");
-const roundStartActions = require("./roundStart");
 const walletActions = require("./updateWallet");
 const { config } = require("dotenv");
 
@@ -71,7 +70,7 @@ module.exports.startAviator = async (tbId) => {
 
 
         // NORMAL 
-        let Number = 5 // this.generateNumber(0,60)
+        let Number =  this.generateNumber(0,60)
 
         if(CONST.AVIATORLOGIC == "Client"){ // Client SIDE
             if(tb.totalbet >= 5){
@@ -111,7 +110,7 @@ module.exports.startAviator = async (tbId) => {
 
             this.gameTimerStart(tabInfonew);
 
-            console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart ")
+            console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
         },Number * 1000);
 
         botLogic.PlayRobot(tabInfo,tabInfo.playerInfo,Number)

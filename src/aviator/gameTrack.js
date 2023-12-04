@@ -55,3 +55,18 @@ module.exports.gamePlayTracks = async (winner_indexs, playersInfo, table) => {
         }
     }
 }
+
+
+module.exports.commissionTrack = async (amount) => {
+    try {
+        logger.info("\ngamePlayTracks  amount : ", amount);
+
+        
+
+    } catch (e) {
+        logger.error("gamePlayTracks : 1 : Exception :", e)
+        return {
+            winningAmount: 0,
+        }
+    }
+}

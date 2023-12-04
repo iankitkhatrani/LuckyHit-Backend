@@ -1,17 +1,10 @@
 const mongoose = require("mongoose")
 const MongoID = mongoose.Types.ObjectId;
-
 const AviatorTables = mongoose.model("aviatorTables");
 const GameUser = mongoose.model("users");
-
 const CONST = require("../../constant");
 const logger = require("../../logger");
 const commandAcions = require("../helper/socketFunctions");
-const roundStartActions = require("./roundStart");
-const gameFinishActions = require("./gameFinish");
-const checkWinnerActions = require("./checkWinner");
-const checkUserCardActions = require("./checkUserCard");
-
 const walletActions = require("./updateWallet");
 /*
     bet : 10,
@@ -111,13 +104,7 @@ module.exports.action = async (requestData, client) => {
         commandAcions.sendEventInTable(tb._id.toString(), CONST.ACTION, response);
         delete client.action;
         
-        // let activePlayerInRound = await roundStartActions.getPlayingUserInRound(tb.playerInfo);
-        // logger.info("action activePlayerInRound :", activePlayerInRound, activePlayerInRound.length);
-        // if (activePlayerInRound.length == 1) {
-        //     await gameFinishActions.lastUserWinnerDeclareCall(tb);
-        // } else {
-        //     await roundStartActions.nextUserTurnstart(tb);
-        // }
+       
         
         return true;
     } catch (e) {
@@ -177,8 +164,13 @@ module.exports.CHECKOUT = async (requestData, client) => {
         updateData.$set["playerInfo.$.playStatus"] = "check out"
     
         winAmount = Number(Number(requestData.winamount).toFixed(2))
+        Deductcom = Number((winAmount * 2) /100)
+
+        winAmount = Number(winAmount - Deductcom)
 
         await walletActions.deductWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
+
+        console.log("Deductcom ",Deductcom)
 
         if(requestData.actionplace == 1)
         updateData.$set["playerInfo.$.chalValue"] = 0;
@@ -204,14 +196,6 @@ module.exports.CHECKOUT = async (requestData, client) => {
         }
         commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
         delete client.action;
-        
-        // let activePlayerInRound = await roundStartActions.getPlayingUserInRound(tb.playerInfo);
-        // logger.info("action activePlayerInRound :", activePlayerInRound, activePlayerInRound.length);
-        // if (activePlayerInRound.length == 1) {
-        //     await gameFinishActions.lastUserWinnerDeclareCall(tb);
-        // } else {
-        //     await roundStartActions.nextUserTurnstart(tb);
-        // }
         
         return true;
     } catch (e) {
