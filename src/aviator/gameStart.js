@@ -38,7 +38,7 @@ module.exports.gameTimerStart = async (tb) => {
         const tabInfo = await AviatorTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("gameTimerStart tabInfo :: ", tabInfo);
 
-        let roundTime = 10;
+        let roundTime = 5;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.GAME_START_TIMER, { timer: roundTime });
 
         let tbId = tabInfo._id;
@@ -71,7 +71,7 @@ module.exports.startAviator = async (tbId) => {
 
 
         // NORMAL 
-        let Number = this.generateNumber(0,60)
+        let Number = 5 // this.generateNumber(0,60)
 
         if(CONST.AVIATORLOGIC == "Client"){ // Client SIDE
             if(tb.totalbet >= 5){
@@ -110,6 +110,8 @@ module.exports.startAviator = async (tbId) => {
             }, { new: true });
 
             this.gameTimerStart(tabInfonew);
+
+            console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart ")
         },Number * 1000);
 
         botLogic.PlayRobot(tabInfo,tabInfo.playerInfo,Number)
