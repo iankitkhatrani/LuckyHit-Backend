@@ -38,7 +38,9 @@ module.exports.action = async (requestData, client) => {
             delete client.action;
             return false
         }
-        if (tabInfo.turnDone) {
+        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue != 0) || 
+            (requestData.actionplace == 2 && tabInfo.playerInfo[client.seatIndex].chalValue1 != 0)
+        ) {
             logger.info("action : client.su ::", client.seatIndex);
             delete client.action;
             commandAcions.sendDirectEvent(client.sck, CONST.ACTION, requestData, false, "Turn is already taken!");
