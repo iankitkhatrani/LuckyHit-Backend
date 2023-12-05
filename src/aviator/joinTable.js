@@ -14,7 +14,8 @@ const botLogic = require("./botLogic");
 
 module.exports.joinTable = async (requestData, client) => {
     try {
-        if (typeof client.uid == "undefined") {
+        console.log("client ",client)
+        if (typeof client.uid == "undefined" && client.uid == "") {
             sendEvent(client, CONST.JOIN_TABLE, requestData, false, "Please restart game!!");
             return false;
         }

@@ -89,7 +89,14 @@ module.exports.startAviator = async (tbId) => {
         let update = {
             $set: {
                 gameState: "StartEviator",
-                rendomNumber:Number
+                rendomNumber:Number,
+
+            },
+            $push:{
+                "history": {
+                    $each: [Number],
+                    $slice: -10
+                }
             }
         }
         logger.info("startAviator UserInfo : ", wh, update);

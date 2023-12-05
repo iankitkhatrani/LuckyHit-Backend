@@ -113,14 +113,18 @@ module.exports.action = async (requestData, client) => {
 }
 
 /*
-    winamount : 10,
-    actionplace:1 || 2
+    betAmount : 10,
+    actionPlace:1 || 2
+    checkout: 2.5
+
+    CheckOut(int betAmount, int ,float checkout)
+
 
 */
 module.exports.CHECKOUT = async (requestData, client) => {
     try {
         logger.info("check out requestData : ", requestData);
-        if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined" || typeof requestData.winamount == "undefined") {
+        if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined" || typeof requestData.betAmount == "undefined") {
             commandAcions.sendDirectEvent(client.sck, CONST.CHECKOUT, requestData, false, "User session not set, please restart game!");
             return false;
         }
@@ -163,7 +167,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
         }
         updateData.$set["playerInfo.$.playStatus"] = "check out"
     
-        winAmount = Number(Number(requestData.winamount).toFixed(2))
+        winAmount = Number(Number(requestData.betAmount) * (requestData.checkout))
         Deductcom = Number((winAmount * 2) /100)
 
         winAmount = Number(winAmount - Deductcom)
