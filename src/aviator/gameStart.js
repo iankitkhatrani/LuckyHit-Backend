@@ -95,7 +95,7 @@ module.exports.startAviator = async (tbId) => {
             $push:{
                 "history": {
                     $each: [Number],
-                    $slice: -10
+                    $slice: -8
                 }
             }
         }
@@ -104,7 +104,7 @@ module.exports.startAviator = async (tbId) => {
         const tabInfo = await AviatorTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("startAviator tabInfo :: ", tabInfo);
 
-        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: Number });
+        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: Number,history:tabInfo.history });
 
         setTimeout(async ()=> {
             // Clear destory 

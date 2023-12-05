@@ -124,7 +124,7 @@ module.exports.action = async (requestData, client) => {
 module.exports.CHECKOUT = async (requestData, client) => {
     try {
         logger.info("check out requestData : ", requestData);
-        if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined" || typeof requestData.betAmount == "undefined") {
+        if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined" || typeof requestData.bet == "undefined") {
             commandAcions.sendDirectEvent(client.sck, CONST.CHECKOUT, requestData, false, "User session not set, please restart game!");
             return false;
         }
@@ -167,7 +167,9 @@ module.exports.CHECKOUT = async (requestData, client) => {
         }
         updateData.$set["playerInfo.$.playStatus"] = "check out"
     
-        winAmount = Number(Number(requestData.betAmount) * (requestData.checkout))
+        winAmount = Number(Number(requestData.bet) * (requestData.checkout))
+        console.log("winAmount ",winAmount)
+        
         Deductcom = Number((winAmount * 2) /100)
 
         winAmount = Number(winAmount - Deductcom)
