@@ -24,11 +24,12 @@ module.exports.action = async (requestData, client) => {
 
         const wh = {
             _id: MongoID(client.tbid.toString()),
-            status:"openforbet"
+            gameState:"GameStartTimer"
         }
         const project = {
 
         }
+        console.log("wh ",wh)
         const tabInfo = await AviatorTables.findOne(wh, project).lean();
         logger.info("action tabInfo : ", tabInfo);
 
@@ -63,7 +64,7 @@ module.exports.action = async (requestData, client) => {
                 
             }
         }
-        let chalvalue = tabInfo.currentBet;
+        let chalvalue = currentBet;
         updateData.$set["playerInfo.$.playStatus"] = "action"
     
         let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
