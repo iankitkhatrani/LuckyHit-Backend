@@ -70,7 +70,7 @@ module.exports.startAviator = async (tbId) => {
 
 
         // NORMAL 
-        let Number =  this.generateNumber(0,60)
+        let Number =  this.generateNumber(0,59)
 
         if(CONST.AVIATORLOGIC == "Client"){ // Client SIDE
             if(tb.totalbet >= 5){
