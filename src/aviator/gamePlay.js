@@ -175,7 +175,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
 
         winAmount = Number(winAmount - Deductcom)
 
-        await walletActions.deductWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
+        await walletActions.addWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
 
         console.log("Deductcom ",Deductcom)
 
