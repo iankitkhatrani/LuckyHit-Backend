@@ -104,6 +104,7 @@ myIo.init = function (server) {
                         break;
                     }
 
+
                     case CONST.JOIN_SIGN_UP: {
                         socket.uid = payload.data.playerId;
                         socket.sck = socket.id;
@@ -119,6 +120,12 @@ myIo.init = function (server) {
                         await BNWgamePlayActions.joinTable(payload.data, socket);
                         break;
                     }
+
+                    case CONST.BNW_ACTION: {
+                        BNWgamePlayActions.action(payload.data, socket);
+                        break;
+                    }
+
 
                     case CONST.ACTION: {
                         gamePlayActions.action(payload.data, socket);
