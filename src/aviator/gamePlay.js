@@ -86,7 +86,7 @@ module.exports.action = async (requestData, client) => {
 
 
         updateData.$inc["totalbet"] = chalvalue;
-        updateData.$set["turnDone"] = true;
+        //updateData.$set["turnDone"] = true;
         commandAcions.clearJob(tabInfo.job_id);
 
         const upWh = {
