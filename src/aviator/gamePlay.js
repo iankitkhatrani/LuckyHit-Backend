@@ -147,7 +147,9 @@ module.exports.CHECKOUT = async (requestData, client) => {
             delete client.action;
             return false
         }
-        if (tabInfo.turnDone) {
+        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue == 0) || 
+            (requestData.actionplace == 2 && tabInfo.playerInfo[client.seatIndex].chalValue1 == 0)
+        ) {
             logger.info("check out : client.su ::", client.seatIndex);
             delete client.action;
             commandAcions.sendDirectEvent(client.sck, CONST.CHECKOUT, requestData, false, "Turn is already taken!");
@@ -185,7 +187,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
         updateData.$set["playerInfo.$.chalValue1"] = 0;
 
         
-        updateData.$set["turnDone"] = true;
+        //updateData.$set["turnDone"] = true;
         commandAcions.clearJob(tabInfo.job_id);
 
         const upWh = {
