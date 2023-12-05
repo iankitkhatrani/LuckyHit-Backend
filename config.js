@@ -31,7 +31,7 @@ module.exports = Object.freeze({
   SECRET_KEY: process.env.SECRET_KEY || 'gamz360',
   EXPIRED_TIME: '7d',
 
-  SOCKET_CONNECT: 'http://localhost:3002/',
+  SOCKET_CONNECT: 'http://localhost:2828/',
 
   MAIL_SERVICE: '',
   MAIL_ID: '',
