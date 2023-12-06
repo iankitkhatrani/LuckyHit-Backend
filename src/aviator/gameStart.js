@@ -11,7 +11,7 @@ const walletActions = require("./updateWallet");
 const { config } = require("dotenv");
 
 const botLogic = require("./botLogic");
-
+const { v4: uuidv4 } = require('uuid');
 // const leaveTableActions = require("./leaveTable");
 
 module.exports.gameTimerStart = async (tb) => {
@@ -90,7 +90,7 @@ module.exports.startAviator = async (tbId) => {
             $set: {
                 gameState: "StartEviator",
                 rendomNumber:Number,
-
+                uuid:uuidv4()
             },
             $push:{
                 "history": {
