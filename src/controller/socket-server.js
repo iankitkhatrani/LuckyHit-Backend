@@ -138,7 +138,7 @@ myIo.init = function (server) {
                     }
 
                     case CONST.MYBET: {
-                        gamePlayActions.MYBET(payload.data, socket);
+                        gamePlayActions.mybetlist(payload.data, socket);
                         break;
                     }
 

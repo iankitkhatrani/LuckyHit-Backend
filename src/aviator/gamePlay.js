@@ -3,7 +3,7 @@ const MongoID = mongoose.Types.ObjectId;
 const AviatorTables = mongoose.model("aviatorTables");
 const GameUser = mongoose.model("users");
 const MyBetTable = mongoose.model("mybetlist");
-
+const { sendEvent, sendDirectEvent, AddTime, setDelay, clearJob } = require('../helper/socketFunctions');
 const CONST = require("../../constant");
 const logger = require("../../logger");
 const commandAcions = require("../helper/socketFunctions");
@@ -329,7 +329,9 @@ module.exports.CHECKOUT = async (requestData, client) => {
             seatIndex: tb.turnSeatIndex,
             winamount: winAmount
         }
-        commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
+        //commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
+
+        commandAcions.sendDirectEvent(client.sck, CONST.CHECKOUT, response, true, "");
         delete client.action;
         
         return true;
@@ -341,7 +343,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
 /*
     
 */
-module.exports.MYBET = async (requestData, client) => {
+module.exports.mybetlist = async (requestData, client) => {
     try {
         logger.info("MYBET requestData : ", requestData);
         if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined") {
@@ -356,17 +358,18 @@ module.exports.MYBET = async (requestData, client) => {
             
         }
         console.log("wh ",wh)
-        const mybetlist = await MyBetTable.findOne(wh, project).lean();
+        const mybetlist = await MyBetTable.find(wh, project).lean();
         logger.info("mybetlist mybetlist : ", mybetlist);
 
         if (mybetlist == null) {
-            logger.info("mybetlist user not turn ::", mybetlist);
+            logger.info("mybetlist bet data not found  ::", mybetlist);
             return false
         }
 
-        conosle.log("mybetlist ",mybetlist)
+        console.log("mybetlist ",mybetlist)
         
-        commandAcions.sendEventInTable(tb._id.toString(), CONST.MYBET, {mybetlist:mybetlist});
+       
+        sendEvent(client, CONST.MYBET, {mybetlist:mybetlist});
         
         return true;
     } catch (e) {
@@ -383,9 +386,9 @@ module.exports.MYBET = async (requestData, client) => {
 module.exports.MybetInsert = async(gameId,amount,x,winamount,client) =>{
 
     try {
-        logger.info("MybetInsert requestData : ", requestData);
+        logger.info("MybetInsert requestData : ");
         if (typeof client.tbid == "undefined" || typeof client.uid == "undefined") {
-            logger.info("MybetInsert If requestData : ", requestData);
+            logger.info("MybetInsert If requestData : ");
             return false;
         }       
         if(winamount != 0){
