@@ -70,7 +70,7 @@ module.exports.startAviator = async (tbId) => {
 
 
         // NORMAL 
-        let Number =  this.generateNumber(0,59)
+        let Number =  5//this.generateNumber(0,59)
 
         if(CONST.AVIATORLOGIC == "Client"){ // Client SIDE
             if(tb.totalbet >= 5){
@@ -118,7 +118,7 @@ module.exports.startAviator = async (tbId) => {
             this.gameTimerStart(tabInfonew);
 
             console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
-        },(Number+2 * 1000));
+        },((Number+2) * 1000));
 
         botLogic.PlayRobot(tabInfo,tabInfo.playerInfo,Number)
 
