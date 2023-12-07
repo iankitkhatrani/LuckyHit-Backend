@@ -110,7 +110,7 @@ module.exports.action = async (requestData, client) => {
             seatIndex: tb.turnSeatIndex,
             chalValue: chalvalue
         }
-        commandAcions.sendEventInTable(tb._id.toString(), CONST.ACTION, response);
+        sendEvent(client, CONST.ACTION, response);
         delete client.action;
 
        
@@ -223,7 +223,9 @@ module.exports.CancelBet = async (requestData, client) => {
             chalValue: 0,
             actionplace:requestData.actionplace
         }
-        commandAcions.sendEventInTable(tb._id.toString(), CONST.CANCEL, response);
+        
+        sendEvent(client, CONST.CANCEL, response);
+
         delete client.CANCEL;
         
        
@@ -331,7 +333,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
         }
         //commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
 
-        commandAcions.sendDirectEvent(client.sck, CONST.CHECKOUT, response, true, "");
+        sendEvent(client, CONST.CHECKOUT, response);
         delete client.action;
         
         return true;

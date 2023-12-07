@@ -75,11 +75,11 @@ module.exports.
                     sceneName: CONST.GAMEPLAY,
                 };
 
-                if (tabInfo.gameState === CONST.ROUND_STARTED) {
+                if (tabInfo.gameState === "StartEviator") {
                     let currentDateTime = new Date();
                     let time = currentDateTime.getSeconds();
 
-                    let turnTime = new Date(tabInfo.gameTimer.ttimer);
+                    let turnTime = new Date(tabInfo.aviatorDate.ttimer);
                     let Gtime = turnTime.getSeconds();
                     let diff = Gtime - time;
 
@@ -89,7 +89,7 @@ module.exports.
                         currentTurnTimer: diff,
                     };
                     sendDirectEvent(client.id.toString(), CONST.RECONNECT, responseRS);
-                } else if (tabInfo.gameState === CONST.ROUND_START_TIMER) {
+                } else if (tabInfo.gameState === "GameStartTimer") {
                     let currentDateTime = new Date();
                     let time = currentDateTime.getSeconds();
                     let turnTime = new Date(tabInfo.gameTimer.GST);
@@ -102,26 +102,7 @@ module.exports.
                     };
 
                     sendDirectEvent(client.id.toString(), CONST.RECONNECT, responseRST);
-                } else if (tabInfo.gameState === CONST.ROUND_END) {
-                    // const scoreBoard = tabInfo.playersScoreBoard;
-                    // let winnerViewResponse = winnerViewResponseFilter(scoreBoard);
-
-                    // const responseRSB = {
-                    //     playersScoreBoard: winnerViewResponse.userInfo,
-                    //     totalLostChips: tabInfo.tableAmount,
-                    //     winPlayerId: tabInfo.playerInfo[tabInfo.currentPlayerTurnIndex]._id,
-                    //     gamePlayType: tabInfo.gamePlayType,
-                    // };
-
-                    const responseRE = {
-                        ...response,
-                        // GSB: responseRSB,
-                    };
-
-                    sendDirectEvent(client.id.toString(), CONST.RECONNECT, responseRE);
-                } else if (tabInfo.gameState === CONST.CARD_DEALING) {
-                    sendDirectEvent(client.id.toString(), CONST.RECONNECT, response);
-                } else {
+                }  else {
                     sendDirectEvent(client.id.toString(), CONST.RECONNECT, response);
                 }
                 return;

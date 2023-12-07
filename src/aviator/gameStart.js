@@ -90,7 +90,8 @@ module.exports.startAviator = async (tbId) => {
             $set: {
                 gameState: "StartEviator",
                 rendomNumber:Number,
-                uuid:uuidv4()
+                uuid:uuidv4(),
+                aviatorDate:new Date()
             },
             $push:{
                 "history": {
@@ -111,7 +112,8 @@ module.exports.startAviator = async (tbId) => {
             const tabInfonew = await AviatorTables.findOneAndUpdate(wh, {
                 $set: {
                     gameState: "",
-                    rendomNumber:0
+                    rendomNumber:0,
+                    aviatorDate:""
                 }
             }, { new: true });
 
