@@ -323,7 +323,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
         logger.info("action upWh updateData :: ", upWh, updateData);
 
         const tb = await AviatorTables.findOneAndUpdate(upWh, updateData, { new: true });
-        logger.info("action tb : ", tb);
+        logger.info("action requestData.checkout ",requestData.checkout);
 
         this.MybetInsert(tabInfo.uuid,0,requestData.checkout,winAmount,client)
 
@@ -388,7 +388,11 @@ module.exports.mybetlist = async (requestData, client) => {
 module.exports.MybetInsert = async(gameId,amount,x,winamount,client) =>{
 
     try {
-        logger.info("MybetInsert requestData : ");
+        logger.info("MybetInsert requestData gameId: ",gameId);
+        logger.info("MybetInsert requestData amount: ",amount);
+        logger.info("MybetInsert requestData x: ",x);
+        logger.info("MybetInsert requestData winamount: ",winamount);
+
         if (typeof client.tbid == "undefined" || typeof client.uid == "undefined") {
             logger.info("MybetInsert If requestData : ");
             return false;
@@ -402,6 +406,10 @@ module.exports.MybetInsert = async(gameId,amount,x,winamount,client) =>{
                 x:x,
                 winamount:winamount
             }
+
+            console.log("upWh ",upWh)
+            console.log("updateData ",updateData)
+
 
             const tb = await MyBetTable.findOneAndUpdate(upWh, updateData, { new: true });
         }else{
@@ -418,9 +426,6 @@ module.exports.MybetInsert = async(gameId,amount,x,winamount,client) =>{
             logger.info("MybetInsert insertInfo : ", insertInfo);
 
         }   
-
-        console.log("tb  ::::::::",tb)
-
     }catch (e) {
         logger.info("Exception Mybetlist : ", e);
     }
