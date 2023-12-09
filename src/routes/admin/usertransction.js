@@ -22,7 +22,7 @@ router.get('/DepositList', async (req, res) => {
     try {
         //console.info('requet => ', req);
 
-        const DepositeList = await Userdeposit.find({}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
+        const DepositeList = await Userdeposit.find({approve:0,reject:0}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
          acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1,dateOfdeposit:1 })
 
         logger.info('admin/dahboard.js post dahboard  error => ', DepositeList);
@@ -77,6 +77,30 @@ router.get('/RejectList', async (req, res) => {
         logger.info('admin/dahboard.js post dahboard  error => ', RejectList);
 
         res.json({ RejectList });
+    } catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        res.status(config.INTERNAL_SERVER_ERROR).json(error);
+    }
+});
+
+
+/**
+* @api {post} /admin/DepositData
+* @apiName  add-bet-list
+* @apiGroup  Admin
+* @apiHeader {String}  x-access-token Admin's unique access-key
+* @apiSuccess (Success 200) {Array} badges Array of badges document
+* @apiError (Error 4xx) {String} message Validation or error message.
+*/
+router.get('/DepositData', async (req, res) => {
+    try {
+        //console.info('requet => ', req);
+
+        const DepositeData = await Userdeposit.find({_id: new mongoose.Types.ObjectId(req.query.id)}, { screenshort:1,status:1,approve:1,reject:1 })
+
+        logger.info('admin/dahboard.js post dahboard  error => ', DepositeData);
+
+        res.json({ DepositeData });
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
@@ -236,12 +260,61 @@ router.get('/PayoutList', async (req, res) => {
     try {
         //console.info('requet => ', req);
 
-        const PayoutList = await Userpayout.find({}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
+        const PayoutList = await Userpayout.find({approve:0,reject:0}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
          acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1 })
 
         logger.info('admin/dahboard.js post dahboard  error => ', PayoutList);
 
         res.json({ PayoutList });
+    } catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        res.status(config.INTERNAL_SERVER_ERROR).json(error);
+    }
+});
+
+/**
+* @api {post} /admin/AcceptList
+* @apiName  add-bet-list
+* @apiGroup  Admin
+* @apiHeader {String}  x-access-token Admin's unique access-key
+* @apiSuccess (Success 200) {Array} badges Array of badges document
+* @apiError (Error 4xx) {String} message Validation or error message.
+*/
+router.get('/PayoutAcceptList', async (req, res) => {
+    try {
+        //console.info('requet => ', req);
+
+        const AcceptList = await Userpayout.find({approve:1,reject:0}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
+         acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1,dateOfdeposit:1 })
+
+        logger.info('admin/dahboard.js PayoutAcceptList post dahboard  error => ', AcceptList);
+
+        res.json({ AcceptList });
+    } catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        res.status(config.INTERNAL_SERVER_ERROR).json(error);
+    }
+});
+
+
+/**
+* @api {post} /admin/RejectList
+* @apiName  add-bet-list
+* @apiGroup  Admin
+* @apiHeader {String}  x-access-token Admin's unique access-key
+* @apiSuccess (Success 200) {Array} badges Array of badges document
+* @apiError (Error 4xx) {String} message Validation or error message.
+*/
+router.get('/PayoutRejectList', async (req, res) => {
+    try {
+        //console.info('requet => ', req);
+
+        const RejectList = await Userpayout.find({approve:0,reject:1}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
+         acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1,dateOfdeposit:1 })
+
+        logger.info('admin/dahboard.js post dahboard  error => ', RejectList);
+
+        res.json({ RejectList });
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
