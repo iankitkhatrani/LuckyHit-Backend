@@ -84,7 +84,7 @@ module.exports.action = async (requestData, client) => {
         chalvalue = Number(Number(chalvalue).toFixed(2))
 
         await walletActions.deductWallet(client.uid, -chalvalue, 2, "aviator action", tabInfo, client.id, client.seatIndex);
-
+        console.log("tabInfo.uuid ",tabInfo.uuid)
         this.MybetInsert(tabInfo.uuid,chalvalue,0,0,client)
 
         if(requestData.actionplace == 1)

@@ -29,7 +29,8 @@ module.exports.gameTimerStart = async (tb) => {
                 "GameTimer.GST": new Date(),
                 "totalbet":0,
                 "playerInfo.$.chalValue":0,
-                "playerInfo.$.chalValue1":0
+                "playerInfo.$.chalValue1":0,
+                uuid:uuidv4(),
             }
         }
         logger.info("gameTimerStart UserInfo : ", wh, update);
@@ -90,7 +91,7 @@ module.exports.startAviator = async (tbId) => {
             $set: {
                 gameState: "StartEviator",
                 rendomNumber:Number,
-                uuid:uuidv4(),
+               
                 aviatorDate:new Date()
             },
             $push:{

@@ -14,7 +14,7 @@ const botLogic = require("./botLogic");
 
 module.exports.joinTable = async (requestData, client) => {
     try {
-        console.log("client ",client)
+        
         if (typeof client.uid == "undefined" && client.uid == "") {
             sendEvent(client, CONST.JOIN_TABLE, requestData, false, "Please restart game!!");
             return false;
@@ -58,7 +58,7 @@ module.exports.findTable = async (client) => {
 
     let tableInfo = await this.getBetTable();
     logger.info("findTable tableInfo : ", JSON.stringify(tableInfo));
-    console.log("tableInfo ",tableInfo)
+   
     await this.findEmptySeatAndUserSeat(tableInfo, client);
 }
 
