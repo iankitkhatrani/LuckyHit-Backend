@@ -21,7 +21,7 @@ const CONST = {
   ROUND_COLLECT_BOOT: 'CollectBoot',
   ROUND_END: 'RoundEndState',
   ROUND_LOCK: 'RoundLock',
-  GAMEPLAY: 'GAMEPLAY',
+  GAMEPLAY: 'AVAIATOR',
   CARD_DEALING: 'CardDealing',
 
   // SPENN Paymnent Key
@@ -51,6 +51,8 @@ const CONST = {
   JOIN_TABLE: "JT",
   USER_JOIN_IN_TABLE: "UJIT",
   ACTION: "ACTION",
+  MYBET:"MYBET",
+  CANCEL: "CANCELBET",
   CHECKOUT: "CHECKOUT",
   STARTAVIATOR: "STARTAVIATOR",
   WALLET_UPDATE: 'WU',

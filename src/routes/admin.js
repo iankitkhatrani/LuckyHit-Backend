@@ -13,10 +13,7 @@ const gamementenance = require('./admin/gamementenance');
 const notification = require('./admin/notification');
 const banner = require('./admin/banner');
 const bot = require('./admin/bot');
-
-
-
-
+const usertransction = require('./admin/usertransction');
 
 router.use('/', auth);
 router.use('/lobbies', authMiddleware, bet);
@@ -30,7 +27,6 @@ router.use('/gamementenance', authMiddleware, gamementenance);
 router.use('/notification', authMiddleware, notification);
 router.use('/banner', authMiddleware, banner);
 router.use('/bot', authMiddleware, bot);
-
-
+router.use('/usertransction', authMiddleware, usertransction);
 
 module.exports = router;

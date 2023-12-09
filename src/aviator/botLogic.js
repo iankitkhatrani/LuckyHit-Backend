@@ -61,8 +61,6 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
                 }
             })
 
-            console.log("RobotPlayer ",RobotPlayer)
-
             // Genrate Rendome Number 
             // 0 to Number
             

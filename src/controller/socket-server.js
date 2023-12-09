@@ -132,12 +132,21 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.CHECKOUT: {
-                        gamePlayActions.CHECKOUT(payload.data, socket);
+                    case CONST.CANCEL: {
+                        gamePlayActions.CancelBet(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.MYBET: {
+                        gamePlayActions.mybetlist(payload.data, socket);
                         break;
                     }
 
 
+                    case CONST.CHECKOUT: {
+                        gamePlayActions.CHECKOUT(payload.data, socket);
+                        break;
+                    }
 
                     case CONST.LEAVE_TABLE: {
                         gamePlayActions.leaveTable(payload.data, socket);

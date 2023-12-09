@@ -11,7 +11,7 @@ const walletActions = require("./updateWallet");
 const { config } = require("dotenv");
 
 const botLogic = require("./botLogic");
-
+const { v4: uuidv4 } = require('uuid');
 // const leaveTableActions = require("./leaveTable");
 
 module.exports.gameTimerStart = async (tb) => {
@@ -29,7 +29,8 @@ module.exports.gameTimerStart = async (tb) => {
                 "GameTimer.GST": new Date(),
                 "totalbet":0,
                 "playerInfo.$.chalValue":0,
-                "playerInfo.$.chalValue1":0
+                "playerInfo.$.chalValue1":0,
+                uuid:uuidv4(),
             }
         }
         logger.info("gameTimerStart UserInfo : ", wh, update);
@@ -38,7 +39,7 @@ module.exports.gameTimerStart = async (tb) => {
         logger.info("gameTimerStart tabInfo :: ", tabInfo);
 
         let roundTime = 5;
-        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.GAME_START_TIMER, { timer: roundTime });
+        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.GAME_START_TIMER, { timer: roundTime,history:tabInfo.history });
 
         let tbId = tabInfo._id;
         let jobId = CONST.GAME_START_TIMER + ":" + tbId;
@@ -70,16 +71,16 @@ module.exports.startAviator = async (tbId) => {
 
 
         // NORMAL 
-        let Number =  this.generateNumber(0,60)
+        let Number =  this.generateNumber(1,59)
 
         if(CONST.AVIATORLOGIC == "Client"){ // Client SIDE
             if(tb.totalbet >= 5){
-                 Number = this.generateNumber(0,2)
+                 Number = this.generateNumber(1,2)
             }else if(tb.totalbet < 5){
-                 Number = this.generateNumber(0,5)
+                 Number = this.generateNumber(1,5)
             }
         }else if(CONST.AVIATORLOGIC == "User"){  // User SIDE
-             Number = this.generateNumber(0,10)
+             Number = this.generateNumber(1,10)
         }   
         console.log("Number ",Number)
         
@@ -89,7 +90,15 @@ module.exports.startAviator = async (tbId) => {
         let update = {
             $set: {
                 gameState: "StartEviator",
-                rendomNumber:Number
+                rendomNumber:Number,
+               
+                aviatorDate:new Date()
+            },
+            $push:{
+                "history": {
+                    $each: [Number],
+                    $slice: -8
+                }
             }
         }
         logger.info("startAviator UserInfo : ", wh, update);
@@ -104,14 +113,15 @@ module.exports.startAviator = async (tbId) => {
             const tabInfonew = await AviatorTables.findOneAndUpdate(wh, {
                 $set: {
                     gameState: "",
-                    rendomNumber:0
+                    rendomNumber:0,
+                    aviatorDate:""
                 }
             }, { new: true });
 
             this.gameTimerStart(tabInfonew);
 
             console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
-        },Number * 1000);
+        },((Number+2) * 1000));
 
         botLogic.PlayRobot(tabInfo,tabInfo.playerInfo,Number)
 

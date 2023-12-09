@@ -4,7 +4,6 @@ const UserOtp = mongoose.model('userOtp');
 
 module.exports.sendOTP = async (data, client) => {
   try {
-    logger.info(client);
     let otp = '75757';
 
     let tempMobile = data.mobile_number;
