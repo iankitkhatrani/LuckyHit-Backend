@@ -36,4 +36,17 @@ module.exports = Object.freeze({
   MAIL_SERVICE: '',
   MAIL_ID: '',
   PASSWORD: '',
+
+  crypto_secret: process.env.NODE_ENV === "LOCAL" ? "123456" : process.env.CRYPTO_SECRET,
+
+
+  //Payment Gateway
+  PAYMENT_GATEWAY_CLIENT_ID: process.env.CF_APP_ID || "",
+  PAYMENT_GATEWAY_CLIENT_SECRET: process.env.CF_SECRET || "",
+  PAYOUT_CLIENT_ID: process.env.PAYOUT_CLIENT_ID || "",
+  PAYOUT_CLIENT_SECRET: process.env.PAYOUT_CLIENT_SECRET || "",
+
+  enableEncryption: process.env.ENABLE_ENCRYPTION === "true" || false,
+  socketObjJSON: process.env.SOCKET_OBJ_JSON === "true" || true,
+  socketBaseUrl: process.env.NODE_ENV !== "LOCAL" ? process.env.SOCKET_BASE_URL : `http://localhost:2828`,
 });
