@@ -21,7 +21,7 @@ const CONST = {
   ROUND_COLLECT_BOOT: 'CollectBoot',
   ROUND_END: 'RoundEndState',
   ROUND_LOCK: 'RoundLock',
-  GAMEPLAY: 'GAMEPLAY',
+  GAMEPLAY: 'AVAIATOR',
   CARD_DEALING: 'CardDealing',
 
   // SPENN Paymnent Key

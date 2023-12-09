@@ -29,7 +29,7 @@ module.exports.
                     ...newData,
                 };
                 logger.info('Reconnect Final Data => ', finaldata);
-                let responseResult = await filterBeforeSendSPEvent(result);
+                let responseResult = await filterBeforeSendSPEvent(finaldata);
 
                 if (requestData.tableId == '') {
                     const response = {
@@ -79,7 +79,7 @@ module.exports.
                     let currentDateTime = new Date();
                     let time = currentDateTime.getSeconds();
 
-                    let turnTime = new Date(tabInfo.aviatorDate.ttimer);
+                    let turnTime = new Date(tabInfo.aviatorDate);
                     let Gtime = turnTime.getSeconds();
                     let diff = Gtime - time;
 

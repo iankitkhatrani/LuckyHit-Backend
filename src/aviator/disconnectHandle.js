@@ -25,8 +25,7 @@ module.exports.disconnectTableHandle = async (client) => {
 
       if (tabInfo === null) return false;
 
-      if (tabInfo.gamePlayType === CONST.GAME_TYPE.POINT_RUMMY) {
-
+      
         let wh = {
           _id: MongoID(client.tbid.toString()),
           'playerInfo._id': MongoID(client.uid.toString()),
@@ -63,7 +62,7 @@ module.exports.disconnectTableHandle = async (client) => {
           logger.info('else  update table :: ', tabInfo);
           return tabInfo;
         }
-      }
+      
     } else {
       logger.info('Client Socket Id Not found : ', client.uid);
       return;
