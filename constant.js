@@ -277,7 +277,19 @@ const CONST = {
 
   MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 
-  AVIATORLOGIC: "Normal"
+  AVIATORLOGIC: "Normal",
+
+  // HTTP Status Codes
+  STATUS: {
+    OK: 200,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    MEDIA_ERROR_STATUS: 415,
+    VALIDATION_FAILURE_STATUS: 417,
+    DATABASE_ERROR_STATUS: 422,
+    INTERNAL_SERVER_ERROR: 500,
+  },
 
 };
 
