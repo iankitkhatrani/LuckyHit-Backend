@@ -369,6 +369,30 @@ router.post('/PayoutInsert', async (req, res) => {
 
 
 /**
+* @api {post} /admin/PayoutData
+* @apiName  add-bet-list
+* @apiGroup  Admin
+* @apiHeader {String}  x-access-token Admin's unique access-key
+* @apiSuccess (Success 200) {Array} badges Array of badges document
+* @apiError (Error 4xx) {String} message Validation or error message.
+*/
+router.get('/PayoutData', async (req, res) => {
+    try {
+        //console.info('requet => ', req);
+
+        const PayouteData = await Userpayout.find({_id: new mongoose.Types.ObjectId(req.query.id)}, { screenshort:1,status:1,approve:1,reject:1 })
+
+        logger.info('admin/dahboard.js post dahboard  error => ', PayouteData);
+
+        res.json({ PayouteData });
+    } catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        res.status(config.INTERNAL_SERVER_ERROR).json(error);
+    }
+});
+
+
+/**
 * @api {post} /admin/AddUser
 * @apiName  add-bet-list
 * @apiGroup  Admin
