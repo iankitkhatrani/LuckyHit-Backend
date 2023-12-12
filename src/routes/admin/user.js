@@ -7,7 +7,7 @@ const commonHelper = require('../../helper/commonHelper');
 const mainCtrl = require('../../controller/adminController');
 const logger = require('../../../logger');
 const { registerUser } = require('../../helper/signups/signupValidation');
-
+const walletActions = require("../../aviator/updateWallet");
 
 /**
 * @api {post} /admin/lobbies
@@ -21,7 +21,7 @@ router.get('/UserList', async (req, res) => {
     try {
         //console.info('requet => ', req);
 
-        const userList = await Users.find({}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, isVIP: 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
+        const userList = await Users.find({Iscom:0}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, isVIP: 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
 
         logger.info('admin/dahboard.js post dahboard  error => ', userList);
 
@@ -129,11 +129,28 @@ router.delete('/DeleteUser/:id', async (req, res) => {
 router.put('/addMoney', async (req, res) => {
     try {
         console.log("Add Money ", req.body)
+        //userId
+        // 
         //const RecentUser = //await Users.deleteOne({_id: new mongoose.Types.ObjectId(req.params.id)})
+        if(req.body.userId != undefined && req.body.type != undefined && req.body.money != undefined){
+
+            const UserData = await Users.find({_id:new mongoose.Types.ObjectId(req.body.userId)}, { sckId:1 })
+            console.log("UserData ",UserData)
+            if(UserData != undefined &&  UserData[0].sckId != undefined){
+
+                
+                await walletActions.addWalletAdmin(req.body.userId,Number(req.body.money),3,req.body.type,{},{id:UserData.sckId},-1);
+            }
+
+            res.json({ status: "ok" });
+        }else{
+            console.log("false")
+            res.json({ status: false });
+        }
 
         logger.info('admin/dahboard.js post dahboard  error => ');
 
-        res.json({ status: "ok" });
+        
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");
@@ -155,9 +172,24 @@ router.put('/deductMoney', async (req, res) => {
         console.log("deductMoney ", req.body)
         //const RecentUser = //await Users.deleteOne({_id: new mongoose.Types.ObjectId(req.params.id)})
 
+        if(req.body.userId != undefined && req.body.type != undefined && req.body.money != undefined){
+
+            const UserData = await Users.find({_id:new mongoose.Types.ObjectId(req.body.userId)}, { sckId:1 })
+            console.log("UserData ",UserData)
+            if(UserData != undefined &&  UserData[0].sckId != undefined){
+
+                
+                await walletActions.deductWalletAdmin(req.body.userId,-Number(req.body.money),4,req.body.type,{},{id:UserData.sckId},-1);
+            }
+
+            res.json({ status: "ok" });
+        }else{
+            console.log("false")
+            res.json({ status: false });
+        }
+
         logger.info('admin/dahboard.js post dahboard  error => ');
 
-        res.json({ status: "ok" });
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");
