@@ -108,9 +108,14 @@ module.exports.action = async (requestData, client) => {
 
         let response = {
             seatIndex: tb.turnSeatIndex,
-            chalValue: chalvalue
+            chalValue: chalvalue,
+            userid:client.uid
         }
         sendEvent(client, CONST.ACTION, response);
+
+
+        commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLEACTION, response);
+
         delete client.action;
 
        
@@ -221,10 +226,15 @@ module.exports.CancelBet = async (requestData, client) => {
         let response = {
             seatIndex: tb.turnSeatIndex,
             chalValue: 0,
-            actionplace:requestData.actionplace
+            actionplace:requestData.actionplace,
+            userid:client.uid
         }
         
         sendEvent(client, CONST.CANCEL, response);
+
+        
+        commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLECANCEL, response);
+
 
         delete client.CANCEL;
         
@@ -329,11 +339,12 @@ module.exports.CHECKOUT = async (requestData, client) => {
 
         let response = {
             seatIndex: tb.turnSeatIndex,
-            winamount: winAmount
+            winamount: winAmount,
+            userid:client.uid
         }
         //commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
-
         sendEvent(client, CONST.CHECKOUT, response);
+        commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLECHECKOUT, response);
         delete client.action;
         
         return true;
