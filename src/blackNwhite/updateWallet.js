@@ -103,7 +103,7 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
 
             let walletTrack = {
                 id: userInfo.id,
-                uniqueId: userInfo.unique_id,
+                uniqueId: userInfo.uniqueId,
                 userId: wh._id.toString(),
                 trnxType: tType,
                 trnxTypeTxt: t,
@@ -193,7 +193,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
         let projection = {
             id: 1,
             user_name: 1,
-            unique_id: 1,
+            uniqueId: 1,
             chips: 1,
             winningChips: 1,
             sck_id: 1,
@@ -250,7 +250,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
 
             let walletTrack = {
                 id: userInfo.id,
-                unique_id: userInfo.unique_id,
+                uniqueId: userInfo.uniqueId,
                 user_id: wh._id.toString(),
                 trnx_type: tType,
                 trnx_type_txt: t,

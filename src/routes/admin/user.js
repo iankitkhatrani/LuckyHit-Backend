@@ -138,7 +138,8 @@ router.put('/addMoney', async (req, res) => {
             console.log("UserData ",UserData)
             if(UserData != undefined &&  UserData[0].sckId != undefined){
 
-                await walletActions.addWallet(req.body.userId,Number(req.body.money),2,req.body.type,{},UserData.sckId,-1);
+                
+                await walletActions.addWalletAdmin(req.body.userId,Number(req.body.money),3,req.body.type,{},{id:UserData.sckId},-1);
             }
 
             res.json({ status: "ok" });
@@ -171,9 +172,24 @@ router.put('/deductMoney', async (req, res) => {
         console.log("deductMoney ", req.body)
         //const RecentUser = //await Users.deleteOne({_id: new mongoose.Types.ObjectId(req.params.id)})
 
+        if(req.body.userId != undefined && req.body.type != undefined && req.body.money != undefined){
+
+            const UserData = await Users.find({_id:new mongoose.Types.ObjectId(req.body.userId)}, { sckId:1 })
+            console.log("UserData ",UserData)
+            if(UserData != undefined &&  UserData[0].sckId != undefined){
+
+                
+                await walletActions.deductWalletAdmin(req.body.userId,-Number(req.body.money),4,req.body.type,{},{id:UserData.sckId},-1);
+            }
+
+            res.json({ status: "ok" });
+        }else{
+            console.log("false")
+            res.json({ status: false });
+        }
+
         logger.info('admin/dahboard.js post dahboard  error => ');
 
-        res.json({ status: "ok" });
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");

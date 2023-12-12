@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+
+const MongoID = mongoose.Types.ObjectId;
 const Users = mongoose.model('users');
 const express = require('express');
 const router = express.Router();
@@ -6,7 +8,7 @@ const config = require('../../../config');
 const commonHelper = require('../../helper/commonHelper');
 const mainCtrl = require('../../controller/adminController');
 const logger = require('../../../logger');
-
+const UserWalletTracks = mongoose.model("userWalletTracks");
 
 /**
 * @api {get} /admin/rouletteHistory
@@ -84,42 +86,16 @@ router.get('/rouletteHistory', async (req, res) => {
 router.get('/completeWithdrawal', async (req, res) => {
     try {
         console.info('completeWithdrawal  => ', req.query);
+        if( req.query.userId == undefined){
+            res.json({ completeWithdrawalData:[] });
+            return false
+        }
+        const completeWithdrawalData = await UserWalletTracks.find({userId:MongoID(req.query.userId),"trnxTypeTxt":"Withdrawal"},
+        { createdAt:1,userId:1,uniqueId:1,oppWinningChips:1,trnxAmount:1,totalBucket:1,trnxTypeTxt:1 }).sort({createdAt:-1})
+        
+        console.log("completeWithdrawalData ",completeWithdrawalData)
 
-        const completeWithdrawalData = [
-            {
-                "SrNo": 1,
-                "DateTime": "2023-10-10 08:30 AM",
-                "Name": "Alice",
-                "PhoneNumber": "123-456-7890",
-                "RoomId": "CWRoom1",
-                "Amount": 100, // Amount in this example (can be credit or debit)
-                "Type": "Credit", // "Credit" or "Debit"
-                "Club": "Club A"
-            },
-            {
-                "SrNo": 2,
-                "DateTime": "2023-10-09 10:15 AM",
-                "Name": "Bob",
-                "PhoneNumber": "987-654-3210",
-                "RoomId": "CWRoom2",
-                "Amount": 50, // Amount in this example (can be credit or debit)
-                "Type": "Debit", // "Credit" or "Debit"
-                "Club": "Club B"
-            },
-            {
-                "SrNo": 3,
-                "DateTime": "2023-10-09 10:15 AM",
-                "Name": "Bob",
-                "PhoneNumber": "987-654-3210",
-                "RoomId": "CWRoom2",
-                "Amount": 50, // Amount in this example (can be credit or debit)
-                "Type": "Debit", // "Credit" or "Debit"
-                "Club": "Club Bd"
-            },
-            // Add more game history entries here
-        ];
-
-        logger.info('admin/dahboard.js post dahboard  error => ', completeWithdrawalData);
+        logger.info('admin/dahboard.js post dahboard  error => completeWithdrawalData ', completeWithdrawalData);
 
         res.json({ completeWithdrawalData });
     } catch (error) {
@@ -141,39 +117,14 @@ router.get('/completeDeposite', async (req, res) => {
     try {
         console.info('requet => ', req.query);
 
-        const completeDepositeData = [
-            {
-                "SrNo": 1,
-                "DateTime": "2023-10-10 08:30 AM",
-                "Name": "Alice",
-                "PhoneNumber": "123-456-7890",
-                "RoomId": "CDRoom1",
-                "Amount": 100, // Amount in this example (can be credit or debit)
-                "Type": "Credit", // "Credit" or "Debit"
-                "Club": "Club A"
-            },
-            {
-                "SrNo": 2,
-                "DateTime": "2023-10-09 10:15 AM",
-                "Name": "Bob",
-                "PhoneNumber": "987-654-3210",
-                "RoomId": "CDRoom2",
-                "Amount": 50, // Amount in this example (can be credit or debit)
-                "Type": "Debit", // "Credit" or "Debit"
-                "Club": "Club B"
-            },
-            {
-                "SrNo": 3,
-                "DateTime": "2023-10-09 10:15 AM",
-                "Name": "Bob",
-                "PhoneNumber": "987-654-3210",
-                "RoomId": "CDRoom2",
-                "Amount": 50, // Amount in this example (can be credit or debit)
-                "Type": "Debit", // "Credit" or "Debit"
-                "Club": "Club Bd"
-            },
-            // Add more game history entries here
-        ];
+        if( req.query.userId == undefined){
+            res.json({ completeDepositeData:[] });
+            return false
+        }
+
+        const completeDepositeData = await UserWalletTracks.find({userId:MongoID(req.query.userId),"trnxTypeTxt":"Deposit"},
+        { createdAt:1,userId:1,uniqueId:1,oppChips:1,trnxAmount:1,totalBucket:1,trnxTypeTxt:1 }).sort({createdAt:-1})
+        
 
         logger.info('admin/dahboard.js post dahboard  error => ', completeDepositeData);
 
