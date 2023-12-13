@@ -62,6 +62,20 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
                     if(Number > e.Number){
                         e.winamount =  e.Number * e.bet;
                     }
+                    
+                    delete e.profile
+                    delete e.coins
+                    delete e.status
+                    delete e.playerStatus
+                    delete e.chalValue
+                    delete e.chalValue1
+                    delete e.turnMissCounter
+                    delete e.turnCount
+                    delete e.sck
+                    delete e.playerSocketId
+                    delete e.playerLostChips
+                    delete e.Iscom
+
 
                     RobotPlayer.push(e)
                 }
