@@ -204,8 +204,11 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             tableAmount: tableInfo.tableAmount,
         });
 
-        if(userInfo.Iscom == undefined || userInfo.Iscom == 0)
-        client.join(tableInfo._id.toString());
+        if(userInfo.Iscom == undefined || userInfo.Iscom == 0){
+            client.join(tableInfo._id.toString());
+        }else{
+            let UpdateInfo = await GameUser.updateOne({_id:MongoID(userInfo._id)}, {type:"busy"});
+        }
 
         sendDirectEvent(client.tbid.toString(), CONST.JOIN_TABLE, {
             ap: tableInfo.activePlayer,
@@ -226,14 +229,14 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             clearJob(jobId)
 
             await gameStartActions.gameTimerStart(tableInfo);
-        }else{
+        }
 
-            if(tableInfo.activePlayer <= 10){
+            if(tableInfo.activePlayer <= 2){
                 setTimeout(()=>{
                     botLogic.JoinRobot(tableInfo)
                 },2000)
             }
-        }
+        
   
         //}
     } catch (error) {

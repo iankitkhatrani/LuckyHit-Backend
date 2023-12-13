@@ -16,11 +16,15 @@ module.exports.JoinRobot = async (tableInfo) => {
 
         let user_wh = {
             Iscom: 1,
-            type:'free'
+            //type:'free'
         }
 
         let robotInfo = await GameUser.findOne(user_wh, {});
         logger.info("JoinRobot ROBOT Info : ", robotInfo)
+        if(robotInfo == null){
+            logger.info("JoinRobot ROBOT Not Found  : ")
+            return false
+        }
 
         await GameUser.updateOne(user_wh, {$set:{type:"busy"}});
         await joinTable.findEmptySeatAndUserSeat(tableInfo, {uid:robotInfo._id});
@@ -35,6 +39,8 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
 
         // Play Robot Logic 
         logger.info("PlayRobot ",tableInfo)
+        logger.info("Number ",Number)
+
         
         if(PlayerInfo != undefined  && tableInfo._id != undefined){
                                                                                                                                                                                                                                
@@ -49,11 +55,11 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
 
             PlayerInfo.forEach(e => {
                 if(e.Iscom == 1){
-                    e.Number = GameStart.generateNumber(0,60);
+                    e.Number = GameStart.generateNumber(0,1)?GameStart.generateNumber(0,Number):GameStart.generateNumber(Number,60);
                     e.bet =  BetArray[this.GetRandomInt(0,BetArray.length-1)];
                     e.winamount = 0;
 
-                    if(Number > Number){
+                    if(Number > e.Number){
                         e.winamount =  e.Number * e.bet;
                     }
 
