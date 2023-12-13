@@ -1,7 +1,6 @@
 
 "use strict";
 // const bcrypt = require("bcrypt");
-
 // const Wallet = require("../models/wallet");
 // const Config = require("../models/configuration");
 const UPI = require("../models/upi");
@@ -10,14 +9,15 @@ const UPITRANSACTION = require("../models/upiTransaction");
 const CommonUtility = require("../helper/Common");
 const DateUtility = require("../helper/DateTime");
 const DbUtility = require("../helper/Db");
-const SocketController = require("../communication/SocketContoller");
-const CrypticUtility = require("../helpers/Cryptic");
+// const SocketController = require("../communication/SocketContoller");
+const CrypticUtility = require("../helper/Cryptic");
 
 const { BAD_REQUEST, INTERNAL_SERVER_ERROR } = require("../../constant").STATUS;
 const { PAYEENAME, PAYEEVPA, PREV_TRANSACTIONS_RECORDS_LENGTH, PAYMENT_EXPIRE_TIME } = require("../../config");
 const Controller = require("../Base/Controller");
 const QRCode = require("qrcode");
 const { get, size, last } = require("lodash");
+// const nanoid = require("nanoid");
 const { customAlphabet } = require("nanoid");
 const { default: mongoose } = require("mongoose");
 
@@ -25,7 +25,7 @@ const commonUtility = new CommonUtility();
 const dateUtility = new DateUtility();
 const crypticUtility = new CrypticUtility();
 const dbUtility = new DbUtility();
-const socketController = new SocketController();
+// const socketController = new SocketController();
 
 const VERIFICATION_STATUS = {
   Pending: "Pending",

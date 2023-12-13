@@ -1,63 +1,67 @@
 "use strict";
-const UpiService = require("../../services/upi.service");
+const UpiService = require("../../services/upi");
 const CommonUtility = require("../../helper/Common");
+const express = require('express');
+const router = express.Router();
 
 const commonUtility = new CommonUtility();
 
-module.exports = function (app, express) {
-  const router = express.Router();
 
-  router.post("/verify-upi", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).verifyUpi();
-  });
+// module.exports = function (app, express) {
 
-  router.post("/update-upi", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).updateUpi();
-  });
+router.post("/verify-upi", (req, res) => {
+  return new UpiService().boot(req, res).verifyUpi();
+});
 
-  router.post("/initiate-deposit", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).initiateDeposit();
-  });
+router.post("/update-upi", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).updateUpi();
+});
 
-  router.post("/initiate-withdraw", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).initiateWithdraw();
-  });
+router.post("/initiate-deposit", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).initiateDeposit();
+});
 
-  router.post("/transaction", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).transactionById();
-  });
+router.post("/initiate-withdraw", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).initiateWithdraw();
+});
 
-  router.post("/transactions-list", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).transactionsList();
-  });
+router.post("/transaction", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).transactionById();
+});
 
-  router.get("/upi-info", commonUtility.verifyUserAuth, (req, res) => {
-    return new UpiService().boot(req, res).getUpiInfo();
-  });
+router.post("/transactions-list", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).transactionsList();
+});
 
-  router.get("/can-initiate-payment/:type", commonUtility.verifyUserAuth, (req, res) => {
-    return new UpiService().boot(req, res).canInitiatePayment();
-  });
+router.get("/upi-info", commonUtility.verifyUserAuth, (req, res) => {
+  return new UpiService().boot(req, res).getUpiInfo();
+});
 
-  router.post("/admin/verification-requests/:type", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).verificationReqList();
-  });
+router.get("/can-initiate-payment/:type", commonUtility.verifyUserAuth, (req, res) => {
+  return new UpiService().boot(req, res).canInitiatePayment();
+});
 
-  router.post("/admin/txn-requests/:type", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).paymentRequests();
-  });
+router.post("/admin/verification-requests/:type", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).verificationReqList();
+});
 
-  router.put("/admin/deposit", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).updateDepositStatus();
-  });
+router.post("/admin/txn-requests/:type", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).paymentRequests();
+});
 
-  router.put("/admin/withdraw", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).updateWithdrawStatus();
-  });
+router.put("/admin/deposit", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).updateDepositStatus();
+});
 
-  router.put("/admin/update-upi-status", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
-    return new UpiService().boot(req, res).updateUPIVerificationStatus();
-  });
+router.put("/admin/withdraw", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).updateWithdrawStatus();
+});
 
-  app.use("/upi", router);
-};
+router.put("/admin/update-upi-status", commonUtility.verifyAdminAuth, commonUtility.decryptBody, (req, res) => {
+  return new UpiService().boot(req, res).updateUPIVerificationStatus();
+});
+
+
+module.exports = router;
+// app.use("/upi", router);
+// };

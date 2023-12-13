@@ -5,11 +5,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { get } = require("lodash");
 
-const { SECRET_KEY, TOKEN_EXPIRED_TIME, enableEncryption } = require("../config/config");
-const { UNAUTHORIZED, INTERNAL_SERVER_ERROR, BAD_REQUEST } = require("../statics/constants").STATUS;
+const { SECRET_KEY, TOKEN_EXPIRED_TIME, enableEncryption } = require("../../config");
+const { UNAUTHORIZED, INTERNAL_SERVER_ERROR, BAD_REQUEST } = require("../../constant").STATUS;
 
-const FileUtility = require("../helpers/File");
-const CrypticUtility = require("../helpers/Cryptic");
+const FileUtility = require("../helper/File");
+const CrypticUtility = require("../helper/Cryptic");
 
 const fileUtility = new FileUtility();
 const crypticUtility = new CrypticUtility();
