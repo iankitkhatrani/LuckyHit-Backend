@@ -68,7 +68,8 @@ module.exports.leaveTable = async (requestData, client) => {
     let response = {
         reason: reason,
         tbid: tb._id,
-        seatIndex: client.seatIndex
+        seatIndex: client.seatIndex,
+        userId:client.uid.toString()
     }
 
     let tbInfo = await AviatorTables.findOneAndUpdate(wh, updateData, { new: true });
