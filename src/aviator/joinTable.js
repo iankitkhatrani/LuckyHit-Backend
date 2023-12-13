@@ -214,7 +214,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
 
         delete client.JT;
 
-        if (tableInfo.gameState == "") {
+        if (tableInfo.gameState == "" && tableInfo.activePlayer == 1) {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
             clearJob(jobId)
