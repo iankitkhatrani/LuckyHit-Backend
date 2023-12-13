@@ -211,12 +211,11 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             ap: tableInfo.activePlayer,
             playerDetail: tableInfo.playerInfo[seatIndex],
         });
-        
+
         commandAcions.sendEventInTable(client.tbid.toString(), CONST.PLAYERLIST, {
             ap: tableInfo.activePlayer,
             playerDetail: tableInfo.playerInfo,
         });
-
 
 
         delete client.JT;
@@ -229,7 +228,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             await gameStartActions.gameTimerStart(tableInfo);
         }else{
 
-            if(tableInfo.activePlayer <= 2){
+            if(tableInfo.activePlayer <= 10){
                 setTimeout(()=>{
                     botLogic.JoinRobot(tableInfo)
                 },2000)

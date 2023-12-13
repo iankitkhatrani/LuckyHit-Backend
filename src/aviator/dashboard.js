@@ -157,8 +157,6 @@ module.exports.LB = async (requestData, client) => {
         }
         sendEvent(client, CONST.LB, response);
         return true;
-
-        return true;
     } catch (e) {
         logger.info("Exception action : ", e);
     }
