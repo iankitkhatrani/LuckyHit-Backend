@@ -78,6 +78,10 @@ module.exports.leaveTable = async (requestData, client) => {
     commandAcions.sendDirectEvent(client.sck.toString(), CONST.LEAVE_TABLE, response);
     commandAcions.sendEventInTable(tb._id.toString(), CONST.LEAVE_TABLE, response);
 
+    commandAcions.sendEventInTable(tb._id.toString(), CONST.PLAYERLIST, {
+        ap: tbInfo.activePlayer,
+        playerDetail: tbInfo.playerInfo,
+    });
 
     //await this.manageOnUserLeave(tbInfo);
 }
