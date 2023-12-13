@@ -17,108 +17,147 @@ module.exports.MYPROFILE = async (requestData, client) => {
     try {
         logger.info("action requestData : ", requestData);
         if (typeof client.uid == "undefined") {
-            commandAcions.sendDirectEvent(client.sck, CONST.MP, requestData, false, "User session not set, please restart game!");
+            commandAcions.sendDirectEvent(client.sck, CONST.MYPROFILE, requestData, false, "User session not set, please restart game!");
             return false;
         }
-        if (typeof client.action != "undefined" && client.action) return false;
-
-        client.action = true;
-
+        
         const wh = {
-            _id: MongoID(client.tbid.toString()),
-            gameState:"GameStartTimer"
+            _id: MongoID(client.uid.toString()),
         }
         const project = {
-
+            name:1,profileUrl:1,verify:1,uniqueId:1,email:1,mobileNumber:1,createdAt:1,DOB:1,Gender:1,Country:1,Pancard:1,Adharcard:1
         }
         console.log("wh ",wh)
-        const tabInfo = await AviatorTables.findOne(wh, project).lean();
-        logger.info("action tabInfo : ", tabInfo);
+        const playerInfo = await GameUser.findOne(wh, project).lean();
+        logger.info("action playerInfo : ", playerInfo);
 
-        if (tabInfo == null) {
-            logger.info("action user not turn ::", tabInfo);
-            delete client.action;
+        if (playerInfo == null) {
+            logger.info("action user not turn ::", playerInfo);
             return false
         }
-        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue != 0) || 
-            (requestData.actionplace == 2 && tabInfo.playerInfo[client.seatIndex].chalValue1 != 0)
-        ) {
-            logger.info("action : client.su ::", client.seatIndex);
-            delete client.action;
-            commandAcions.sendDirectEvent(client.sck, CONST.ACTION, requestData, false, "Turn is already taken!");
+        
+        let response = {
+            playerInfo: playerInfo[0]
+        }
+        sendEvent(client, CONST.MYPROFILE, response);
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+
+/*
+    
+
+*/
+module.exports.UPDATEPROFILE = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.MYPROFILE, requestData, false, "User session not set, please restart game!");
             return false;
         }
-
         
-        let playerInfo = tabInfo.playerInfo[client.seatIndex];
-        let currentBet = Number(requestData.bet);
-       
-        logger.info("action currentBet ::", currentBet);
-
-        let gwh = {
-            _id: MongoID(client.uid)
+        const wh = {
+            _id: MongoID(client.uid.toString()),
         }
-        let UserInfo = await GameUser.findOne(gwh, {}).lean();
-        logger.info("action UserInfo : ", gwh, JSON.stringify(UserInfo));
+        const UpData={
+            $set:{
 
-        let updateData = {
-            $set: {
-
-            },
-            $inc:{
-                
             }
         }
-        let chalvalue = currentBet;
-        updateData.$set["playerInfo.$.playStatus"] = "action"
-    
-        let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
 
-        if (Number(chalvalue) > Number(totalWallet)) {
-            logger.info("action client.su ::", client.seatIndex);
-            delete client.action;
-            commandAcions.sendDirectEvent(client.sck, CONST.ACTION, requestData, false, "Please add wallet!!");
+        if(requestData.profileUrl != undefined){
+            UpData["$set"]["profileUrl"] = requestData.profileUrl
+        }
+
+        if(requestData.name != undefined){
+            UpData["$set"]["name"] = requestData.name
+        }
+
+        if(requestData.email != undefined){
+            UpData["$set"]["email"] = requestData.email
+        }
+
+        if(requestData.mobileNumber != undefined){
+            UpData["$set"]["mobileNumber"] = requestData.mobileNumber
+            UpData["$set"]["verify.mobileno"] = false
+        }
+
+        if(requestData.DOB != undefined){
+            UpData["$set"]["DOB"] = requestData.DOB
+        }
+
+        if(requestData.Gender != undefined){
+            UpData["$set"]["Gender"] = requestData.Gender
+        }
+
+        if(requestData.Country != undefined){
+            UpData["$set"]["Country"] = requestData.Country
+        }
+
+        if(requestData.Pancard != undefined){
+            UpData["$set"]["Pancard"] = requestData.Pancard
+        }
+        if(requestData.Adharcard != undefined){
+            UpData["$set"]["Adharcard"] = requestData.Adharcard
+        }
+
+        const project = {
+            name:1,profileUrl:1,verify:1,uniqueId:1,email:1,createdAt:1,DOB:1,Gender:1,Country:1,Pancard:1,Adharcard:1
+        }
+        console.log("wh ",wh)
+        const playerInfo = await GameUser.findOne(wh, project).lean();
+        logger.info("action playerInfo : ", playerInfo);
+
+        if (playerInfo == null) {
+            logger.info("action user not turn ::", playerInfo);
+            return false
+        }
+        
+        let response = {
+            playerInfo: playerInfo[0]
+        }
+        sendEvent(client, CONST.MYPROFILE, response);
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+
+/*
+    LB
+*/
+module.exports.LB = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.MYPROFILE, requestData, false, "User session not set, please restart game!");
             return false;
         }
-        chalvalue = Number(Number(chalvalue).toFixed(2))
-
-        await walletActions.deductWallet(client.uid, -chalvalue, 2, "aviator action", tabInfo, client.id, client.seatIndex);
-        console.log("tabInfo.uuid ",tabInfo.uuid)
-        this.MybetInsert(tabInfo.uuid,chalvalue,0,0,client)
-
-        if(requestData.actionplace == 1)
-        updateData.$set["playerInfo.$.chalValue"] = chalvalue;
-        else
-        updateData.$set["playerInfo.$.chalValue1"] = chalvalue;
-
-
-        updateData.$inc["totalbet"] = chalvalue;
-        //updateData.$set["turnDone"] = true;
-        commandAcions.clearJob(tabInfo.job_id);
-
-        const upWh = {
-            _id: MongoID(client.tbid.toString()),
-            "playerInfo.seatIndex": Number(client.seatIndex)
-        }
-        logger.info("action upWh updateData :: ", upWh, updateData);
-
-        const tb = await AviatorTables.findOneAndUpdate(upWh, updateData, { new: true });
-        logger.info("action tb : ", tb);
-
-        let response = {
-            seatIndex: tb.turnSeatIndex,
-            chalValue: chalvalue,
-            userid:client.uid
-        }
-        sendEvent(client, CONST.ACTION, response);
-
-
-        commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLEACTION, response);
-
-        delete client.action;
-
-       
         
+        const wh = {
+           Iscom:0
+        }
+        const project = {
+            profileUrl:1,name:1,chips:1
+        }
+        const playerInfo = await GameUser.findOne(wh, project).sort({chips:-1});
+        logger.info("action playerInfo : ", playerInfo);
+
+        if (playerInfo == null) {
+            logger.info("action user not turn ::", playerInfo);
+            return false
+        }
+        
+        let response = {
+            playerInfo: playerInfo[0]
+        }
+        sendEvent(client, CONST.LB, response);
+        return true;
+
         return true;
     } catch (e) {
         logger.info("Exception action : ", e);

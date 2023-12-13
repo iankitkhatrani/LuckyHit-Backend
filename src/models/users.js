@@ -35,7 +35,17 @@ const GameUserSchema = new Schema(
     modifiedAt: { type: Date, default: Date.now },
     Iscom: { type: Number, default: 0 },
     fcmToken: { type: String, default: '' },
-    type: { type: String, default: 'free' }
+    type: { type: String, default: 'free' },
+    verify:{
+      mobileno:{ type: Boolean, default: false },
+      facebook:{ type: Boolean, default: false },
+      kyc:{ type: Boolean, default: false }
+    },
+    DOB:{ type: String, default: '' },
+    Gender:{ type: String, default: '' },
+    Country:{type: String, default: ''},
+    Pancard:{type: String, default: ''},
+    Adharcard:{type: String, default: ''}
   },
   { versionKey: false }
 );

@@ -211,6 +211,13 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             ap: tableInfo.activePlayer,
             playerDetail: tableInfo.playerInfo[seatIndex],
         });
+        
+        commandAcions.sendEventInTable(client.tbid.toString(), CONST.PLAYERLIST, {
+            ap: tableInfo.activePlayer,
+            playerDetail: tableInfo.playerInfo,
+        });
+
+
 
         delete client.JT;
 
