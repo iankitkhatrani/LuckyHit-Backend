@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const MongoID = mongoose.Types.ObjectId;
 const GameUser = mongoose.model('users');
 const commonHelper = require('../helper/commonHelper');
 const commandAcions = require("../helper/socketFunctions");
@@ -14,10 +15,24 @@ const GameStart = require("./gameStart");
 module.exports.JoinRobot = async (tableInfo) => {
     try {
 
+        let RobotPlayer = []
+
+        console.log("tableInfo.playerInfo ",tableInfo.playerInfo)
+
+        tableInfo.playerInfo.forEach(e => {
+            console.log("tableInfo.playerInfo ",e)
+            if(e.Iscom == 1){
+                RobotPlayer.push(MongoID(e._id))
+            }
+        })
+
         let user_wh = {
             Iscom: 1,
-            //type:'free'
+            "_id":{$nin:RobotPlayer}
         }
+
+        logger.info("JoinRobot ROBOT Not user_wh   : ",user_wh)
+
 
         let robotInfo = await GameUser.findOne(user_wh, {});
         logger.info("JoinRobot ROBOT Info : ", robotInfo)
