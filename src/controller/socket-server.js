@@ -133,7 +133,7 @@ myIo.init = function (server) {
                     }
 
                     case CONST.CANCEL: {
-                        gamePlayActions.CancelBet(payload.data, socket);
+                        gamePlayActions.Cancel(payload.data, socket);
                         break;
                     }
 

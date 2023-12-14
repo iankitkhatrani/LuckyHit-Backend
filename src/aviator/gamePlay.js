@@ -132,7 +132,7 @@ module.exports.action = async (requestData, client) => {
     actionplace:1 || 2
 
 */
-module.exports.CancelBet = async (requestData, client) => {
+module.exports.Cancel = async (requestData, client) => {
     try {
         logger.info("action requestData : ", requestData);
         if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined" || typeof requestData.bet == "undefined") {
@@ -371,7 +371,7 @@ module.exports.mybetlist = async (requestData, client) => {
             
         }
         console.log("wh ",wh)
-        const mybetlist = await MyBetTable.find(wh, project).lean();
+        const mybetlist = await MyBetTable.find(wh, project).sort({_id:-1}).limit(10).lean();
         logger.info("mybetlist mybetlist : ", mybetlist);
 
         if (mybetlist == null) {
