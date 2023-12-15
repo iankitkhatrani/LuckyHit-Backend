@@ -105,7 +105,7 @@ myIo.init = function (server) {
                     }
 
 
-                    case CONST.JOIN_SIGN_UP: {
+                    case CONST.BNW_JOIN_SIGN_UP: {
                         socket.uid = payload.data.playerId;
                         socket.sck = socket.id;
 

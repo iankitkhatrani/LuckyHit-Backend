@@ -1,4 +1,5 @@
-"use strict";
+// "use strict";
+const mongoose = require('mongoose');
 const UpiService = require("../../services/upi");
 const CommonUtility = require("../../helper/Common");
 const express = require('express');
@@ -7,11 +8,14 @@ const router = express.Router();
 const commonUtility = new CommonUtility();
 
 
-// module.exports = function (app, express) {
+// module.exports = function (httpApp, express) {
+
 
 router.post("/verify-upi", (req, res) => {
-  return new UpiService().boot(req, res).verifyUpi();
+  console.log("Checkkkkkkk")
+  let response = new UpiService().boot(req, res).verifyUpi();
 });
+
 
 router.post("/update-upi", commonUtility.verifyUserAuth, commonUtility.decryptBody, (req, res) => {
   return new UpiService().boot(req, res).updateUpi();
@@ -62,6 +66,6 @@ router.put("/admin/update-upi-status", commonUtility.verifyAdminAuth, commonUtil
 });
 
 
-module.exports = router;
-// app.use("/upi", router);
+// httpApp.use("/upi", router);
 // };
+module.exports = router;
