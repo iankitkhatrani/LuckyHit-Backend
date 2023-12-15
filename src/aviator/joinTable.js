@@ -102,7 +102,7 @@ module.exports.createTable = async () => {
 
 module.exports.findEmptySeatAndUserSeat = async (table, client) => {
     try {
-        logger.info("findEmptySeatAndUserSeat table :=> ", table + " client :=> ", client);
+        // logger.info("findEmptySeatAndUserSeat table :=> ", table + " client :=> ", client);
         let seatIndex = this.findEmptySeat(table.playerInfo); //finding empty seat
         logger.info("findEmptySeatAndUserSeat seatIndex ::", seatIndex);
 
