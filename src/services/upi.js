@@ -66,6 +66,7 @@ class UpiService extends Controller {
    */
   async verifyUpi() {
     try {
+      console.log("check API");
       const { id, role } = this.req.user;
 
       if (role === "user") {

@@ -1,7 +1,8 @@
 // load configuration data
 const fs = (module.exports = require('graceful-fs'));
 module.exports = require('https');
-const express = (module.exports = require('express'));
+// const express = (module.exports = require('express'));
+const express = require('express');
 // const { REDIS_HOST } = require('./config')
 
 const http = require('http');
@@ -25,7 +26,7 @@ filesNames.forEach((file) => {
 
 const SERVER_ID = (module.exports = 'HTTPServer');
 const SERVER_PORT = (module.exports = process.env.PORT || 2828);
-const gamePlayActions = require('./src/aviator/');
+
 // const RDS_HOST = "127.0.0.1";
 // const RDS_HOST = REDIS_HOST
 // const RDS_SELECT = 1
@@ -83,6 +84,8 @@ httpApp.use(
 // New Routes
 const admin = require('./src/routes/admin');
 // const user = require('./src/routes/users');
+// require("./src/routes/admin/upi")(httpApp, express);
+require("./src/routes/index")(httpApp, express);
 
 const morgan = require('morgan');
 httpApp.use(morgan('combined'));

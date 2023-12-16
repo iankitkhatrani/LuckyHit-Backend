@@ -109,8 +109,8 @@ async function adminLogin(requestBody) {
  * @returns {Object}
  */
 async function registerBetList(requestBody) {
-    const { gameName, gameType, entryFee, chalLimit, potLimit, maxPlayer } = requestBody;
     logger.info('registerBetList requestBody => ', requestBody);
+    const { gameName, gameType, entryFee, chalLimit, potLimit, maxPlayer } = requestBody;
     try {
         const entryFeexists = await BetLists.countDocuments({ entryFee });
         if (entryFeexists > 0) {

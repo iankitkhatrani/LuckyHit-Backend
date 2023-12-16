@@ -6,11 +6,11 @@ const collectionName = 'betList';
 const BetListSchema = new Schema(
     {
         gameName: { type: String },
-        gameType: { type: String, required: true },
+        gameType: { type: String, },
         entryFee: { type: Number },//boot Amount
         chalLimit: { type: Number },
         potLimit: { type: Number },//Max Pot
-        maxPlayer: { type: Number, default: 2 },
+        maxPlayer: { type: Number, default: 7 },
         activePlayer: { type: Number },
         createdAt: { type: Date, default: Date.now },
         modifiedAt: { type: Date, default: Date.now },
