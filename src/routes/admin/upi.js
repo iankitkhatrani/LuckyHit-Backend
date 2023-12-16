@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const mongoose = require('mongoose');
 const UpiService = require("../../services/upi");
-const CommonUtility = require("../../helper/Common");
 
 const UPI = require("../../models/upi");
 const User = require("../../models/users");
@@ -14,17 +12,13 @@ const DateUtility = require("../../helper/DateTime");
 const DbUtility = require("../../helper/Db");
 
 const { BAD_REQUEST, INTERNAL_SERVER_ERROR } = require("../../../constant").STATUS;
-const { PAYEENAME, PAYEEVPA, PREV_TRANSACTIONS_RECORDS_LENGTH, PAYMENT_EXPIRE_TIME } = require("../../config");
-const Controller = require("../Base/Controller");
+const { PAYEENAME, PAYEEVPA, PREV_TRANSACTIONS_RECORDS_LENGTH, PAYMENT_EXPIRE_TIME } = require("../../../config");
+const Controller = require("../../Base/Controller");
 const QRCode = require("qrcode");
 const { get, size, last } = require("lodash");
 // const nanoid = require("nanoid");
 const { customAlphabet } = require("nanoid");
 const { default: mongoose } = require("mongoose");
-
-const CommonUtility = require("../helper/Common");
-const DateUtility = require("../helper/DateTime");
-const DbUtility = require("../helper/Db");
 
 const commonUtility = new CommonUtility();
 const dateUtility = new DateUtility();
