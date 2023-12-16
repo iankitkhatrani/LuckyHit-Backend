@@ -74,10 +74,18 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
                     e.bet =  BetArray[this.GetRandomInt(0,BetArray.length-1)];
                     e.winamount = 0;
 
+                    console.log("Number ",Number)
+                    console.log("e.Number ",e.Number)
+
+
                     if(Number > e.Number){
                         e.winamount =  e.Number * e.bet;
+
+                        rclient.hmset("Aviator:"+tableInfo.uuid+":"+e._id.toString()+":"+e.winamount.toString(), { "uid": e._id.toString(),Number:e.Number }, function (err) {
+                            rclient.expire("Aviator:"+tableInfo.uuid+":"+e._id.toString()+":"+e.winamount.toString(), Math.round(e.Number)-1)
+                        })
                     }
-                    
+
                     delete e.profile
                     delete e.coins
                     delete e.status
@@ -90,7 +98,6 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
                     delete e.playerSocketId
                     delete e.playerLostChips
                     delete e.Iscom
-
 
                     RobotPlayer.push(e)
                 }

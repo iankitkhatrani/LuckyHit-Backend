@@ -3,7 +3,7 @@
 const { joinTable } = require("./joinTable");
 const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
-const { Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
+const {Redisbinding, Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
 
 module.exports = {
   joinTable: joinTable,
@@ -14,4 +14,5 @@ module.exports = {
   leaveTable: leaveTable,
   findDisconnectTable: findDisconnectTable,
   disconnectTableHandle: disconnectTableHandle,
+  Redisbinding:Redisbinding
 };
