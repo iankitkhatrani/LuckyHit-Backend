@@ -27,12 +27,12 @@ module.exports.action = async (requestData, client) => {
 
         const wh = {
             _id: MongoID(client.tbid.toString()),
-            gameState:"GameStartTimer"
+            gameState: "GameStartTimer"
         }
         const project = {
 
         }
-        console.log("wh ",wh)
+        console.log("wh ", wh)
         const tabInfo = await AviatorTables.findOne(wh, project).lean();
         logger.info("action tabInfo : ", tabInfo);
 
@@ -41,7 +41,7 @@ module.exports.action = async (requestData, client) => {
             delete client.action;
             return false
         }
-        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue != 0) || 
+        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue != 0) ||
             (requestData.actionplace == 2 && tabInfo.playerInfo[client.seatIndex].chalValue1 != 0)
         ) {
             logger.info("action : client.su ::", client.seatIndex);
@@ -50,10 +50,10 @@ module.exports.action = async (requestData, client) => {
             return false;
         }
 
-        
+
         let playerInfo = tabInfo.playerInfo[client.seatIndex];
         let currentBet = Number(requestData.bet);
-       
+
         logger.info("action currentBet ::", currentBet);
 
         let gwh = {
@@ -66,13 +66,13 @@ module.exports.action = async (requestData, client) => {
             $set: {
 
             },
-            $inc:{
-                
+            $inc: {
+
             }
         }
         let chalvalue = currentBet;
         updateData.$set["playerInfo.$.playStatus"] = "action"
-    
+
         let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
 
         if (Number(chalvalue) > Number(totalWallet)) {
@@ -84,13 +84,13 @@ module.exports.action = async (requestData, client) => {
         chalvalue = Number(Number(chalvalue).toFixed(2))
 
         await walletActions.deductWallet(client.uid, -chalvalue, 2, "aviator action", tabInfo, client.id, client.seatIndex);
-        console.log("tabInfo.uuid ",tabInfo.uuid)
-        this.MybetInsert(tabInfo.uuid,chalvalue,0,0,client)
+        console.log("tabInfo.uuid ", tabInfo.uuid)
+        this.MybetInsert(tabInfo.uuid, chalvalue, 0, 0, client)
 
-        if(requestData.actionplace == 1)
-        updateData.$set["playerInfo.$.chalValue"] = chalvalue;
+        if (requestData.actionplace == 1)
+            updateData.$set["playerInfo.$.chalValue"] = chalvalue;
         else
-        updateData.$set["playerInfo.$.chalValue1"] = chalvalue;
+            updateData.$set["playerInfo.$.chalValue1"] = chalvalue;
 
 
         updateData.$inc["totalbet"] = chalvalue;
@@ -109,7 +109,7 @@ module.exports.action = async (requestData, client) => {
         let response = {
             seatIndex: tb.turnSeatIndex,
             chalValue: chalvalue,
-            userid:client.uid
+            userid: client.uid
         }
         sendEvent(client, CONST.ACTION, response);
 
@@ -118,8 +118,8 @@ module.exports.action = async (requestData, client) => {
 
         delete client.action;
 
-       
-        
+
+
         return true;
     } catch (e) {
         logger.info("Exception action : ", e);
@@ -145,12 +145,12 @@ module.exports.Cancel = async (requestData, client) => {
 
         const wh = {
             _id: MongoID(client.tbid.toString()),
-            gameState:"GameStartTimer"
+            gameState: "GameStartTimer"
         }
         const project = {
 
         }
-        console.log("wh ",wh)
+        console.log("wh ", wh)
         const tabInfo = await AviatorTables.findOne(wh, project).lean();
         logger.info("CANCEL tabInfo : ", tabInfo);
 
@@ -159,7 +159,7 @@ module.exports.Cancel = async (requestData, client) => {
             delete client.CANCEL;
             return false
         }
-        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue == 0) || 
+        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue == 0) ||
             (requestData.actionplace == 2 && tabInfo.playerInfo[client.seatIndex].chalValue1 == 0)
         ) {
             logger.info("action : client.su ::", client.seatIndex);
@@ -167,10 +167,10 @@ module.exports.Cancel = async (requestData, client) => {
             commandAcions.sendDirectEvent(client.sck, CONST.CANCEL, requestData, false, "Turn is already taken!");
             return false;
         }
-        
+
         let playerInfo = tabInfo.playerInfo[client.seatIndex];
         let currentBet = Number(requestData.bet);
-       
+
         logger.info("CANCEL currentBet ::", currentBet);
 
         let gwh = {
@@ -183,13 +183,13 @@ module.exports.Cancel = async (requestData, client) => {
             $set: {
 
             },
-            $inc:{
-                
+            $inc: {
+
             }
         }
         let chalvalue = currentBet;
         updateData.$set["playerInfo.$.playStatus"] = ""
-    
+
         // let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
 
         // if (Number(chalvalue) > Number(totalWallet)) {
@@ -202,10 +202,10 @@ module.exports.Cancel = async (requestData, client) => {
 
         await walletActions.addWallet(client.uid, chalvalue, 2, "aviator bet Cancel", tabInfo, client.id, client.seatIndex);
 
-        if(requestData.actionplace == 1)
-        updateData.$set["playerInfo.$.chalValue"] = 0;
+        if (requestData.actionplace == 1)
+            updateData.$set["playerInfo.$.chalValue"] = 0;
         else
-        updateData.$set["playerInfo.$.chalValue1"] = 0;
+            updateData.$set["playerInfo.$.chalValue1"] = 0;
 
 
         updateData.$inc["totalbet"] = -chalvalue;
@@ -221,25 +221,25 @@ module.exports.Cancel = async (requestData, client) => {
         const tb = await AviatorTables.findOneAndUpdate(upWh, updateData, { new: true });
         logger.info("CANCEL tb : ", tb);
 
-        MyBetTable.deleteOne({uuid:tabInfo.uuid,uid:client.uid,chalvalue:chalvalue})
+        MyBetTable.deleteOne({ uuid: tabInfo.uuid, uid: client.uid, chalvalue: chalvalue })
 
         let response = {
             seatIndex: tb.turnSeatIndex,
             chalValue: 0,
-            actionplace:requestData.actionplace,
-            userid:client.uid
+            actionplace: requestData.actionplace,
+            userid: client.uid
         }
-        
+
         sendEvent(client, CONST.CANCEL, response);
 
-        
+
         commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLECANCEL, response);
 
 
         delete client.CANCEL;
-        
-       
-        
+
+
+
         return true;
     } catch (e) {
         logger.info("Exception CANCEL : ", e);
@@ -283,7 +283,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
             delete client.action;
             return false
         }
-        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue == 0) || 
+        if ((requestData.actionplace == 1 && tabInfo.playerInfo[client.seatIndex].chalValue == 0) ||
             (requestData.actionplace == 2 && tabInfo.playerInfo[client.seatIndex].chalValue1 == 0)
         ) {
             logger.info("check out : client.su ::", client.seatIndex);
@@ -291,8 +291,8 @@ module.exports.CHECKOUT = async (requestData, client) => {
             commandAcions.sendDirectEvent(client.sck, CONST.CHECKOUT, requestData, false, "Turn is already taken!");
             return false;
         }
-        
-        
+
+
         let gwh = {
             _id: MongoID(client.uid)
         }
@@ -305,24 +305,24 @@ module.exports.CHECKOUT = async (requestData, client) => {
             }
         }
         updateData.$set["playerInfo.$.playStatus"] = "check out"
-    
+
         winAmount = Number(Number(requestData.bet) * (requestData.checkout))
-        console.log("winAmount ",winAmount)
-        
-        Deductcom = Number((winAmount * 2) /100)
+        console.log("winAmount ", winAmount)
+
+        Deductcom = Number((winAmount * 2) / 100)
 
         winAmount = Number(winAmount - Deductcom)
 
         await walletActions.addWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
 
-        console.log("Deductcom ",Deductcom)
+        console.log("Deductcom ", Deductcom)
 
-        if(requestData.actionplace == 1)
-        updateData.$set["playerInfo.$.chalValue"] = 0;
+        if (requestData.actionplace == 1)
+            updateData.$set["playerInfo.$.chalValue"] = 0;
         else
-        updateData.$set["playerInfo.$.chalValue1"] = 0;
+            updateData.$set["playerInfo.$.chalValue1"] = 0;
 
-        
+
         //updateData.$set["turnDone"] = true;
         commandAcions.clearJob(tabInfo.job_id);
 
@@ -333,20 +333,20 @@ module.exports.CHECKOUT = async (requestData, client) => {
         logger.info("action upWh updateData :: ", upWh, updateData);
 
         const tb = await AviatorTables.findOneAndUpdate(upWh, updateData, { new: true });
-        logger.info("action requestData.checkout ",requestData.checkout);
+        logger.info("action requestData.checkout ", requestData.checkout);
 
-        this.MybetInsert(tabInfo.uuid,0,requestData.checkout,winAmount,client)
+        this.MybetInsert(tabInfo.uuid, 0, requestData.checkout, winAmount, client)
 
         let response = {
             seatIndex: tb.turnSeatIndex,
             winamount: winAmount,
-            userid:client.uid
+            userid: client.uid
         }
         //commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
         sendEvent(client, CONST.CHECKOUT, response);
         commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLECHECKOUT, response);
         delete client.action;
-        
+
         return true;
     } catch (e) {
         logger.info("Exception action : ", e);
@@ -363,15 +363,15 @@ module.exports.mybetlist = async (requestData, client) => {
             commandAcions.sendDirectEvent(client.sck, CONST.MYBET, requestData, false, "User session not set, please restart game!");
             return false;
         }
-        
+
         const wh = {
             uid: client.uid.toString(),
         }
         const project = {
-            
+
         }
-        console.log("wh ",wh)
-        const mybetlist = await MyBetTable.find(wh, project).sort({_id:-1}).limit(10).lean();
+        console.log("wh ", wh)
+        const mybetlist = await MyBetTable.find(wh, project).sort({ _id: -1 }).limit(10).lean();
         logger.info("mybetlist mybetlist : ", mybetlist);
 
         if (mybetlist == null) {
@@ -379,11 +379,11 @@ module.exports.mybetlist = async (requestData, client) => {
             return false
         }
 
-        console.log("mybetlist ",mybetlist)
-        
-       
-        sendEvent(client, CONST.MYBET, {mybetlist:mybetlist});
-        
+        console.log("mybetlist ", mybetlist)
+
+
+        sendEvent(client, CONST.MYBET, { mybetlist: mybetlist });
+
         return true;
     } catch (e) {
         logger.info("Exception CANCEL : ", e);
@@ -396,51 +396,73 @@ module.exports.mybetlist = async (requestData, client) => {
     winamount:100,
     clinet:{}
 */
-module.exports.MybetInsert = async(gameId,amount,x,winamount,client) =>{
+module.exports.MybetInsert = async (gameId, amount, x, winamount, client) => {
 
     try {
-        logger.info("MybetInsert requestData gameId: ",gameId);
-        logger.info("MybetInsert requestData amount: ",amount);
-        logger.info("MybetInsert requestData x: ",x);
-        logger.info("MybetInsert requestData winamount: ",winamount);
+        logger.info("MybetInsert requestData gameId: ", gameId);
+        logger.info("MybetInsert requestData amount: ", amount);
+        logger.info("MybetInsert requestData x: ", x);
+        logger.info("MybetInsert requestData winamount: ", winamount);
 
         if (typeof client.tbid == "undefined" || typeof client.uid == "undefined") {
             logger.info("MybetInsert If requestData : ");
             return false;
-        }       
-        if(winamount != 0){
-            let upWh={
-                gameId:gameId,
-                uid:client.uid
+        }
+        if (winamount != 0) {
+            let upWh = {
+                gameId: gameId,
+                uid: client.uid
             }
-            let updateData={
-                x:x,
-                winamount:winamount
+            let updateData = {
+                x: x,
+                winamount: winamount
             }
 
-            console.log("upWh ",upWh)
-            console.log("updateData ",updateData)
+            console.log("upWh ", upWh)
+            console.log("updateData ", updateData)
 
 
             const tb = await MyBetTable.findOneAndUpdate(upWh, updateData, { new: true });
-        }else{
-            
-            let insertobj={
+        } else {
+
+            let insertobj = {
                 gameId: gameId,
-                betamount:amount,
-                x:x,
-                winamount:winamount,
-                uid:client.uid
+                betamount: amount,
+                x: x,
+                winamount: winamount,
+                uid: client.uid
             }
 
             let insertInfo = await MyBetTable.create(insertobj);
             logger.info("MybetInsert insertInfo : ", insertInfo);
 
-        }   
-    }catch (e) {
+        }
+    } catch (e) {
         logger.info("Exception Mybetlist : ", e);
     }
 
 
+
+}
+
+
+module.exports.Redisbinding = async () => {
+    //subscribing for heabeats expiration
+    rclient1.send_command('config', ['set', 'notify-keyspace-events', 'Ex'])
+    rclient1.subscribe('__keyevent@10__:expired');
+
+    rclient1.on('message', function (channel, msg, type) {
+        var obj = msg.split(":")
+        console.log("Obj ::::::::::::::::", obj)
+        if (obj.length > 3 && obj[0] != undefined &&  obj[1] != undefined && obj[2] != undefined && obj[3] != undefined  ) {
+            let response = {
+                seatIndex: -1,
+                winamount: Number(obj[3]),
+                userid: obj[2]
+            }
+
+            commandAcions.sendEventInTable(obj[2], CONST.TABLECHECKOUT, response);
+        }
+    });
 
 }

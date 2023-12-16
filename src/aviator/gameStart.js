@@ -91,7 +91,6 @@ module.exports.startAviator = async (tbId) => {
             $set: {
                 gameState: "StartEviator",
                 rendomNumber:Number,
-               
                 aviatorDate:new Date()
             },
             $push:{
