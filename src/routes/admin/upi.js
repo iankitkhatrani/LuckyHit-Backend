@@ -3,28 +3,20 @@ const router = express.Router();
 
 const mongoose = require('mongoose');
 const UpiService = require("../../services/upi");
-const CommonUtility = require("../../helper/Common");
 
 const UPI = require("../../models/upi");
 const User = require("../../models/users");
-
 const UPITRANSACTION = require("../../models/upiTransaction");
+
 const CommonUtility = require("../../helper/Common");
 const DateUtility = require("../../helper/DateTime");
 const DbUtility = require("../../helper/Db");
 
 const { BAD_REQUEST, INTERNAL_SERVER_ERROR } = require("../../../constant").STATUS;
-const { PAYEENAME, PAYEEVPA, PREV_TRANSACTIONS_RECORDS_LENGTH, PAYMENT_EXPIRE_TIME } = require("../../config");
-const Controller = require("../Base/Controller");
+const { PAYEENAME, PAYEEVPA, PREV_TRANSACTIONS_RECORDS_LENGTH, PAYMENT_EXPIRE_TIME } = require("../../../config");
 const QRCode = require("qrcode");
 const { get, size, last } = require("lodash");
-// const nanoid = require("nanoid");
 const { customAlphabet } = require("nanoid");
-const { default: mongoose } = require("mongoose");
-
-const CommonUtility = require("../helper/Common");
-const DateUtility = require("../helper/DateTime");
-const DbUtility = require("../helper/Db");
 
 const commonUtility = new CommonUtility();
 const dateUtility = new DateUtility();
@@ -863,6 +855,48 @@ async function checkTransactionExpired(date) {
   } else {
     return true;
   }
+}
+
+async function generateQr({
+  payeeVPA: pa,
+  payeeName: pn,
+  payeeMerchantCode: me,
+  transactionId: tid,
+  transactionRef: tr,
+  transactionNote: tn,
+  amount: am,
+  minimumAmount: mam,
+  currency: cu,
+  transactionRefUrl: url,
+  merchantCode: mc,
+}) {
+  return new Promise((resolve, reject) => {
+    let error = this.validateParams({ pa, pn });
+    if (error) reject(new Error(error));
+
+    let intent = "upi://pay?";
+    // let intent = "gpay://pay?";
+    if (pa) intent = this.buildUrl.call(intent, { pa, pn });
+    if (am) intent = this.buildUrl.call(intent, { am });
+    if (mam) intent = this.buildUrl.call(intent, { mam });
+    if (cu) intent = this.buildUrl.call(intent, { cu });
+    if (me) intent = this.buildUrl.call(intent, { me: "" });
+    if (tid) intent = this.buildUrl.call(intent, { tid });
+    if (tr) intent = this.buildUrl.call(intent, { tr }); // // tr: transactionRef upto 35 digits
+    if (tn) intent = this.buildUrl.call(intent, { tn });
+    if (mc) intent = this.buildUrl.call(intent, { mc });
+    intent = intent.substring(0, intent.length - 1);
+
+    QRCode.toDataURL(intent, { margin: 1 }, (err, qr) => {
+      if (err) reject(new Error("Unable to generate UPI QR Code."));
+      resolve({ qr, intent });
+    });
+  });
+}
+
+function generateTransactionId() {
+  const nanoid = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 13);
+  return nanoid();
 }
 
 module.exports = router;
