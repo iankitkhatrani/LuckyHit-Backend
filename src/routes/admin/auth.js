@@ -6,6 +6,8 @@ const logger = require('../../../logger');
 const mongoose = require("mongoose")
 const MongoID = mongoose.Types.ObjectId;
 const AviatorTables = mongoose.model("aviatorTables");
+const blackNwhiteTables = mongoose.model("blackNwhiteTables");
+
 
 
 /**
