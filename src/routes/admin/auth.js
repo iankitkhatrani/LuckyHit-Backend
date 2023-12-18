@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
 router.get('/DeletePlaying', async (req, res) => {
   try {
      
-      await AviatorTables.deleteMany({})
+      await blackNwhiteTables.deleteMany({})
 
       logger.info('admin/dahboard.js post dahboard  error => ');
 
