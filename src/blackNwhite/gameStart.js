@@ -38,10 +38,10 @@ module.exports.gameTimerStart = async (tb) => {
         logger.info("gameTimerStart tabInfo :: ", tabInfo);
 
         let roundTime = 3;
-        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.GAME_START_TIMER, { timer: roundTime });
+        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_GAME_START_TIMER, { timer: roundTime });
 
         let tbId = tabInfo._id;
-        let jobId = CONST.GAME_START_TIMER + ":" + tbId;
+        let jobId = CONST.BNW_GAME_START_TIMER + ":" + tbId;
         let delay = commandAcions.AddTime(roundTime);
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
@@ -75,10 +75,10 @@ module.exports.startBatting = async (tbId) => {
 
 
         let roundTime = 3;
-        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.START_BATTING_TIMER, { timer: roundTime });
+        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_START_BATTING_TIMER, { timer: roundTime });
 
         let tblId = tabInfo._id;
-        let jobId = CONST.START_BATTING_TIMER + ":" + tblId;
+        let jobId = CONST.BNW_START_BATTING_TIMER + ":" + tblId;
         let delay = commandAcions.AddTime(roundTime);
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
