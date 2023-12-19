@@ -19,7 +19,7 @@ module.exports.cardDealStart = async (tbid) => {
     let tb = await PlayingTables.findOne(wh, {}).lean();
     logger.info("collectBoot tb : ", tb);
 
-    let cardDetails = this.getCards(tb.playerInfo);
+    let cardDetails = this.getCardsDeatil();
     logger.info("collectBoot cardDetails : ", cardDetails);
 
     const update = {
@@ -36,47 +36,42 @@ module.exports.cardDealStart = async (tbid) => {
     logger.info("findTableAndJoin tabInfo : ", tabInfo);
 
     const eventResponse = {
-        hukum: tabInfo.hukum,
-        cardDealIndexs: cardDealIndexs
+        cards: cardDealIndexs
     }
-    commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.TABLE_CARD_DEAL, eventResponse);
+    commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_STOP_BATTING_TIMER, eventResponse);
 
-    let tbId = tabInfo._id;
-    let jobId = commandAcions.GetRandomString(10);
-    let delay = commandAcions.AddTime(5);
-    const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
+    // let tbId = tabInfo._id;
+    // let jobId = commandAcions.GetRandomString(10);
+    // let delay = commandAcions.AddTime(5);
+    // const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
-    await roundStartActions.roundStarted(tbId)
+    // await roundStartActions.roundStarted(tbId)
 }
 
 module.exports.setUserCards = async (cardsInfo, tb) => {
     try {
-        logger.info("setUserCards cardsInfo : ", cardsInfo);
-        logger.info("setUserCards tb : ", tb);
+        logger.info("setUserCards cardsInfo : 1 ", cardsInfo);
+        // const cards = cardsInfo;
 
-        const playerInfo = tb.playerInfo;
-        let activePlayer = 0;
-        let cardDealIndexs = [];
 
-        for (let i = 0; i < playerInfo.length; i++)
-            if (typeof playerInfo[i].seatIndex != "undefined" && playerInfo[i].status == "play") {
-                let update = {
-                    $set: {
-                        "playerInfo.$.cards": cardsInfo.cards[activePlayer],
-                    }
-                }
+        let upWh = {
+            _id: tb._id
+        }
+        let updateData = {
+            $set: {}
+        }
 
-                let uWh = { _id: MongoID(tb._id.toString()), "playerInfo.seatIndex": Number(playerInfo[i].seatIndex) }
-                logger.info("serUserCards uWh update ::", uWh, update)
+        // tb.BNWCards.black.push(cardsInfo[0])
+        // tb.BNWCards.black.push(cardsInfo[1])
 
-                await PlayingTables.updateOne(uWh, update);
+        updateData.$set["BNWCards.black"] = cardsInfo.cards[0];
+        updateData.$set["BNWCards.white"] = cardsInfo.cards[1];
 
-                // commandAcions.sendDirectEvent(playerInfo[i].sck, CONST.USER_CARD , { cards : cardsInfo.cards[activePlayer] }); 
-                cardDealIndexs.push(Number(playerInfo[i].seatIndex))
-                activePlayer++;
-            }
+        logger.info("updateData ==>", updateData)
 
-        return cardDealIndexs;
+        const tbl = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
+        logger.info("table -->", tbl)
+        return tbl.BNWCards;
     } catch (err) {
         logger.info("Exception setUserCards : 1 ::", err)
     }
@@ -247,3 +242,28 @@ module.exports.HighCard = (pack, color, card) => {
     return _.flatten(finalcard)
 
 }
+
+module.exports.getCardsDeatil = () => {
+    try {
+        let deckCards = Object.assign([], CONST.deckOne);
+        // deckCards = shuffle(deckCards);
+
+        let cards = [];
+
+        for (let i = 0; i < 2; i++) {
+            let card = [];
+            for (let i = 0; i < 3; i++) {
+                let ran = parseInt(fortuna.random() * deckCards.length);
+                card.push(deckCards[ran]);
+                deckCards.splice(ran, 1);
+            }
+            cards.push(card);
+        }
+
+        return {
+            cards,
+        };
+    } catch (err) {
+        logger.error('cardDeal.js getCards error => ', err);
+    }
+};

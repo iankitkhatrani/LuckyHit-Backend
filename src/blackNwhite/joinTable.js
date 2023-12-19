@@ -21,12 +21,12 @@ module.exports.joinTable = async (requestData, client) => {
         if (typeof client.JT != "undefined" && client.JT) return false;
 
         client.JT = true;
-        const betInfo={
-            "_id" : "657c440d82167b4a3c4949ae",
-            "maxPlayer" : 7,
-            "entryFee" : 1,
-            "chalLimit" : 1,
-            "potLimit" : 100,
+        const betInfo = {
+            "_id": "657c440d82167b4a3c4949ae",
+            "maxPlayer": 7,
+            "entryFee": 1,
+            "chalLimit": 1,
+            "potLimit": 100,
         }
         // let bwh = {
         //     _id: requestData.betId
@@ -76,7 +76,7 @@ module.exports.findTable = async (BetInfo, client) => {
 module.exports.getBetTable = async (BetInfo) => {
     logger.info("getBetTable BetInfo : ", JSON.stringify(BetInfo));
     let wh = {
-        activePlayer: { $gte: 1 ,$lt: 7}
+        activePlayer: { $gte: 1, $lt: 7 }
     }
     logger.info("getBetTable wh : ", JSON.stringify(wh));
     let tableInfo = await PlayingTables.find(wh, {}).sort({ activePlayer: 1 }).lean();
@@ -96,7 +96,7 @@ module.exports.createTable = async (betInfo) => {
             playerInfo: this.makeObjects(7),
             gameState: "",
             history: [],
-            // betamount: []
+            BNWCards: { black: [], white: [] },
         };
         logger.info("createTable insertobj : ", insertobj);
 
