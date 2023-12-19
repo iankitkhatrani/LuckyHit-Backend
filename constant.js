@@ -209,6 +209,7 @@ const CONST = {
   BNW_JOIN_SIGN_UP: 'BSP',
   BNW_GAME_TABLE_INFO: 'BGTI',
   BNW_GAME_START_TIMER: 'BGST',
+  START_BATTING_TIMER: 'SBT',
 
   // Timer
   userTurnTimer: 30,

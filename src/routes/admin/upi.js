@@ -83,7 +83,6 @@ router.post("/verify-upi", async (req, res) => {
   }
 });
 
-
 router.post("/update-upi", async (req, res) => {
   try {
     const { id, role } = req.body;

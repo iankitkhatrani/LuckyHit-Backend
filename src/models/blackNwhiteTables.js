@@ -18,6 +18,7 @@ const PlayingTablesSchema = new Schema({
     turnDone: { type: Boolean, default: false },
     gameTimer: {},
     gameTracks: [],
+    BNWcards: {},
     callFinalWinner: { type: Boolean, default: false },
     isLastUserFinish: { type: Boolean, default: false },
     isFinalWinner: { type: Boolean, default: false },

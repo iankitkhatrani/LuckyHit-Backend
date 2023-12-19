@@ -5,12 +5,13 @@ const PlayingTables = mongoose.model("blackNwhiteTables");
 const IdCounter = mongoose.model("idCounter")
 
 const commandAcions = require("../helper/socketFunctions");
+const cardDealActions = require("./cardDeal");
+
 const CONST = require("../../constant");
 const logger = require("../../logger");
 const roundStartActions = require("./roundStart");
 const walletActions = require("./updateWallet");
 const { config } = require("dotenv");
-
 const botLogic = require("./botLogic");
 
 // const leaveTableActions = require("./leaveTable");
@@ -29,8 +30,6 @@ module.exports.gameTimerStart = async (tb) => {
                 gameState: "GameStartTimer",
                 "GameTimer.GST": new Date(),
                 "totalbet": 0,
-                "playerInfo.$.chalValue": 0,
-                "playerInfo.$.chalValue1": 0
             }
         }
         logger.info("gameTimerStart UserInfo : ", wh, update);
@@ -38,7 +37,7 @@ module.exports.gameTimerStart = async (tb) => {
         const tabInfo = await PlayingTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("gameTimerStart tabInfo :: ", tabInfo);
 
-        let roundTime = 10;
+        let roundTime = 3;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.GAME_START_TIMER, { timer: roundTime });
 
         let tbId = tabInfo._id;
@@ -47,75 +46,48 @@ module.exports.gameTimerStart = async (tb) => {
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
-        this.startAviator(tbId)
+        await this.startBatting(tbId)
     } catch (error) {
         logger.error("gameTimerStart.js error ->", error)
     }
 }
 
-module.exports.startAviator = async (tbId) => {
-
+module.exports.startBatting = async (tbId) => {
+    logger.info("table Id startBatting-- >", tbId);
     try {
+        // let whr = { _id: tbId }
+        // let tb = await PlayingTables.findOne({ whr }, {}).lean()
 
-        const tb = await PlayingTables.findOne({
-            _id: MongoID(tbId.toString()),
-        }, {})
-
-        logger.info("startAviator tbId : ", tbId);
-        if (tb == null || tb.gameState != "GameStartTimer") return false;
-
-
-        //Genrate Rendom Number 
-        logger.info("startAviator config.AVIATORLOGIC : ", config.AVIATORLOGIC);
-        logger.info("startAviator tb.totalbet : ", tb.totalbet);
-
-
-        // NORMAL 
-        let Number = this.generateNumber(0, 60)
-
-        if (config.AVIATORLOGIC == "Client") { // Client SIDE
-            if (tb.totalbet >= 5) {
-                Number = this.generateNumber(0, 2)
-            } else if (tb.totalbet < 5) {
-                Number = this.generateNumber(0, 5)
-            }
-        } else if (config.AVIATORLOGIC == "User") {  // User SIDE
-            Number = this.generateNumber(0, 10)
-        }
-
+        // logger.info("start BNW tbId : ", tb);
+        // if (tb === null || tb.gameState !== "GameStartTimer") return false;
 
         let wh = {
             _id: tbId
         }
         let update = {
             $set: {
-                gameState: "StartEviator",
-                rendomNumber: Number
+                gameState: "StartBatting",
             }
         }
         logger.info("startAviator UserInfo : ", wh, update);
-
         const tabInfo = await PlayingTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("startAviator tabInfo :: ", tabInfo);
 
-        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: Number });
 
-        setTimeout(async () => {
-            // Clear destory 
-            const tabInfonew = await PlayingTables.findOneAndUpdate(wh, {
-                $set: {
-                    gameState: "",
-                    rendomNumber: 0
-                }
-            }, { new: true });
+        let roundTime = 3;
+        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.START_BATTING_TIMER, { timer: roundTime });
 
-            gameStartActions.gameTimerStart(tabInfonew);
-        }, Number * 1000);
+        let tblId = tabInfo._id;
+        let jobId = CONST.START_BATTING_TIMER + ":" + tblId;
+        let delay = commandAcions.AddTime(roundTime);
 
-        botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
+        const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
+
+        // botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
+        await cardDealActions.cardDealStart(tblId)
 
     } catch (error) {
-        logger.error("startAviator.js error ->", error)
+        logger.error("startBatting  error ->", error)
     }
 
 }
@@ -139,8 +111,6 @@ module.exports.generateNumber = async (minRange, maxRange) => {
 
     return randomWholeNumber + parseFloat(randomDecimal)
 }
-
-
 
 module.exports.deduct = async (tabInfo, playerInfo) => {
     try {
