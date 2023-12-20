@@ -17,7 +17,7 @@ const userPayoutSchema = new Schema({
     upi_id:{ type: String, default: "" },
     dateOfpayout:{ type: Date },
     paymentmode:{ type: String, default: "" },
-    status:{ type: String, default: "" },
+    status:{ type: Number, default: -1 },
     approve:{ type: String, default: "" },
     reject:{ type: String, default: "" },
 }, { versionKey: false });

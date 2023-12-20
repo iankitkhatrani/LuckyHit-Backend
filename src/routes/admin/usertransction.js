@@ -258,10 +258,10 @@ router.put('/DepositeUpdate', async (req, res) => {
 */
 router.get('/PayoutList', async (req, res) => {
     try {
-        //console.info('requet => ', req);
+        console.log('PayoutList requet => ', req);
 
-        const PayoutList = await Userpayout.find({approve:0,reject:0}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
-         acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1 })
+        const PayoutList = await Userpayout.find({status:-1}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, payoutamount: 1, bankAc: 1, IFSCcode: 1,
+         acname: 1, upi_id: 1,dateOfpayout:1, paymentmode: 1,status:1,approve:1,reject:1 })
 
         logger.info('admin/dahboard.js post dahboard  error => ', PayoutList);
 
@@ -282,10 +282,13 @@ router.get('/PayoutList', async (req, res) => {
 */
 router.get('/PayoutAcceptList', async (req, res) => {
     try {
-        //console.info('requet => ', req);
+        console.log('PayoutAcceptList requet => ');
 
-        const AcceptList = await Userpayout.find({approve:1,reject:0}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
-         acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1,dateOfdeposit:1 })
+        const AcceptList = await Userpayout.find({status:1}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, payoutamount: 1, bankAc: 1, IFSCcode: 1,
+         acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1,dateOfpayout:1 })
+
+        console.log('AcceptList requet => ',AcceptList);
+
 
         logger.info('admin/dahboard.js PayoutAcceptList post dahboard  error => ', AcceptList);
 
@@ -307,10 +310,10 @@ router.get('/PayoutAcceptList', async (req, res) => {
 */
 router.get('/PayoutRejectList', async (req, res) => {
     try {
-        //console.info('requet => ', req);
+        console.log('PayoutRejectList requet => ', req);
 
-        const RejectList = await Userpayout.find({approve:0,reject:1}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, depositamount: 1, bankAc: 1, IFSCcode: 1,
-         acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1,dateOfdeposit:1 })
+        const RejectList = await Userpayout.find({status:0}, { name: 1, userId: 1, email: 1, "mobileno": 1,screenshort:1, payoutamount: 1, bankAc: 1, IFSCcode: 1,
+         acname: 1, upi_id: 1, paymentmode: 1,status:1,approve:1,reject:1,dateOfpayout:1 })
 
         logger.info('admin/dahboard.js post dahboard  error => ', RejectList);
 
@@ -454,7 +457,7 @@ router.put('/PayoutUpdate', async (req, res) => {
             $set: {}
         }   
         if(req.body.status != undefined){
-            response["$set"]["status"] = req.body.status
+            response["$set"]["status"] = parseInt(req.body.status)
         }
 
         if(req.body.reject != undefined){

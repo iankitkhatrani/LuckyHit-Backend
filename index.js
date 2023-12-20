@@ -56,7 +56,7 @@ rclient1.on('error', (err) =>
 rclient1.on('connect', () => {
   logger.info('Redis Client connected')
 
-  gamePlayActions.Redisbinding()
+  //gamePlayActions.Redisbinding()
 
 });
 
