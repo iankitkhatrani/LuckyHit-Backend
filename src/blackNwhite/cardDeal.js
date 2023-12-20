@@ -7,6 +7,7 @@ const CONST = require('../../constant');
 const logger = require("../../logger");
 const commandAcions = require("../helper/socketFunctions");
 const roundStartActions = require("./roundStart");
+const checkWinnerActions = require('./checkWinner');
 const PlayingTables = mongoose.model("blackNwhiteTables");
 const _ = require("underscore")
 const cardLogic = require("./cardLogic");
@@ -24,7 +25,7 @@ module.exports.cardDealStart = async (tbid) => {
 
     const update = {
         $set: {
-            gameState: "CardDealing",
+            gameState: "StopBatting",
         }
     }
     const cardDealIndexs = await this.setUserCards(cardDetails, tb);
@@ -46,6 +47,7 @@ module.exports.cardDealStart = async (tbid) => {
     // const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
     // await roundStartActions.roundStarted(tbId)
+    await checkWinnerActions.winnercall(table);
 }
 
 module.exports.setUserCards = async (cardsInfo, tb) => {

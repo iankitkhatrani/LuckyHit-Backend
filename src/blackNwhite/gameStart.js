@@ -74,7 +74,7 @@ module.exports.startBatting = async (tbId) => {
         logger.info("startAviator tabInfo :: ", tabInfo);
 
 
-        let roundTime = 3;
+        let roundTime = 10;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_START_BATTING_TIMER, { timer: roundTime });
 
         let tblId = tabInfo._id;

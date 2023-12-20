@@ -83,8 +83,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
         };
         logger.info("winnerDeclareCall upWh updateData :: ", upWh, updateData);
 
-        const tbInfo = await PlayingTables
-            .findOneAndUpdate(upWh, updateData, { new: true });
+        const tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
         logger.info("winnerDeclareCall tbInfo : ", tbInfo);
 
         let winnerIndexs = [];

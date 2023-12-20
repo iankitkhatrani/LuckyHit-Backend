@@ -139,6 +139,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
             coins: totalWallet,
             status: "",
             playerStatus: "",
+            betLists: [],
             chalValue: 0, // place bet or not
             chalValue1: 0, // place bet or not 
             turnMissCounter: 0,

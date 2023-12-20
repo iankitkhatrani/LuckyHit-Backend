@@ -79,8 +79,9 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
         }
 
         logger.info("\ndedudctWallet setInfo :: --->", setInfo);
-        let tranferAmount = totalDeductChips;
+        let tranferAmount = Number(totalDeductChips);
         logger.info("dedudctWallet userInfo :: ==>", userInfo);
+        logger.info("dedudctWallet tranferAmount :: ==>", tranferAmount);
 
         if (Object.keys(setInfo["$inc"]).length > 0) {
             for (let key in setInfo["$inc"]) {
