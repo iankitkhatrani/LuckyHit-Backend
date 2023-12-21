@@ -69,7 +69,8 @@ module.exports.leaveTable = async (requestData, client) => {
     let response = {
         reason: reason,
         tbid: tb._id,
-        seatIndex: client.seatIndex
+        seatIndex: client.seatIndex,
+        userId: client.uid,
     }
 
     let tbInfo = await PlayingTables.findOneAndUpdate(wh, updateData, { new: true });
