@@ -2,58 +2,76 @@
 const logger = require("../../logger");
 const _ = require("underscore")
 
-module.exports.getWinnerUser = (userInfo, hukum, isShow, showUserSeatIndex) => {
-    let players = [];
+module.exports.getWinnerUser = (userInfo, hukum, isShow, showUserSeatIndex, BNWCards) => {
+    logger.info("BNWCards -->", BNWCards)
+    let cardArr = []
+    cardArr.push(BNWCards.black, BNWCards.white)
+    let cardsResult = [];
 
-    for (let i = 0; i < userInfo.length; i++) {
-        let response = this.getWinState(userInfo[i].cards, hukum);
-        logger.info("getWinnerUser response : ", response);
-
-        response.seatIndex = userInfo[i].seatIndex;
-        players.push(response);
+    for (let i = 0; i < cardArr.length; i++) {
+        let response = this.getWinState(cardArr[i], hukum);
+        logger.info("BNWCards response : ", response);
+        cardsResult.push(response);
     }
 
-    players = players.sort((a, b) => {
+    cardsResult = cardsResult.sort((a, b) => {
         return b.cardCount - a.cardCount
     }).sort((a, b) => {
         return a.index - b.index
     })
-    logger.info("getWinnerUser players : ", players);
+    logger.info("getWinnerUser cardsResult : ", cardsResult);
 
-    if (typeof isShow != "undefined" && isShow) {
-        let winners = [players[0]];
-        if (winners[0].cardCount == players[1].cardCount && winners[0].index == players[1].index) {
-            if (winners[0].seatIndex == showUserSeatIndex) {
-                winners = [players[1]];
-            }
-        }
-        return winners;
-    } else {
-        let winners = [players[0]];
-        for (let i = 1; i < players.length; i++) {
-            if (winners[0].cardCount == players[1].cardCount && winners[0].index == players[1].index) {
-                winners.push(players[i]);
-            }
-        }
-        return winners;
-    }
+    return cardsResult;
+    ////Old COde
+    // for (let i = 0; i < userInfo.length; i++) {
+    //     let response = this.getWinState(userInfo[i].cards, hukum);
+    //     logger.info("getWinnerUser response : ", response);
+
+    //     response.seatIndex = userInfo[i].seatIndex;
+    //     players.push(response);
+    // }
+
+    // players = players.sort((a, b) => {
+    //     return b.cardCount - a.cardCount
+    // }).sort((a, b) => {
+    //     return a.index - b.index
+    // })
+    // logger.info("getWinnerUser players : ", players);
+
+    // if (typeof isShow != "undefined" && isShow) {
+    //     let winners = [players[0]];
+    //     if (winners[0].cardCount == players[1].cardCount && winners[0].index == players[1].index) {
+    //         if (winners[0].seatIndex == showUserSeatIndex) {
+    //             winners = [players[1]];
+    //         }
+    //     }
+    //     return winners;
+    // } else {
+    //     let winners = [players[0]];
+    //     for (let i = 1; i < players.length; i++) {
+    //         if (winners[0].cardCount == players[1].cardCount && winners[0].index == players[1].index) {
+    //             winners.push(players[i]);
+    //         }
+    //     }
+    //     return winners;
+    // }
 }
 
 module.exports.getWinState = (userCards, hukum) => {
 
-    let hukumCards = this.gethukumList(userCards, hukum);
-    logger.info("\ngetWinState hukumCards : ", hukumCards);
+    // let hukumCards = this.gethukumList(userCards, hukum);
+    // logger.info("\ngetWinState hukumCards : ", hukumCards);
 
-    let remaningCards = _.difference(userCards, hukumCards);
-    logger.info("getWinState hciuc :", remaningCards, hukumCards, userCards);
+    // let remaningCards = _.difference(userCards, hukumCards);
+    // logger.info("getWinState hciuc :", remaningCards, hukumCards, userCards);
 
-    remaningCards = remaningCards.sort((a, b) => {
-        return b.split('-')[1] - a.split('-')[1];
-    })
-    logger.info("getWinState remaningCards :", remaningCards);
+    // remaningCards = remaningCards.sort((a, b) => {
+    //     return b.split('-')[1] - a.split('-')[1];
+    // })
+    // logger.info("getWinState remaningCards :", remaningCards);
 
-    let cards = this.replaceHukumCards(remaningCards, hukum);
-    // logger.info("getWinState cards :", cards);
+    let cards = userCards //this.replaceHukumCards(remaningCards, hukum);
+    logger.info("getWinState cards :", cards);
 
     cards = cards.sort((a, b) => {
         return b.split('-')[1] - a.split('-')[1];
@@ -100,14 +118,17 @@ module.exports.getWinState = (userCards, hukum) => {
         cards: cards,
         cardCount: this.countCards(cards),
         status: "High_Cards",
-        index: 6
+        index: 6,
+        winResult: "",
     }
 }
 
 module.exports.gethukumList = (nCards, hukum) => {
+    logger.info("gethukumList check  cards -->", nCards)
     let hukumList = [];
     nCards = nCards.map((e) => {
-        if (Number(e.split("-")[1]) == Number(hukum.split("-")[1])) {
+        logger.info("gethukumList check  cards  E-->", e)
+        if ((e.split("-")[1]) === (hukum.split("-")[1])) {
             hukumList.push(e);
         }
         return e;

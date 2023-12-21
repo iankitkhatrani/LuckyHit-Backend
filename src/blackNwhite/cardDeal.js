@@ -47,7 +47,7 @@ module.exports.cardDealStart = async (tbid) => {
     // const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
     // await roundStartActions.roundStarted(tbId)
-    await checkWinnerActions.winnercall(table);
+    await checkWinnerActions.winnercall(tabInfo);
 }
 
 module.exports.setUserCards = async (cardsInfo, tb) => {

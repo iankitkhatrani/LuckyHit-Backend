@@ -56,7 +56,7 @@ module.exports.winnercall = async (tb, isShow, showUserSeatIndex) => {
 
     if (tabInfo.callFinalWinner) return false;
 
-    if (tabInfo.gameState != "RoundStated") return false;
+    // if (tabInfo.gameState != "RoundStated") return false;
 
     const upWh = {
         _id: MongoID(tb._id.toString())
@@ -71,21 +71,21 @@ module.exports.winnercall = async (tb, isShow, showUserSeatIndex) => {
     const tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
     logger.info("winnercall tbInfo : ", tbInfo);
 
-    let winners = await this.getWinner(tbInfo, isShow, showUserSeatIndex);
+    let winners = await this.getWinner(tbInfo, isShow, showUserSeatIndex, tbInfo.BNWCards);
     logger.info("winners ==> : ", winners);
 
     await gameFinishActions.winnerDeclareCall(winners, tbInfo);
 
 }
 
-module.exports.getWinner = async (tb, isShow, showUserSeatIndex) => {
+module.exports.getWinner = async (tb, isShow, showUserSeatIndex, BNWCards) => {
 
     logger.info("getWinner tb : ", tb);
 
     const playerInGame = await roundStartActions.getPlayingUserInRound(tb.playerInfo);
     logger.info("getWinner playerInGame ::", playerInGame);
 
-    let winners = checkUserCardActions.getWinnerUser(playerInGame, tb.hukum, isShow, showUserSeatIndex);
+    let winners = checkUserCardActions.getWinnerUser(playerInGame, tb.hukum, isShow, showUserSeatIndex, BNWCards);
     logger.info("getWinner winners ::", winners);
 
     return winners;

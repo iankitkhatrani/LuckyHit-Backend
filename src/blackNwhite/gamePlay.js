@@ -129,7 +129,6 @@ module.exports.action = async (requestData, client) => {
 /*
     winamount : 10,
     actionplace:1 || 2
-
 */
 module.exports.CHECKOUT = async (requestData, client) => {
     try {

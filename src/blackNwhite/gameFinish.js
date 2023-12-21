@@ -60,17 +60,35 @@ module.exports.lastUserWinnerDeclareCall = async (tb) => {
 
 module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     try {
-        logger.info("winnerDeclareCall winner ::  -->", winner, tabInfo);
+        logger.info("winnerDeclareCall winner ::  -->", winner);
+        logger.info("winnerDeclareCall tabInfo ::  -->", tabInfo);
+
+        winner[0].index = 'Black';
+        winner[1].index = 'White';
+        // Find the maximum cardCount object
+        const maxCardCountObject = winner.reduce((maxObj, currentObj) => {
+            return currentObj.cardCount > maxObj.cardCount ? currentObj : maxObj;
+        }, winner[0]); // Start with the first object as the initial max
+
+        // Check if there's a tie
+        const isTie = winner.every(obj => obj.cardCount === maxCardCountObject.cardCount);
+
+        // Set the winResult accordingly
+        winner.forEach(obj => {
+            if (isTie) {
+                obj.winResult = 'Tie';
+            } else if (obj === maxCardCountObject) {
+                obj.winResult = 'Win';
+            } else {
+                obj.winResult = 'Loss';
+            }
+        });
+
+        logger.info("Objects with updated winResults:", winner);
+
         let tbid = tabInfo._id.toString()
         logger.info("winnerDeclareCall tbid ::", tbid);
 
-        if (typeof winner == "undefined" || (typeof winner != "undefined" && winner.length == 0)) {
-            logger.info("winnerDeclareCall winner ::", winner);
-            return false;
-        }
-
-        if (tabInfo.gameState == "RoundEndState") return false;
-        if (tabInfo.isFinalWinner) return false;
 
         const upWh = {
             _id: tbid
@@ -86,18 +104,52 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
         const tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
         logger.info("winnerDeclareCall tbInfo : ", tbInfo);
 
-        let winnerIndexs = [];
-        let winnerIds = [];
-        for (let i = 0; i < winner.length; i++) {
-            winnerIndexs.push(winner[i].seatIndex);
-            winnerIds.push(winner[i]._id)
-        }
+
+        // const totalAmountByType = calculateTotalAmountByType(tbInfo.playerInfo);
+
+
+
+        // function calculateTotalAmountByType(playerInfo) {
+        const typeAmounts = {};
+
+        // Iterate through betLists of each player
+        tbInfo.playerInfo.forEach(player => {
+            if (player && player.betLists) {
+                player.betLists.forEach(bet => {
+                    const type = bet.type;
+                    const amount = bet.betAmount;
+
+                    // Initialize if type not seen before
+                    if (!typeAmounts[type]) {
+                        typeAmounts[type] = 0;
+                    }
+
+                    // Accumulate the amount for the type
+                    typeAmounts[type] += amount;
+                });
+            }
+        });
+
+        logger.info("Total Amounts Grouped by Type:", typeAmounts);
+
+        // return typeAmounts;
+        // }
+
+        // Call the function with the playerInfo array from the table object
+
+
+        // let winnerIndexs = [];
+        // let winnerIds = [];
+        // for (let i = 0; i < winner.length; i++) {
+        //     winnerIndexs.push(winner[i].seatIndex);
+        //     winnerIds.push(winner[i]._id)
+        // }
         const playerInGame = await roundStartActions.getPlayingUserInRound(tbInfo.playerInfo);
         logger.info("getWinner playerInGame ::", playerInGame);
 
         for (let i = 0; i < playerInGame.length; i++) {
-            let winnerState = checkUserCardActions.getWinState(playerInGame[i].cards, tbInfo.hukum);
-            logger.info("winnerState FETCH::", winnerState);
+            // let winnerState = checkUserCardActions.getWinState(playerInGame[i].cards, tbInfo.hukum);
+            // logger.info("winnerState FETCH::", winnerState);
 
             tbInfo.gameTracks.push(
                 {
@@ -119,7 +171,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
 
         for (let i = 0; i < tbInfo.gameTracks.length; i++) {
             if (tbInfo.gameTracks[i].playStatus == "win") {
-                await walletActions.addWallet(tbInfo.gameTracks[i]._id, Number(winnerTrack.winningAmount), 4, "aviator Win", tabInfo);
+                await walletActions.addWallet(tbInfo.gameTracks[i]._id, Number(winnerTrack.winningAmount), 4, "BlackNWhite Win", tabInfo);
             }
         }
 
