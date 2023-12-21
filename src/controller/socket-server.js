@@ -104,6 +104,13 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.JOIN_SIGN_UP: {
+                        socket.uid = payload.data.playerId;
+                        socket.sck = socket.id;
+
+                        await gamePlayActions.joinTable(payload.data, socket);
+                        break;
+                    }
 
                     case CONST.BNW_JOIN_SIGN_UP: {
                         socket.uid = payload.data.playerId;
@@ -112,14 +119,6 @@ myIo.init = function (server) {
                         await BNWgamePlayActions.joinTable(payload.data, socket);
                         break;
                     }
-
-                    // case CONST.BNW_JOIN_TABLE: {
-                    //     socket.uid = payload.data.playerId;
-                    //     socket.sck = socket.id;
-
-                    //     await BNWgamePlayActions.joinTable(payload.data, socket);
-                    //     break;
-                    // }
 
                     case CONST.BNW_ACTION: {
                         BNWgamePlayActions.action(payload.data, socket);
