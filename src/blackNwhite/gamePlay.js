@@ -26,7 +26,6 @@ module.exports.action = async (requestData, client) => {
         logger.info("Bnw action requestData.bet ", requestData.bet);
 
         if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined") {
-            console.log("*************");
             commandAcions.sendDirectEvent(client.sck, CONST.BNW_ACTION, requestData, false, "User session not set, please restart game!");
             return false;
         }
@@ -50,15 +49,15 @@ module.exports.action = async (requestData, client) => {
 
         let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
 
-        if (Number(requestData.blackAmount) > Number(totalWallet)) {
+        if (Number(requestData.betAmount) > Number(totalWallet)) {
             logger.info("action client.su ::", client.seatIndex);
             delete client.action;
             commandAcions.sendDirectEvent(client.sck, CONST.BNW_ACTION, requestData, false, "Please add wallet!!");
             return false;
         }
-        requestData.blackAmount = Number(Number(requestData.blackAmount).toFixed(2))
+        requestData.betAmount = Number(Number(requestData.betAmount).toFixed(2))
 
-        await walletActions.deductWallet(client.uid, -requestData.blackAmount, 2, "blackNwhite", tabInfo, client.id, client.seatIndex);
+        await walletActions.deductWallet(client.uid, -requestData.betAmount, 2, "blackNwhite", tabInfo, client.id, client.seatIndex);
 
         if (tabInfo == null) {
             logger.info("action user not turn ::", tabInfo);
@@ -71,7 +70,7 @@ module.exports.action = async (requestData, client) => {
             $inc: {},
         };
 
-        if (requestData.blackAmount === 10) {
+        if (requestData.type === 'Black') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
             playerInfo.betLists.push(requestData);
             updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
@@ -86,7 +85,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" blackAmount table Info -->", tabInfo)
-        } else if (requestData.whiteAmount === 10) {
+        } else if (requestData.type === 'White') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
             playerInfo.betLists.push(requestData);
             updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
@@ -102,7 +101,7 @@ module.exports.action = async (requestData, client) => {
 
             logger.info("whiteAmount table Info -->", tabInfo)
 
-        } else if (requestData.luckyHitAmount === 'luckyHitAmount') {
+        } else if (requestData.type === 'LuckyHit') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
             playerInfo.betLists.push(requestData);
             updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
@@ -121,8 +120,6 @@ module.exports.action = async (requestData, client) => {
 
 
         delete client.action;
-
-
         return true;
     } catch (e) {
         logger.info("Exception action : ", e);

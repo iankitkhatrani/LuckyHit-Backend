@@ -145,7 +145,7 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
         logger.info(" upReps userInfo.sckId => ", upReps.sckId)
         logger.info(" client userInfo.sckId => ", client)
 
-        commandAcions.sendEventInTable(tbInfo._id.toString(), CONST.WALLET_UPDATE, {
+        commandAcions.sendEventInTable(tbInfo._id.toString(), CONST.BNW_WALLET_UPDATE, {
             winningChips: upReps.winningChips,
             chips: upReps.chips,
             totalWallet: totalRemaningAmount,
@@ -287,7 +287,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
                 logger.info("\ndedudctWallet upRepss  :: ", upRepss);
             }
         }
-        commandAcions.sendDirectEvent(client, CONST.WALLET_UPDATE, {
+        commandAcions.sendDirectEvent(client, CONST.BNW_WALLET_UPDATE, {
             winningChips: upReps.winningChips,
             chips: upReps.chips,
             totalWallet: totalRemaningAmount,
