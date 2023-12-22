@@ -147,6 +147,7 @@ myIo.init = function (server) {
                         break;
                     }
 
+
                     case CONST.LEAVE_TABLE: {
                         gamePlayActions.leaveTable(payload.data, socket);
                         break;
@@ -159,6 +160,21 @@ myIo.init = function (server) {
 
                     case CONST.RECONNECT: {
                         await userReconnect(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.MYPROFILE: {
+                        await gamePlayActions.MYPROFILE(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.UPDATEPROFILE: {
+                        await gamePlayActions.UPDATEPROFILE(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.LB: {
+                        await gamePlayActions.LB(payload.data, socket);
                         break;
                     }
 
