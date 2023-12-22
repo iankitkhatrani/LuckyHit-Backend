@@ -37,7 +37,7 @@ module.exports.MYPROFILE = async (requestData, client) => {
         }
         
         let response = {
-            playerInfo: playerInfo[0]
+            playerInfo: playerInfo
         }
         sendEvent(client, CONST.MYPROFILE, response);
         return true;

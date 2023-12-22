@@ -30,35 +30,35 @@ const SERVER_PORT = (module.exports = process.env.PORT || 2828);
 // const RDS_HOST = "127.0.0.1";
 // const RDS_HOST = REDIS_HOST
 // const RDS_SELECT = 1
-const redis = require('redis');
-// logger.info('http.js \nSERVER_PORT', SERVER_PORT + ' \nSERVER_ID', SERVER_ID);
+// const redis = require('redis');
+// // logger.info('http.js \nSERVER_PORT', SERVER_PORT + ' \nSERVER_ID', SERVER_ID);
 
 
-rclient = module.exports = redis.createClient(6379, "13.50.221.113", () => { });
-rclient.auth("luckyhit123", function () { });
+// rclient = module.exports = redis.createClient(6379, "13.50.221.113", () => { });
+// rclient.auth("luckyhit123", function () { });
 
-rclient1 = module.exports = redis.createClient(6379, "13.50.221.113", () => { });
-rclient1.auth("luckyhit123", function () { });
+// rclient1 = module.exports = redis.createClient(6379, "13.50.221.113", () => { });
+// rclient1.auth("luckyhit123", function () { });
 
-rclient.select(10);
-// eslint-disable-next-line no-console
-rclient.on('error', (err) =>
-  logger.info("Redis Client Error ", err));
-rclient.on('connect', () => {
-  logger.info('Redis Client connected')
+// rclient.select(10);
+// // eslint-disable-next-line no-console
+// rclient.on('error', (err) =>
+//   logger.info("Redis Client Error ", err));
+// rclient.on('connect', () => {
+//   logger.info('Redis Client connected')
 
-});
+// });
 
-rclient1.select(10);
-// eslint-disable-next-line no-console
-rclient1.on('error', (err) =>
-  logger.info("Redis Client Error ", err));
-rclient1.on('connect', () => {
-  logger.info('Redis Client connected')
+// rclient1.select(10);
+// // eslint-disable-next-line no-console
+// rclient1.on('error', (err) =>
+//   logger.info("Redis Client Error ", err));
+// rclient1.on('connect', () => {
+//   logger.info('Redis Client connected')
 
-  //gamePlayActions.Redisbinding()
+//   //gamePlayActions.Redisbinding()
 
-});
+// });
 
 
 
