@@ -15,6 +15,7 @@ module.exports.roundFinish = async (tb) => {
         }
         let update = {
             $set: {
+                BNWCards: [],
                 gameTracks: [],
                 gameId: "",
                 gameState: "",
@@ -38,7 +39,7 @@ module.exports.roundFinish = async (tb) => {
         logger.info("roundFinish tbInfo : ", tbInfo);
         let tableId = tbInfo._id;
 
-        let jobId = commandAcions.GetRandomString(10);
+        let jobId = commandAcions.GetRandomString(5);
         let delay = commandAcions.AddTime(5);
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
         logger.info("roundFinish delayRes : ", delayRes);
