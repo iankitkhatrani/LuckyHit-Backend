@@ -64,8 +64,12 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     logger.info("winnerDeclareCall tabInfo ::  -->", tabInfo);
 
 
+    let winnerObj = this.filterWinnerResponse(winner)
+    logger.info("winnerObj::  -->", winnerObj);
+
     let tbid = tabInfo._id.toString()
     logger.info("winnerDeclareCall tbid ::", tbid);
+
 
 
     const upWh = {
@@ -80,13 +84,15 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     logger.info("winnerDeclareCall upWh updateData :: ", upWh, updateData);
 
     const tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
-    logger.info("winnerDeclareCall tbInfo : ", tbInfo);
+    logger.info("winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
 
 
-    // const totalAmountByType = calculateTotalAmountByType(tbInfo.playerInfo);
     // function calculateTotalAmountByType(playerInfo) {
     const typeAmounts = {};
     let userInfo = [];
+    const winnerCardIndex = winner.filter(player => player.winResult === "Win");
+    const winnerCard = winnerCardIndex[0].index
+    console.log("winnercard =>", winnerCardIndex[0].index)
 
     // Iterate through betLists of each player
     tbInfo.playerInfo.forEach(player => {
@@ -103,15 +109,17 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
           // Accumulate the amount for the type
           typeAmounts[type] += amount;
         });
+
+        userInfo.push({
+          _id: player._id,
+          seatIndex: player.seatIndex,
+          totalBet: typeAmounts[winnerCard]
+        })
       }
-      userInfo.push({
-        _id: player._id,
-        seatIndex: player.seatIndex,
-        totalBet: typeAmounts
-      })
     });
 
     logger.info("Total Amounts Grouped by Type:", typeAmounts);
+    logger.info("Total Amounts Grouped by Type: UserInfo", userInfo);
 
     // return typeAmounts;
     // }
@@ -153,7 +161,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     // }
 
     let winnerViewResponse = {
-      cardDetails: winner,
+      cardDetails: winnerObj,
       userInfo
     }
 
@@ -191,6 +199,37 @@ module.exports.winnerViewResponseFilter = (playerInfos, winnerTrack, winnerIndex
     userInfo: userInfo
   }
 }
+
+module.exports.filterWinnerResponse = (winnerList) => {
+  let winner = winnerList
+
+  winner[0].index = 'Black';
+  winner[1].index = 'White';
+
+  // Find the maximum cardCount object
+  const maxCardCountObject = winner.reduce((maxObj, currentObj) => {
+    return currentObj.cardCount > maxObj.cardCount ? currentObj : maxObj;
+  }, winner[0]); // Start with the first object as the initial max
+
+  // Check if there's a tie
+  const isTie = winner.every(obj => obj.cardCount === maxCardCountObject.cardCount);
+
+  // Set the winResult accordingly
+  winner.forEach(obj => {
+    if (isTie) {
+      obj.winResult = 'Tie';
+    } else if (obj === maxCardCountObject) {
+      obj.winResult = 'Win';
+    } else {
+      obj.winResult = 'Loss';
+    }
+  });
+
+  console.log("Objects with updated winResults:", winner);
+  return winner
+
+}
+
 
 /*
 
