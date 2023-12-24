@@ -119,7 +119,7 @@ module.exports.UPDATEPROFILE = async (requestData, client) => {
         let response = {
             playerInfo: playerInfo[0]
         }
-        sendEvent(client, CONST.MYPROFILE, response);
+        sendEvent(client, CONST.UPDATEPROFILE, response);
         return true;
     } catch (e) {
         logger.info("Exception action : ", e);
