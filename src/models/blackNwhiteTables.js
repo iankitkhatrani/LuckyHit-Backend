@@ -19,6 +19,11 @@ const PlayingTablesSchema = new Schema({
     gameTimer: {},
     gameTracks: [],
     BNWCards: { black: [], white: [] },
+    counters: {
+        totalBlackChips: { type: Number, default: 0 },
+        totalWHiteChips: { type: Number, default: 0 },
+        totalHitChips: { type: Number, default: 0 },
+    },
     callFinalWinner: { type: Boolean, default: false },
     isLastUserFinish: { type: Boolean, default: false },
     isFinalWinner: { type: Boolean, default: false },

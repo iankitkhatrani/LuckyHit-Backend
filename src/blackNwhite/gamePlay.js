@@ -74,6 +74,7 @@ module.exports.action = async (requestData, client) => {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
             playerInfo.betLists.push(requestData);
             updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
+            updateData.$inc['counters.totalBlackChips'] = requestData.betAmount;
 
             const upWh = {
                 _id: MongoID(client.tbid.toString()),
@@ -85,10 +86,14 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" blackAmount table Info -->", tabInfo)
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalBlackChips: tabInfo.counters.totalBlackChips });
+
         } else if (requestData.type === 'White') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
             playerInfo.betLists.push(requestData);
             updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
+            updateData.$inc['counters.totalWhiteChips'] = requestData.betAmount;
+
 
             const upWh = {
                 _id: MongoID(client.tbid.toString()),
@@ -100,11 +105,14 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info("whiteAmount table Info -->", tabInfo)
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalWhiteChips: tabInfo.counters.totalWhiteChips });
+
 
         } else if (requestData.type === 'LuckyHit') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
             playerInfo.betLists.push(requestData);
             updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
+            updateData.$inc['counters.totalHitChips'] = requestData.betAmount;
 
             const upWh = {
                 _id: MongoID(client.tbid.toString()),
@@ -116,8 +124,9 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" luckyHitAmount table Info -->", tabInfo)
-        }
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalHitChips: tabInfo.counters.totalHitChips });
 
+        }
 
         delete client.action;
         return true;
