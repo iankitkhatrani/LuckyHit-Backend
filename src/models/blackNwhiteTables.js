@@ -21,7 +21,7 @@ const PlayingTablesSchema = new Schema({
     BNWCards: { black: [], white: [] },
     counters: {
         totalBlackChips: { type: Number, default: 0 },
-        totalWHiteChips: { type: Number, default: 0 },
+        totalWhiteChips: { type: Number, default: 0 },
         totalHitChips: { type: Number, default: 0 },
     },
     callFinalWinner: { type: Boolean, default: false },
