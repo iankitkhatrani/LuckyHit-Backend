@@ -86,7 +86,7 @@ module.exports.leaveTable = async (requestData, client) => {
 
     let finaldata = await filterBeforeSendSPEvent(userDetails);
 
-    sendDirectEvent(client.sck.toString(), CONST.DASHBOARD, finaldata);
+    commandAcions.sendDirectEvent(client.sck.toString(), CONST.DASHBOARD, finaldata);
 
     //await this.manageOnUserLeave(tbInfo);
 }

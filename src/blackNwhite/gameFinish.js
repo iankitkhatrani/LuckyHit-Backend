@@ -79,6 +79,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
       $set: {
         "isFinalWinner": true,
         gameState: "RoundEndState",
+        "lastGameResult": winnerObj,
       }
     };
     logger.info("winnerDeclareCall upWh updateData :: ", upWh, updateData);

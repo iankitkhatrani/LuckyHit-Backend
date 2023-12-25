@@ -29,6 +29,7 @@ const PlayingTablesSchema = new Schema({
     isFinalWinner: { type: Boolean, default: false },
     history: [],
     betamount: [],
+    lastGameResult: [],
     totalbet: { type: Number, default: 0 },
 }, { versionKey: false });
 

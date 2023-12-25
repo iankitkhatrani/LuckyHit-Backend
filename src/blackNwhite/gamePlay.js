@@ -369,3 +369,38 @@ module.exports.playerLastScoreBoard = async (requestData, client) => {
         logger.error('gamePlay.js playerDrop error => ', e);
     }
 };
+
+
+module.exports.lastGameScoreBoard = async (requestData, client) => {
+    try {
+        const wh = {
+            _id: MongoID(client.tbid.toString()),
+        };
+
+        const project = {};
+        const tabInfo = await PlayingTables.findOne(wh, project).lean();
+
+        if (tabInfo === null) {
+            logger.info('playerLastScoreBoard user not turn ::', tabInfo);
+            return false;
+        }
+
+        const winnerCardIndex = tabInfo.lastGameResult.filter(player => player.winResult === "Win");
+        const winnerCard = winnerCardIndex[0].index
+        console.log("lastGameScoreBoard winnercard =>", winnerCardIndex[0].index)
+
+        let msg = {
+            msg: 'Data is not available',
+        };
+
+        if (tabInfo.lastGameResult) {
+            commandAcions.sendDirectEvent(client.sck, CONST.BNW_PREVIOUS_RESULT_HISTORY, winnerCard);
+        } else {
+            commandAcions.sendDirectEvent(client.sck, CONST.BNW_PREVIOUS_RESULT_HISTORY, msg);
+        }
+
+        return true;
+    } catch (e) {
+        logger.error('lastGameScoreBoard playerDrop error => ', e);
+    }
+};

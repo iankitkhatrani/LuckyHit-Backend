@@ -3,7 +3,7 @@
 const { joinTable } = require("./joinTable");
 const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
-const { action, CHECKOUT } = require("./gamePlay");
+const { action, CHECKOUT, lastGameScoreBoard } = require("./gamePlay");
 
 module.exports = {
   // getBetList: getBetList,
@@ -13,4 +13,5 @@ module.exports = {
   leaveTable: leaveTable,
   findDisconnectTable: findDisconnectTable,
   disconnectTableHandle: disconnectTableHandle,
+  lastGameScoreBoard: lastGameScoreBoard,
 };
