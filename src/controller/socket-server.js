@@ -158,6 +158,11 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.BNW_PREVIOUS_RESULT_HISTORY: {
+                        BNWgamePlayActions.leaveTable(payload.data, socket);
+                        break;
+                    }
+
                     case CONST.RECONNECT: {
                         await userReconnect(payload.data, socket);
                         break;

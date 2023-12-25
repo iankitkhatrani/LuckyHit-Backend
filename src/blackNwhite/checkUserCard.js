@@ -249,7 +249,7 @@ module.exports.checkTrail = (cards) => {
             flag: true,
             cards: cards,
             cardCount: (14) * 3,
-            status: "trail",
+            status: "Tie",
             index: 1
         }
     } else {
@@ -257,7 +257,7 @@ module.exports.checkTrail = (cards) => {
             flag: true,
             cards: cards,
             cardCount: (cards[0].split('-')[1]) * 3,
-            status: "trail",
+            status: "Tie",
             index: 1
         }
     }
@@ -358,7 +358,7 @@ module.exports.checkColor = (cards) => {
         flag: true,
         cards: cards,
         cardCount: this.countCards(cards),
-        status: "color",
+        status: "Color",
         index: 4
     }
 }
@@ -381,7 +381,7 @@ module.exports.checkPair = (cards) => {
         flag: true,
         cards: cards,
         cardCount: this.countCards(cards),
-        status: "pair",
+        status: "Pair",
         index: 5
     }
 }

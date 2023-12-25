@@ -9,6 +9,7 @@ const commandAcions = require("../helper/socketFunctions");
 const roundStartActions = require("./roundStart")
 const gameFinishActions = require("./gameFinish");
 const logger = require("../../logger");
+const { filterBeforeSendSPEvent } = require("../helper/signups/appStart");
 
 
 module.exports.leaveTable = async (requestData, client) => {
@@ -79,6 +80,13 @@ module.exports.leaveTable = async (requestData, client) => {
     commandAcions.sendDirectEvent(client.sck.toString(), CONST.BNW_LEAVE_TABLE, response);
     commandAcions.sendEventInTable(tb._id.toString(), CONST.BNW_LEAVE_TABLE, response);
 
+    let userDetails = await GameUser.findOne({
+        _id: MongoID(playerInfo._id.toString()),
+    }).lean();
+
+    let finaldata = await filterBeforeSendSPEvent(userDetails);
+
+    sendDirectEvent(client.sck.toString(), CONST.DASHBOARD, finaldata);
 
     //await this.manageOnUserLeave(tbInfo);
 }
