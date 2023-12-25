@@ -39,7 +39,7 @@ module.exports.cardDealStart = async (tbid) => {
     const eventResponse = {
         cards: cardDealIndexs
     }
-    commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_STOP_BATTING_TIMER, eventResponse);
+    commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_STOP_BATTING_TIMER, {});
 
     // let tbId = tabInfo._id;
     // let jobId = commandAcions.GetRandomString(10);
@@ -54,7 +54,6 @@ module.exports.setUserCards = async (cardsInfo, tb) => {
     try {
         logger.info("setUserCards cardsInfo : 1 ", cardsInfo);
         // const cards = cardsInfo;
-
 
         let upWh = {
             _id: tb._id

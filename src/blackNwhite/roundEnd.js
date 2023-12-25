@@ -15,14 +15,18 @@ module.exports.roundFinish = async (tb) => {
         }
         let update = {
             $set: {
-                BNWCards: [],
+                BNWCards: { black: [], white: [] },
+                counters: {
+                    totalBlackChips: 0,
+                    totalWhiteChips: 0,
+                    totalHitChips: 0,
+                },
                 gameTracks: [],
                 gameId: "",
                 gameState: "",
                 isLastUserFinish: false,
                 isFinalWinner: false,
                 callFinalWinner: false,
-                turnSeatIndex: -1,
                 hukum: "",
                 chalValue: 0,
                 potValue: 0,
@@ -48,7 +52,7 @@ module.exports.roundFinish = async (tb) => {
             _id: MongoID(tableId.toString())
         }
         const tabInfo = await PlayingTables.findOne(wh1, {}).lean();
-        if (tabInfo.activePlayer >= 2)
+        if (tabInfo.activePlayer >= 1)
             await gameStartActions.gameTimerStart(tabInfo);
 
         return true;

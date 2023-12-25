@@ -381,20 +381,16 @@ module.exports.lastGameScoreBoard = async (requestData, client) => {
         const tabInfo = await PlayingTables.findOne(wh, project).lean();
 
         if (tabInfo === null) {
-            logger.info('playerLastScoreBoard user not turn ::', tabInfo);
+            logger.info('table not found', tabInfo);
             return false;
         }
-
-        const winnerCardIndex = tabInfo.lastGameResult.filter(player => player.winResult === "Win");
-        const winnerCard = winnerCardIndex[0].index
-        console.log("lastGameScoreBoard winnercard =>", winnerCardIndex[0].index)
 
         let msg = {
             msg: 'Data is not available',
         };
 
         if (tabInfo.lastGameResult) {
-            commandAcions.sendDirectEvent(client.sck, CONST.BNW_PREVIOUS_RESULT_HISTORY, winnerCard);
+            commandAcions.sendDirectEvent(client.sck, CONST.BNW_PREVIOUS_RESULT_HISTORY, { list: tabInfo.lastGameResult });
         } else {
             commandAcions.sendDirectEvent(client.sck, CONST.BNW_PREVIOUS_RESULT_HISTORY, msg);
         }
