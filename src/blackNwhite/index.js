@@ -4,6 +4,7 @@ const { joinTable } = require("./joinTable");
 const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
 const { action, CHECKOUT, lastGameScoreBoard } = require("./gamePlay");
+const { userReconnect } = require("./reConnectFunction");
 
 module.exports = {
   // getBetList: getBetList,
@@ -14,4 +15,5 @@ module.exports = {
   findDisconnectTable: findDisconnectTable,
   disconnectTableHandle: disconnectTableHandle,
   lastGameScoreBoard: lastGameScoreBoard,
+  userReconnect: userReconnect
 };

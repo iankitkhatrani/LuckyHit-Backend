@@ -163,8 +163,8 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.RECONNECT: {
-                        await userReconnect(payload.data, socket);
+                    case CONST.BNW_RECONNECT: {
+                        await BNWgamePlayActions.userReconnect(payload.data, socket);
                         break;
                     }
 
