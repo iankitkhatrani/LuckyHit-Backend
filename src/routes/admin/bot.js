@@ -76,7 +76,7 @@ router.post('/BotAdd', async (req, res) => {
             deviceId: `${number}`,
             isVIP: 0,
             country: req.body.country,
-            name: req.body.name,
+            username: req.body.name,
             Iscom: 1,
             profileUrl: req.body.profileUrl,
             status:req.body.status
@@ -85,10 +85,13 @@ router.post('/BotAdd', async (req, res) => {
 
         console.log("response ", response)
         // let RecentUser = await registerUser(response)
-        let RecentUser = await getRegisterUserDetails(response)
+        //let RecentUser = await registerUser(response)
+
+        const user = new Users(response);
+        const RecentUser = await user.save();
 
         logger.info('admin/dahboard.js post dahboard  error => ', RecentUser);
-        if (RecentUser.length > 0) {
+        if (RecentUser.username != undefined) {
             res.json({ status: "ok" });
         } else {
             res.status(config.INTERNAL_SERVER_ERROR).json(error);
