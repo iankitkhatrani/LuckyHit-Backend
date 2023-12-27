@@ -38,7 +38,7 @@ module.exports.reconnect = async (requestData, client) => {
 
                 };
 
-                sendDirectEvent(client.id.toString(), CONST.RECONNECT, response);
+                sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, response);
                 return false;
             }
 
@@ -58,7 +58,7 @@ module.exports.reconnect = async (requestData, client) => {
                     sceneName: CONST.DASHBOARD,
                 };
 
-                sendDirectEvent(client.id.toString(), CONST.RECONNECT, response);
+                sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, response);
                 return false;
             }
 
@@ -86,9 +86,9 @@ module.exports.reconnect = async (requestData, client) => {
                     timer: diff,
                 };
 
-                sendDirectEvent(client.id.toString(), CONST.RECONNECT, responseRST);
+                sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, responseRST);
             } else {
-                sendDirectEvent(client.id.toString(), CONST.RECONNECT, response);
+                sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, response);
             }
             return;
         } else {
@@ -96,7 +96,7 @@ module.exports.reconnect = async (requestData, client) => {
                 login: false,
                 sceneName: CONST.DASHBOARD,
             };
-            sendDirectEvent(client.id, CONST.RECONNECT, response, {
+            sendDirectEvent(client.id, CONST.BNW_RECONNECT, response, {
                 flag: false,
                 msg: 'Player Id not found!',
             });
