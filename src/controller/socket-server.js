@@ -1,5 +1,6 @@
 const server = require('https').createServer();
 const schedule = require('node-schedule');
+const { createClient } = require('redis');
 
 // eslint-disable-next-line no-undef
 io = module.exports = require('socket.io')(server, { allowEIO3: true });
@@ -164,7 +165,8 @@ myIo.init = function (server) {
                     }
 
                     case CONST.BNW_RECONNECT: {
-                        await BNWgamePlayActions.userReconnect(payload.data, socket);
+                        logger.info("Re connect called by BNW");
+                        await BNWgamePlayActions.reconnect(payload.data, socket);
                         break;
                     }
 

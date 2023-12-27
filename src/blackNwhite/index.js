@@ -15,5 +15,5 @@ module.exports = {
   findDisconnectTable: findDisconnectTable,
   disconnectTableHandle: disconnectTableHandle,
   lastGameScoreBoard: lastGameScoreBoard,
-  userReconnect: userReconnect
+  reconnect: userReconnect
 };

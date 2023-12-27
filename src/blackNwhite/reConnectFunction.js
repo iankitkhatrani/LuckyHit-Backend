@@ -11,7 +11,7 @@ const PlayingTables = mongoose.model('blackNwhiteTables');
 
 const userReconnect = async (payload, socket) => {
   try {
-    //logger.info('User Reconnect Payload ', payload, '\n<==== New Connected Socket id ===>', socket.id, '\n Table Id =>', socket.tbid, '\n Socket Id', socket);
+    logger.info('User Reconnect Payload ', payload, '\n<==== New Connected Socket id ===>', socket.id, '\n Table Id =>', socket.tbid);
 
     const rdClient = createClient();
     const disconnTable = await findDisconnectTable(payload.playerId, PlayingTables);
@@ -74,7 +74,6 @@ const userReconnect = async (payload, socket) => {
     logger.error('socketServer.js SEND_MESSAGE_TO_TABLE => ', error);
   }
 };
-
 
 const updateRejoinStatus = async (payload, table) => {
   try {

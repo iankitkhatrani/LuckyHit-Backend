@@ -69,9 +69,9 @@ module.exports.startBatting = async (tbId) => {
                 gameState: "StartBatting",
             }
         }
-        logger.info("startAviator UserInfo : ", wh, update);
+        logger.info("bnw UserInfo : ", wh, update);
         const tabInfo = await PlayingTables.findOneAndUpdate(wh, update, { new: true });
-        logger.info("startAviator tabInfo :: ", tabInfo);
+        logger.info("bnw tabInfo :: ", tabInfo);
 
 
         let roundTime = 10;

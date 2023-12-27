@@ -13,6 +13,8 @@ const MongoID = mongoose.Types.ObjectId;
 
 module.exports.reconnect = async (requestData, client) => {
     try {
+        logger.info('BNW reconnect User Info : ', JSON.stringify(requestData));
+
         if (requestData.playerId !== '' && requestData.playerId !== null && requestData.playerId !== undefined) {
             let gwh = {
                 _id: commonHelper.strToMongoDb(requestData.playerId),

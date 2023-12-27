@@ -168,7 +168,6 @@ module.exports.filterWinnerResponse = (winnerList) => {
     }
   });
 
-  console.log("Objects with updated winResults:", winner);
   return winner
 
 }
