@@ -73,7 +73,7 @@ module.exports.reconnect = async (requestData, client) => {
                 ap: playerInGame.length,
                 tableid: tabInfo._id,
                 gamePlayType: tabInfo.gamePlayType,
-                sceneName: CONST.GAMEPLAY,
+                sceneName: CONST.BNW_GAMEPLAY,
             };
 
             if (tabInfo.gameState === "GameStartTimer") {

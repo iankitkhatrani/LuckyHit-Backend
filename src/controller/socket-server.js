@@ -1,6 +1,5 @@
 const server = require('https').createServer();
 const schedule = require('node-schedule');
-const { createClient } = require('redis');
 
 // eslint-disable-next-line no-undef
 io = module.exports = require('socket.io')(server, { allowEIO3: true });

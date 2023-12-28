@@ -6,7 +6,7 @@ const IdCounter = mongoose.model('idCounter');
 //const bcrypt = require('bcrypt');
 const CONST = require('../../../constant');
 const logger = require('../../../logger');
-const { createClient } = require('redis');
+
 const commandAcions = require('../socketFunctions');
 
 module.exports.appLunchDetails = async (requestData, client) => {
@@ -190,8 +190,8 @@ module.exports.userSesssionSet = async (userData, client) => {
     };
 
     const { _id, uniqueId, mobileNumber, email } = userData;
-    let rdlClient = createClient();
-    rdlClient.hmset(`socket-${_id.toString()}`, 'socketId', client.id.toString(), 'userId', _id.toString(), 'mobileNumber', mobileNumber, 'uniqueId', uniqueId, 'email', email);
+
+    rclient.hmset(`socket-${_id.toString()}`, 'socketId', client.id.toString(), 'userId', _id.toString(), 'mobileNumber', mobileNumber, 'uniqueId', uniqueId, 'email', email);
 
     let wh = {
       _id: userData._id,
