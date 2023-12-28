@@ -120,14 +120,13 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.BNW_ACTION: {
-                        await BNWgamePlayActions.action(payload.data, socket);
+                    case CONST.ACTION: {
+                        gamePlayActions.action(payload.data, socket);
                         break;
                     }
 
-
-                    case CONST.ACTION: {
-                        gamePlayActions.action(payload.data, socket);
+                    case CONST.BNW_ACTION: {
+                        await BNWgamePlayActions.action(payload.data, socket);
                         break;
                     }
 
@@ -160,6 +159,11 @@ myIo.init = function (server) {
 
                     case CONST.BNW_PREVIOUS_RESULT_HISTORY: {
                         await BNWgamePlayActions.lastGameScoreBoard(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.RECONNECT: {
+                        await gamePlayActions.reconnect(payload.data, socket);
                         break;
                     }
 

@@ -193,11 +193,11 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
         added_chips = Number(added_chips.toFixed(2));
         let projection = {
             id: 1,
-            user_name: 1,
+            username: 1,
             uniqueId: 1,
             chips: 1,
             winningChips: 1,
-            sck_id: 1,
+            sckId: 1,
             flags: 1
         }
 
@@ -255,7 +255,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
                 user_id: wh._id.toString(),
                 trnx_type: tType,
                 trnx_type_txt: t,
-                trnx_amount: tranferAmount,
+                trnx_amount: Number(tranferAmount),
                 opChips: opChips,
                 opGameWinning: opGameWinning,
                 chips: upReps.chips,

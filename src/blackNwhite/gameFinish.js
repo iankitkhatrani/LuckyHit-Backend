@@ -17,8 +17,6 @@ const logger = require("../../logger");
 module.exports.winnerDeclareCall = async (winner, tabInfo) => {
   try {
     logger.info("winnerDeclareCall winner ::  -->", winner);
-    logger.info("winnerDeclareCall tabInfo ::  -->", tabInfo);
-
 
     let winnerObj = this.filterWinnerResponse(winner)
     logger.info("winnerObj::  -->", winnerObj);
@@ -49,8 +47,6 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     const tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
     logger.info("winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
 
-
-    // function calculateTotalAmountByType(playerInfo) {
     const typeAmounts = {};
     let userInfo = [];
 
@@ -71,10 +67,14 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
           typeAmounts[type] += amount;
         });
 
+        let doublebet = (typeAmounts[winnerCard] * 2)
+        let amount = (doublebet * 1) / 100
+        let finalAmount = doublebet - amount
         userInfo.push({
           _id: player._id,
           seatIndex: player.seatIndex,
-          totalBet: typeAmounts[winnerCard]
+          totalBet: finalAmount,
+          sckId: player.sck,
         })
       }
     });
@@ -85,8 +85,10 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     const playerInGame = await roundStartActions.getPlayingUserInRound(tbInfo.playerInfo);
     logger.info("getWinner playerInGame ::", playerInGame);
 
-    for (let i = 0; i < playerInGame.length; i++) {
+    const updateWallet = await this.manageUserScore(userInfo, tabInfo);
+    logger.info("getWinner updateWallet ::", updateWallet);
 
+    for (let i = 0; i < playerInGame.length; i++) {
       tbInfo.gameTracks.push(
         {
           _id: playerInGame[i]._id,
@@ -171,3 +173,12 @@ module.exports.filterWinnerResponse = (winnerList) => {
   return winner
 
 }
+
+module.exports.manageUserScore = async (playerInfo, tabInfo) => {
+  let tableInfo;
+  for (let i = 0; i < playerInfo.length; i++) {
+    logger.info('\n Manage User Score Player Info ==>', playerInfo[i]);
+    await walletActions.addWallet(playerInfo[i]._id, playerInfo[i].totalBet, 'Credit', tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex)
+  }
+  return tableInfo;
+};
