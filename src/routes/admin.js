@@ -16,6 +16,8 @@ const bot = require('./admin/bot');
 const usertransction = require('./admin/usertransction');
 const upi = require('./admin/upi');
 const mail = require('./admin/Mail');
+const coin = require('./admin/coin');
+
 
 
 router.use('/', auth);
@@ -33,6 +35,8 @@ router.use('/bot', authMiddleware, bot);
 router.use('/usertransction', authMiddleware, usertransction);
 router.use('/upi', upi);
 router.use('/mail', mail);
+router.use('/coin',coin);
+
 
 
 module.exports = router;

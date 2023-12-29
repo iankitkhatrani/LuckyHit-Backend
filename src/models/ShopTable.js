@@ -7,7 +7,9 @@ const BannerSchema = new Schema(
     {
         "inapp":{ type: String },
         "price":{ type: Number, default: 0 },
-        "chips":{ type: Number, default: 0 }
+        "chips":{ type: Number, default: 0 },
+        "bonus":{ type: Number, default: 0 },
+        
     },
     { versionKey: false }
 );

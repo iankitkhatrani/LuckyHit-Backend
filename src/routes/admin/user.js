@@ -8,6 +8,7 @@ const mainCtrl = require('../../controller/adminController');
 const logger = require('../../../logger');
 const { registerUser } = require('../../helper/signups/signupValidation');
 const walletActions = require("../../aviator/updateWallet");
+const { getUserDefaultFields, saveGameUser } = require('../../helper/signups/appStart');
 
 /**
 * @api {post} /admin/lobbies
@@ -70,18 +71,39 @@ router.post('/AddUser', async (req, res) => {
     try {
 
         //currently send rendom number and generate 
-        let number = await createPhoneNumber()
+        console.log("req ::::::::::::",req.body)
         let response = {
-            mobileNumber: Number(number),
-            deviceId: `${number}`,
-            isVIP: 1
+            mobileNumber:req.body.mobileNumber,
+            name:req.body.name,
+            email:req.body.email,
+            password:req.body.password,
+            isVIP: 1,
+            country:req.body.country
         }
 
-        let RecentUser = await registerUser(response)
+        console.log("response  :::::::::::: response ",response)
 
-        logger.info('admin/dahboard.js post dahboard  error => ', RecentUser);
-
-        res.json({ status: "ok" });
+        logger.info('Register User Request Body =>', response);
+        const { mobileNumber } = response;
+    
+        let query = { mobileNumber: mobileNumber };
+        let result = await Users.findOne(query, {});
+        if (!result) {
+            let defaultData = await getUserDefaultFields(response);
+            logger.info('registerUser defaultData : ', defaultData);
+    
+            let userInsertInfo = await saveGameUser(defaultData);
+            logger.info('registerUser userInsertInfo : ', userInsertInfo);
+            
+            if(userInsertInfo){
+                res.json({ status: true });
+            }else{
+                res.status(config.NOT_FOUND).json(error);   
+            }
+        }else{
+            res.status(config.NOT_FOUND).json(error);
+        } 
+        
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");

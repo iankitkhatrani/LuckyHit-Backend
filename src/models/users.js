@@ -8,7 +8,7 @@ const GameUserSchema = new Schema(
     id: { type: Number },
     name: { type: String },
     username: { type: String },
-    deviceId: { type: String, required: true },
+    deviceId: { type: String },
     mobileNumber: { type: String, required: true },
     uniqueId: { type: String },
     email: { type: String, default: '' },
