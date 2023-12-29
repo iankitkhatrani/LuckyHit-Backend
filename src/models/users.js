@@ -17,7 +17,7 @@ const GameUserSchema = new Schema(
     winningChips: { type: Number },
     bonusChips: { type: Number },
     referralCode: { type: String },
-    profileUrl: { type: String },
+    profileUrl: { type: String, default: 'upload/avatar/1.jpg' },
     deviceType: { type: String, default: 'Android' },
     loginType: { type: String, default: 'phone' },
     flags: {
@@ -48,15 +48,11 @@ const GameUserSchema = new Schema(
     fcmToken: { type: String, default: '' },
     type: { type: String, default: 'free' },
     verify:{
-      mobileno:{ type: Boolean, default: false },
-      facebook:{ type: Boolean, default: false },
-      kyc:{ type: Boolean, default: false }
+      mobileno:{ type: Boolean, default: false }
     },
     DOB:{ type: String, default: '' },
     Gender:{ type: String, default: '' },
-    Country:{type: String, default: ''},
-    Pancard:{type: String, default: ''},
-    Adharcard:{type: String, default: ''}
+    Country:{type: String, default: ''}
   },
   { versionKey: false }
 );

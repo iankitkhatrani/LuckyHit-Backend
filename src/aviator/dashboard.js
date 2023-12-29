@@ -31,7 +31,7 @@ module.exports.MYPROFILE = async (requestData, client) => {
             _id: MongoID(client.uid.toString()),
         }
         const project = {
-            name:1,profileUrl:1,verify:1,uniqueId:1,email:1,mobileNumber:1,createdAt:1,DOB:1,Gender:1,Country:1,Pancard:1,Adharcard:1
+            name:1,profileUrl:1,verify:1,uniqueId:1,email:1,mobileNumber:1,createdAt:1,DOB:1,Gender:1,Country:1
         }
         console.log("wh ",wh)
         const playerInfo = await GameUser.findOne(wh, project).lean();
@@ -43,7 +43,8 @@ module.exports.MYPROFILE = async (requestData, client) => {
         }
         
         let response = {
-            playerInfo: playerInfo
+            playerInfo: playerInfo,
+            countryList:["india","UAE","USA"]
         }
         sendEvent(client, CONST.MYPROFILE, response);
         return true;
@@ -146,7 +147,6 @@ module.exports.AVATARLIST = async (requestData, client) => {
         }
         
         
-        console.log("wh ",wh)
         const avatarInfo = await avatarTable.findOne({},{}).lean();
         logger.info("action avatarInfo : ", avatarInfo);
 
@@ -214,8 +214,7 @@ module.exports.SHOPLIST = async (requestData, client) => {
         }
         
         
-        console.log("wh ",wh)
-        const shopInfo = await ShopTable.findOne({},{}).lean();
+        const shopInfo = await ShopTable.find({},{}).lean();
         logger.info("action ShopTable : ", shopInfo);
 
         if (shopInfo == null) {
@@ -248,8 +247,7 @@ module.exports.NOTICELIST = async (requestData, client) => {
         }
         
         
-        console.log("wh ",wh)
-        const noticeInfo = await Noticetext.findOne({},{}).lean();
+        const noticeInfo = await Noticetext.find({},{}).lean();
         logger.info("action Noticetext : ", noticeInfo);
 
         if (noticeInfo == null) {
@@ -282,17 +280,16 @@ module.exports.MAILLIST = async (requestData, client) => {
         }
         
         
-        console.log("wh ",wh)
-        constmailInfo = await mailTable.findOne({},{}).lean();
-        logger.info("action MAILLIST : ",mailInfo);
+        constmailInfo = await mailTable.find({},{}).lean();
+         logger.info("action MAILLIST : ",constmailInfo);
 
-        if (noticeInfo == null) {
-            logger.info("action user not turn ::",mailInfo);
+        if (constmailInfo == null) {
+            logger.info("action user not turn ::",constmailInfo);
             return false
         }
         
         let response = {
-           mailInfo:mailInfo
+           mailInfo:constmailInfo
         }
 
         sendEvent(client, CONST.MAILLIST, response);
@@ -314,7 +311,6 @@ module.exports.MAILREAD = async (requestData, client) => {
         }
         
         
-        console.log("wh ",wh)
         mailTableUpdate = await mailTable.updateOne({_id:MongoID(data._id.toString()),},{$addToSet:{userId:client.uid}}).lean();
         logger.info("action MAILREAD : ",mailTableUpdate);
 
