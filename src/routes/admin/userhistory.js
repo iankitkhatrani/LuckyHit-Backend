@@ -18,11 +18,11 @@ const UserWalletTracks = mongoose.model("userWalletTracks");
 * @apiSuccess (Success 200) {Array} badges Array of badges document
 * @apiError (Error 4xx) {String} message Validation or error message.
 */
-router.get('/rouletteHistory', async (req, res) => {
+router.get('/BackandWhiteHistory', async (req, res) => {
     try {
         console.info('requet => ', req.query);
 
-        const rouletteHistoryData =  [
+        const BlackandWhiteData =  [
             {
                 "SrNo": 1,
                 "DateTime": "2023-10-10 08:30 AM",
@@ -65,9 +65,74 @@ router.get('/rouletteHistory', async (req, res) => {
             // Add more game history entries here
         ];
 
-        logger.info('admin/dahboard.js post dahboard  error => ', rouletteHistoryData);
+        logger.info('admin/dahboard.js post dahboard  error => ', BlackandWhiteData);
 
-        res.json({ rouletteHistoryData });
+        res.json({ BlackandWhiteData });
+    } catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        res.status(config.INTERNAL_SERVER_ERROR).json(error);
+    }
+});
+
+
+/**
+* @api {get} /admin/aviatorHistory
+* @apiName  add-bet-list
+* @apiGroup  Admin
+* @apiHeader {String}  x-access-token Admin's unique access-key
+* @apiSuccess (Success 200) {Array} badges Array of badges document
+* @apiError (Error 4xx) {String} message Validation or error message.
+*/
+router.get('/aviatorHistory', async (req, res) => {
+    try {
+        console.info('requet => ', req.query);
+
+        const aviatorHistoryData =  [
+            {
+                "SrNo": 1,
+                "DateTime": "2023-10-10 08:30 AM",
+                "Name": "Alice",
+                "PhoneNumber": "123-456-7890",
+                "RoomId": "RHRoom1",
+                "Amount": 100, // Amount in this example (can be credit or debit)
+                "Type": "Credit", // "Credit" or "Debit"
+                "Club": "Club A"
+            },
+            {
+                "SrNo": 2,
+                "DateTime": "2023-10-09 10:15 AM",
+                "Name": "Bob",
+                "PhoneNumber": "987-654-3210",
+                "RoomId": "RHRoom2",
+                "Amount": 50, // Amount in this example (can be credit or debit)
+                "Type": "Debit", // "Credit" or "Debit"
+                "Club": "Club B"
+            },
+            {
+                "SrNo": 3,
+                "DateTime": "2023-10-09 10:15 AM",
+                "Name": "Bob",
+                "PhoneNumber": "987-654-3210",
+                "RoomId": "RHRoom2",
+                "Amount": 50, // Amount in this example (can be credit or debit)
+                "Type": "Debit", // "Credit" or "Debit"
+                "Club": "Club Bd"
+            }, {
+                "SrNo": 3,
+                "DateTime": "2023-10-09 10:15 AM",
+                "Name": "Bob",
+                "PhoneNumber": "987-654-3210",
+                "RoomId": "RHRoom2",
+                "Amount": 50, // Amount in this example (can be credit or debit)
+                "Type": "Debit", // "Credit" or "Debit"
+                "Club": "Club Bd"
+            },
+            // Add more game history entries here
+        ];
+
+        logger.info('admin/dahboard.js post dahboard  error => ', aviatorHistoryData);
+
+        res.json({ aviatorHistoryData });
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
