@@ -104,15 +104,15 @@ module.exports.UPDATEPROFILE = async (requestData, client) => {
             UpData["$set"]["Country"] = requestData.Country
         }
 
-        if(requestData.Pancard != undefined){
-            UpData["$set"]["Pancard"] = requestData.Pancard
-        }
-        if(requestData.Adharcard != undefined){
-            UpData["$set"]["Adharcard"] = requestData.Adharcard
+        const UpdatePlayer = await GameUser.updateOne(wh, UpData)
+
+        if(UpdatePlayer == null){
+            logger.info("UpdatePlayer ::", UpdatePlayer);
+            return false
         }
 
         const project = {
-            name:1,profileUrl:1,verify:1,uniqueId:1,email:1,createdAt:1,DOB:1,Gender:1,Country:1,Pancard:1,Adharcard:1
+            name:1,profileUrl:1,verify:1,uniqueId:1,email:1,createdAt:1,DOB:1,Gender:1,Country:1
         }
         console.log("wh ",wh)
         const playerInfo = await GameUser.findOne(wh, project).lean();
@@ -124,7 +124,7 @@ module.exports.UPDATEPROFILE = async (requestData, client) => {
         }
         
         let response = {
-            playerInfo: playerInfo[0]
+            playerInfo: playerInfo
         }
         sendEvent(client, CONST.UPDATEPROFILE, response);
         return true;
@@ -181,9 +181,9 @@ module.exports.LB = async (requestData, client) => {
            Iscom:0
         }
         const project = {
-            profileUrl:1,name:1,chips:1
+            profileUrl:1,username:1,chips:1
         }
-        const playerInfo = await GameUser.findOne(wh, project).sort({chips:-1});
+        const playerInfo = await GameUser.find(wh, project).sort({chips:-1});
         logger.info("action playerInfo : ", playerInfo);
 
         if (playerInfo == null) {
@@ -192,7 +192,7 @@ module.exports.LB = async (requestData, client) => {
         }
         
         let response = {
-            playerInfo: playerInfo[0]
+            playerInfo: playerInfo
         }
         sendEvent(client, CONST.LB, response);
         return true;

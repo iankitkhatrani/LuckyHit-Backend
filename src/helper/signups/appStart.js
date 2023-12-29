@@ -229,6 +229,7 @@ module.exports.filterBeforeSendSPEvent = async (userData) => {
     winningChips: userData.winningChips,
     tableId: userData.tableId || 0,
     createdAt: userData.createdAt,
+    profileUrl: userData.profileUrl
   };
 
   //logger.info('filter Before Send SP Event -->', res);
