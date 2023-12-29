@@ -67,9 +67,19 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
           typeAmounts[type] += amount;
         });
 
-        let doublebet = (typeAmounts[winnerCard] * 2)
-        let amount = (doublebet * 1) / 100
-        let finalAmount = doublebet - amount
+        let doublebet;
+        let amount;
+        let finalAmount;
+        if (typeAmounts[winnerCard] == 'Tie') {
+          doublebet = (typeAmounts[winnerCard] * 6)
+          amount = (doublebet * 1) / 100
+          finalAmount = doublebet - amount
+        } else {
+
+          doublebet = (typeAmounts[winnerCard] * 2)
+          amount = (doublebet * 1) / 100
+          finalAmount = doublebet - amount
+        }
         userInfo.push({
           _id: player._id,
           seatIndex: player.seatIndex,
