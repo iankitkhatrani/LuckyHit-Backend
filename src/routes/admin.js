@@ -15,6 +15,8 @@ const banner = require('./admin/banner');
 const bot = require('./admin/bot');
 const usertransction = require('./admin/usertransction');
 const upi = require('./admin/upi');
+const mail = require('./admin/Mail');
+
 
 router.use('/', auth);
 router.use('/lobbies', authMiddleware, bet);
@@ -30,5 +32,7 @@ router.use('/banner', authMiddleware, banner);
 router.use('/bot', authMiddleware, bot);
 router.use('/usertransction', authMiddleware, usertransction);
 router.use('/upi', upi);
+router.use('/mail', mail);
+
 
 module.exports = router;

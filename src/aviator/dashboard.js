@@ -8,6 +8,12 @@ const CONST = require("../../constant");
 const logger = require("../../logger");
 const commandAcions = require("../helper/socketFunctions");
 const walletActions = require("./updateWallet");
+const avatarTable = mongoose.model("avatarTable");
+const ShopTable = mongoose.model("ShopTable");
+const Noticetext = mongoose.model('noticeText');
+const mailTable = mongoose.model('mailTable');
+
+
 
 /*
     
@@ -55,7 +61,7 @@ module.exports.UPDATEPROFILE = async (requestData, client) => {
     try {
         logger.info("action requestData : ", requestData);
         if (typeof client.uid == "undefined") {
-            commandAcions.sendDirectEvent(client.sck, CONST.MYPROFILE, requestData, false, "User session not set, please restart game!");
+            commandAcions.sendDirectEvent(client.sck, CONST.UPDATEPROFILE, requestData, false, "User session not set, please restart game!");
             return false;
         }
         
@@ -128,6 +134,39 @@ module.exports.UPDATEPROFILE = async (requestData, client) => {
 
 
 /*
+    
+
+*/
+module.exports.AVATARLIST = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.AVATARLIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+        
+        
+        console.log("wh ",wh)
+        const avatarInfo = await avatarTable.findOne({},{}).lean();
+        logger.info("action avatarInfo : ", avatarInfo);
+
+        if (avatarInfo == null) {
+            logger.info("action user not turn ::", avatarInfo);
+            return false
+        }
+        
+        let response = {
+            avatarInfo: avatarInfo.imageUrl
+        }
+
+        sendEvent(client, CONST.AVATARLIST, response);
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+/*
     LB
 */
 module.exports.LB = async (requestData, client) => {
@@ -156,6 +195,136 @@ module.exports.LB = async (requestData, client) => {
             playerInfo: playerInfo[0]
         }
         sendEvent(client, CONST.LB, response);
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+/*
+    
+
+*/
+module.exports.SHOPLIST = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.SHOPLIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+        
+        
+        console.log("wh ",wh)
+        const shopInfo = await ShopTable.findOne({},{}).lean();
+        logger.info("action ShopTable : ", shopInfo);
+
+        if (shopInfo == null) {
+            logger.info("action user not turn ::", shopInfo);
+            return false
+        }
+        
+        let response = {
+            shopInfo: shopInfo
+        }
+
+        sendEvent(client, CONST.SHOPLIST, response);
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+
+/*
+    
+
+*/
+module.exports.NOTICELIST = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.NOTICELIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+        
+        
+        console.log("wh ",wh)
+        const noticeInfo = await Noticetext.findOne({},{}).lean();
+        logger.info("action Noticetext : ", noticeInfo);
+
+        if (noticeInfo == null) {
+            logger.info("action user not turn ::", noticeInfo);
+            return false
+        }
+        
+        let response = {
+            noticeInfo: noticeInfo
+        }
+
+        sendEvent(client, CONST.NOTICELIST, response);
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+
+/*
+    
+
+*/
+module.exports.MAILLIST = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.MAILLIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+        
+        
+        console.log("wh ",wh)
+        constmailInfo = await mailTable.findOne({},{}).lean();
+        logger.info("action MAILLIST : ",mailInfo);
+
+        if (noticeInfo == null) {
+            logger.info("action user not turn ::",mailInfo);
+            return false
+        }
+        
+        let response = {
+           mailInfo:mailInfo
+        }
+
+        sendEvent(client, CONST.MAILLIST, response);
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+/*
+    data:{_id:""}
+*/
+module.exports.MAILREAD = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.MAILREAD, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+        
+        
+        console.log("wh ",wh)
+        mailTableUpdate = await mailTable.updateOne({_id:MongoID(data._id.toString()),},{$addToSet:{userId:client.uid}}).lean();
+        logger.info("action MAILREAD : ",mailTableUpdate);
+
+        if (mailTableUpdate == null) {
+            logger.info("action user not turn ::",mailTableUpdate);
+            sendEvent(client, CONST.MAILREAD, {status:false},false, "Mail Not read Status Update!");
+            return false
+        }
+        
+        sendEvent(client, CONST.MAILREAD, {status:true});
         return true;
     } catch (e) {
         logger.info("Exception action : ", e);

@@ -183,6 +183,31 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.AVATARLIST: {
+                        await gamePlayActions.AVATARLIST(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.SHOPLIST:{
+                        await gamePlayActions.SHOPLIST(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.NOTICELIST:{
+                        await gamePlayActions.NOTICELIST(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.MAILLIST:{
+                        await gamePlayActions.MAILLIST(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.MAILREAD:{
+                        await gamePlayActions.MAILREAD(payload.data, socket);
+                        break;
+                    }
+
                     case CONST.LB: {
                         await gamePlayActions.LB(payload.data, socket);
                         break;

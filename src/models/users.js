@@ -15,6 +15,7 @@ const GameUserSchema = new Schema(
     password: { type: String, default: '' },
     chips: { type: Number },
     winningChips: { type: Number },
+    bonusChips: { type: Number },
     referralCode: { type: String },
     profileUrl: { type: String },
     deviceType: { type: String, default: 'Android' },
@@ -23,6 +24,16 @@ const GameUserSchema = new Schema(
       isOnline: { type: Number, default: 0 }
     },
     counters: {
+      gameWin: { type: Number, default: 0 },
+      gameLoss: { type: Number, default: 0 },
+      totalMatch: { type: Number, default: 0 },
+    },
+    blackandwhite: {
+      gameWin: { type: Number, default: 0 },
+      gameLoss: { type: Number, default: 0 },
+      totalMatch: { type: Number, default: 0 },
+    },
+    aviator: {
       gameWin: { type: Number, default: 0 },
       gameLoss: { type: Number, default: 0 },
       totalMatch: { type: Number, default: 0 },

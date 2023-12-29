@@ -21,7 +21,8 @@ router.get('/UserList', async (req, res) => {
     try {
         //console.info('requet => ', req);
 
-        const userList = await Users.find({Iscom:0}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, isVIP: 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
+        const userList = await Users.find({Iscom:0}, { username: 1,profileUrl:1,winningChips:1,bonusChips:1, id: 1,email:1,uniqueId:1,
+            "blackandwhite.totalMatch":1,"aviator.totalMatch":1, mobileNumber: 1, "counters.totalMatch": 1, isVIP: 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
 
         logger.info('admin/dahboard.js post dahboard  error => ', userList);
 

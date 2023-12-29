@@ -4,7 +4,7 @@ const { joinTable } = require("./joinTable");
 const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
 const {Redisbinding, Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
-const {MYPROFILE,UPDATEPROFILE,LB } = require("./dashboard");
+const {MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD } = require("./dashboard");
 
 
 module.exports = {
@@ -20,6 +20,10 @@ module.exports = {
   MYPROFILE:MYPROFILE,
   UPDATEPROFILE:UPDATEPROFILE,
   MYPROFILE:MYPROFILE,
-  LB:LB
-
+  LB:LB,
+  AVATARLIST:AVATARLIST,
+  SHOPLIST:SHOPLIST,
+  NOTICELIST:NOTICELIST,
+  MAILLIST:MAILLIST,
+  MAILREAD:MAILREAD
 };
