@@ -3,6 +3,9 @@ const MongoID = mongoose.Types.ObjectId;
 const AviatorTables = mongoose.model("aviatorTables");
 const GameUser = mongoose.model("users");
 const MyBetTable = mongoose.model("mybetlist");
+const GameHistory = mongoose.model("GameHistory");
+
+
 const { sendEvent, sendDirectEvent, AddTime, setDelay, clearJob } = require('../helper/socketFunctions');
 const CONST = require("../../constant");
 const logger = require("../../logger");
@@ -84,6 +87,21 @@ module.exports.action = async (requestData, client) => {
         chalvalue = Number(Number(chalvalue).toFixed(2))
 
         await walletActions.deductWallet(client.uid, -chalvalue, 2, "aviator action", tabInfo, client.id, client.seatIndex);
+
+       
+
+        await this.AddGameHistory({
+            "userId":client.uid,
+           "DateTime":new Date(),
+           "Name": UserInfo.username,
+           "PhoneNumber":UserInfo.mobileNumber,
+           "RoomId":tabInfo.uuid,
+           "Amount":chalvalue,
+           "Type":"debit_action",
+           "game":"aviator"
+           });
+        
+
         console.log("tabInfo.uuid ", tabInfo.uuid)
         this.MybetInsert(tabInfo.uuid, chalvalue, 0, 0, client)
 
@@ -202,6 +220,18 @@ module.exports.Cancel = async (requestData, client) => {
 
         await walletActions.addWallet(client.uid, chalvalue, 2, "aviator bet Cancel", tabInfo, client.id, client.seatIndex);
 
+
+        await this.AddGameHistory({
+            "userId":client.uid,
+           "DateTime":new Date(),
+           "Name": UserInfo.username,
+           "PhoneNumber":UserInfo.mobileNumber,
+           "RoomId":tabInfo.uuid,
+           "Amount":chalvalue,
+           "Type":"credit_cancel",
+           "game":"aviator"
+           });
+
         if (requestData.actionplace == 1)
             updateData.$set["playerInfo.$.chalValue"] = 0;
         else
@@ -314,6 +344,18 @@ module.exports.CHECKOUT = async (requestData, client) => {
         winAmount = Number(winAmount - Deductcom)
 
         await walletActions.addWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
+
+
+        await this.AddGameHistory({
+            "userId":client.uid,
+           "DateTime":new Date(),
+           "Name": UserInfo.username,
+           "PhoneNumber":UserInfo.mobileNumber,
+           "RoomId":tabInfo.uuid,
+           "Amount":winAmount,
+           "Type":"credit_win",
+           "game":"aviator"
+        });
 
         console.log("Deductcom ", Deductcom)
 
@@ -465,4 +507,13 @@ module.exports.Redisbinding = async () => {
         }
     });
 
+}
+
+
+
+module.exports.AddGameHistory = async (obj) => {
+
+    await GameHistory.create(obj)
+
+    return false
 }

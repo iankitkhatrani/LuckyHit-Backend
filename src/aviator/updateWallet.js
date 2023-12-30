@@ -2,6 +2,11 @@ const mongoose = require("mongoose")
 const MongoID = mongoose.Types.ObjectId;
 const AviatorTables = mongoose.model("aviatorTables");
 const UserWalletTracks = mongoose.model("userWalletTracks");
+const UserMainWalletTracks = mongoose.model("userMainWalletTracks");
+const UserWinWalletTracks = mongoose.model("userWinWalletTracks");
+const UserReferralWalletTracks = mongoose.model("userReferralWalletTracks");
+
+
 const GameUser = mongoose.model("users");
 
 const commandAcions = require("../helper/socketFunctions");
@@ -325,7 +330,6 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
     }
 }
 
-
 module.exports.addWalletAdmin = async (id, added_chips, tType, t, tbInfo, client, seatIndex) => {
     try {
         logger.info('\addWalletAdmin : call.-->>>', id, added_chips, t);
@@ -401,7 +405,7 @@ module.exports.addWalletAdmin = async (id, added_chips, tType, t, tbInfo, client
             }
             console.log("walletTrack ::::::::::::::::::::",walletTrack)
 
-            await this.trackUserWallet(walletTrack);
+            await this.trackUserWallet(walletTrack,"Main");
         }
 
         if ((typeof upReps.chips.toString().split(".")[1] != "undefined" && upReps.chips.toString().split(".")[1].length > 2)) {
@@ -524,7 +528,7 @@ module.exports.deductWalletAdmin = async (id, deductChips, tType, t, tbInfo, cli
                 winningChips: upReps.winningChips,
                 totalBucket: totalRemaningAmount
             }
-            await this.trackUserWallet(walletTrack);
+            await this.trackUserWallet(walletTrack,"Win");
         }
 
         if ((typeof upReps.winningChips.toString().split(".")[1] != "undefined" && upReps.winningChips.toString().split(".")[1].length > 2)) {
@@ -560,10 +564,23 @@ module.exports.deductWalletAdmin = async (id, deductChips, tType, t, tbInfo, cli
     }
 }
 
-module.exports.trackUserWallet = async (obj) => {
+module.exports.trackUserWallet = async (obj,wallet) => {
     logger.info("\ntrackUserWallet obj ::", obj);
 
-    await UserWalletTracks.create(obj)
+    if(wallet == "Main"){
+        await UserMainWalletTracks.create(obj)
+
+    }else if(wallet == "Win"){
+        await UserWinWalletTracks.create(obj)
+
+    }else if(wallet == "Referral"){
+        await UserReferralWalletTracks.create(obj)
+
+    }else{
+        await UserWalletTracks.create(obj)
+
+    }
+
     return true;
 }
 

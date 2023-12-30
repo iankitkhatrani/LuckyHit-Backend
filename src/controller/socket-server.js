@@ -231,7 +231,6 @@ myIo.init = function (server) {
                         break;
                     }
 
-            
                     default:
                         sendEvent(socket, CONST.INVALID_EVENT, {
                             msg: 'This Event Is Nothing',
