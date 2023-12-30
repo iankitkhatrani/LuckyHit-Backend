@@ -21,45 +21,12 @@ router.get('/blackwhitegamehistory', async (req, res) => {
     try {
         console.log('requet => ', req);
 
-        const gameHistoryData = [
-            {
-                "SrNo": 1,
-                "DateTime": "2023-10-10 08:30 AM",
-                "Name": "Alice",
-                "PhoneNumber": "123-456-7890",
-                "RoomId": "blackwhitegamehistoryGRoom1",
-                "Amount": 100, // Amount in this example (can be credit or debit)
-                "Type": "Credit", // "Credit" or "Debit"
-                "Club": "Club A"
-            },
-            {
-                "SrNo": 2,
-                "DateTime": "2023-10-09 10:15 AM",
-                "Name": "Bob",
-                "PhoneNumber": "987-654-3210",
-                "RoomId": "blackwhitegamehistoryGRoom2",
-                "Amount": 50, // Amount in this example (can be credit or debit)
-                "Type": "Debit", // "Credit" or "Debit"
-                "Club": "Club B"
-            },
-            {
-                "SrNo": 3,
-                "DateTime": "2023-10-09 10:15 AM",
-                "Name": "Bob",
-                "PhoneNumber": "987-654-3210",
-                "RoomId": "blackwhitegamehistoryGRoom2",
-                "Amount": 50, // Amount in this example (can be credit or debit)
-                "Type": "Debit", // "Credit" or "Debit"
-                "Club": "Club Bd"
-            },
-            // Add more game history entries here
-        ]
-        
-        //await Users.find({}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
+        const gameHistoryData = await GameHistory.find({"game": "BlackandWhite" },
+        { DateTime: 1, userId: 1, Name: 1, PhoneNumber: 1, RoomId: 1, Amount: 1, Type: 1, game:1 }).sort({ DateTime: -1 })
 
-        logger.info('admin/dahboard.js post dahboard  error => ', gameHistoryData);
+        console.log("completeWithdrawalData ", gameHistoryData)
 
-        res.json({ gameHistoryData });
+        res.json({ gameHistoryData });        
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
@@ -77,47 +44,13 @@ router.get('/blackwhitegamehistory', async (req, res) => {
 */
 router.get('/aviatorGameHistory', async (req, res) => {
     try {
-        //console.info('requet => ', req);
-
-        const gameHistoryData = [
-            {
-                "SrNo": 1,
-                "DateTime": "2023-10-10 08:30 AM",
-                "Name": "Alice",
-                "PhoneNumber": "123-456-7890",
-                "RoomId": "aviatorGameHistoryLRoom1",
-                "Amount": 100, // Amount in this example (can be credit or debit)
-                "Type": "Credit", // "Credit" or "Debit"
-                "Club": "Club A"
-            },
-            {
-                "SrNo": 2,
-                "DateTime": "2023-10-09 10:15 AM",
-                "Name": "Bob",
-                "PhoneNumber": "987-654-3210",
-                "RoomId": "aviatorGameHistoryLRoom2",
-                "Amount": 50, // Amount in this example (can be credit or debit)
-                "Type": "Debit", // "Credit" or "Debit"
-                "Club": "Club B"
-            },
-            {
-                "SrNo": 3,
-                "DateTime": "2023-10-09 10:15 AM",
-                "Name": "Bob",
-                "PhoneNumber": "987-654-3210",
-                "RoomId": "aviatorGameHistoryLRoom2",
-                "Amount": 50, // Amount in this example (can be credit or debit)
-                "Type": "Debit", // "Credit" or "Debit"
-                "Club": "Club Bd"
-            },
-            // Add more game history entries here
-        ]
         
-        //await Users.find({}, { username: 1, id: 1, mobileNumber: 1, "counters.totalMatch": 1, chips: 1, referralCode: 1, createdAt: 1, lastLoginDate: 1, status: 1 })
+        const gameHistoryData = await GameHistory.find({"game": "aviator" },
+        { DateTime: 1, userId: 1, Name: 1, PhoneNumber: 1, RoomId: 1, Amount: 1, Type: 1, game:1 }).sort({ DateTime: -1 })
 
-        logger.info('admin/dahboard.js post dahboard  error => ', gameHistoryData);
+        console.log("completeWithdrawalData ", gameHistoryData)
 
-        res.json({ gameHistoryData });
+        res.json({ gameHistoryData });  
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
