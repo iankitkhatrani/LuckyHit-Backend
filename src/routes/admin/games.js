@@ -8,7 +8,7 @@ const mainCtrl = require('../../controller/adminController');
 const logger = require('../../../logger');
 const CONST = require("../../../constant");
 const GameHistory = mongoose.model("GameHistory");
-
+const fs = require("fs")
 
 /**
 * @api {get} /admin/lobbies
@@ -22,12 +22,12 @@ router.get('/blackwhitegamehistory', async (req, res) => {
     try {
         console.log('requet => ', req);
 
-        const gameHistoryData = await GameHistory.find({"game": "BlackandWhite" },
-        { DateTime: 1, userId: 1, Name: 1, PhoneNumber: 1, RoomId: 1, Amount: 1, Type: 1, game:1 }).sort({ DateTime: -1 })
+        const gameHistoryData = await GameHistory.find({ "game": "BlackandWhite" },
+            { DateTime: 1, userId: 1, Name: 1, PhoneNumber: 1, RoomId: 1, Amount: 1, Type: 1, game: 1 }).sort({ DateTime: -1 })
 
         console.log("completeWithdrawalData ", gameHistoryData)
 
-        res.json({ gameHistoryData });        
+        res.json({ gameHistoryData });
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
@@ -46,12 +46,12 @@ router.get('/blackwhitegamehistory', async (req, res) => {
 router.get('/aviatorGameHistory', async (req, res) => {
     try {
 
-        const gameHistoryData = await GameHistory.find({"game": "aviator" },
-        { DateTime: 1, userId: 1, Name: 1, PhoneNumber: 1, RoomId: 1, Amount: 1, Type: 1, game:1 }).sort({ DateTime: -1 })
+        const gameHistoryData = await GameHistory.find({ "game": "aviator" },
+            { DateTime: 1, userId: 1, Name: 1, PhoneNumber: 1, RoomId: 1, Amount: 1, Type: 1, game: 1 }).sort({ DateTime: -1 })
 
         console.log("completeWithdrawalData ", gameHistoryData)
 
-        res.json({ gameHistoryData });  
+        res.json({ gameHistoryData });
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
@@ -71,21 +71,35 @@ router.get('/aviatorGameHistory', async (req, res) => {
 router.put('/gameLogicSet', async (req, res) => {
     try {
         console.info('requet => ', req.body);
-        console.log("req.body.gamelogic",CONST.AVIATORLOGIC)
+        // console.log("req.body.gamelogic", CONST.AVIATORLOGIC)
 
-        if(req.body.game == "Aviator"){
-            CONST.AVIATORLOGIC = req.body.gamelogic 
-        
-            console.log("dddddddddddddddddddd",CONST.AVIATORLOGIC)
-        }else if(req.body.game == "BlackWhite"){
-            CONST.BLACKWHITE = req.body.gamelogic 
-        
-            console.log("dddddddddddddddddddd",CONST.BLACKWHITE)
+        console.log("dddddddddddddddddddd 1", process.env.AVIATORLOGIC)
+        if (req.body.game == "Aviator") {
+            GAMELOGICCONFIG.AVIATORLOGIC = req.body.gamelogic
+
+            console.log("GAMELOGICCONFIG ", GAMELOGICCONFIG)
+
+            let link = "./gamelogic.json"
+            console.log("link ", link)
+            fs.writeFile(link, JSON.stringify(GAMELOGICCONFIG), function (err) {
+                console.log("erre", err)
+                if (err) {
+                    console.log(err);
+                }
+
+            });
+
+
+            console.log("dddddddddddddddddddd", process.env.AVIATORLOGIC)
+        } else if (req.body.game == "BlackWhite") {
+            CONST.BLACKWHITE = req.body.gamelogic
+
+            console.log("dddddddddddddddddddd", CONST.BLACKWHITE)
         }
-        
-        logger.info('admin/dahboard.js post dahboard  error => ',CONST);
 
-        res.json({ falgs:true });
+        logger.info('admin/dahboard.js post dahboard  error => ', CONST);
+
+        res.json({ falgs: true });
     } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         res.status(config.INTERNAL_SERVER_ERROR).json(error);

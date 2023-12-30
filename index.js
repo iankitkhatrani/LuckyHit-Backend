@@ -9,6 +9,7 @@ const http = require('http');
 const path = require('path');
 const cors = require('cors');
 
+GAMELOGICCONFIG = module.exports = require('./gamelogic.json')
 
 
 require('./database/mongoDbConnection');

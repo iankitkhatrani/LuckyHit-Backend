@@ -21,16 +21,16 @@ module.exports.gameTimerStart = async (tb) => {
 
         let wh = {
             _id: tb._id,
-            "playerInfo.seatIndex": {$exists:true}
+            "playerInfo.seatIndex": { $exists: true }
         }
         let update = {
             $set: {
                 gameState: "GameStartTimer",
                 "GameTimer.GST": new Date(),
-                "totalbet":0,
-                "playerInfo.$.chalValue":0,
-                "playerInfo.$.chalValue1":0,
-                uuid:uuidv4(),
+                "totalbet": 0,
+                "playerInfo.$.chalValue": 0,
+                "playerInfo.$.chalValue1": 0,
+                uuid: uuidv4(),
             }
         }
         logger.info("gameTimerStart UserInfo : ", wh, update);
@@ -39,7 +39,7 @@ module.exports.gameTimerStart = async (tb) => {
         logger.info("gameTimerStart tabInfo :: ", tabInfo);
 
         let roundTime = 5;
-        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.GAME_START_TIMER, { timer: roundTime,history:tabInfo.history });
+        commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.GAME_START_TIMER, { timer: roundTime, history: tabInfo.history });
 
         let tbId = tabInfo._id;
         let jobId = CONST.GAME_START_TIMER + ":" + tbId;
@@ -71,29 +71,29 @@ module.exports.startAviator = async (tbId) => {
 
 
         // NORMAL 
-        let Number = this.generateNumber(1,59)
+        let Number = this.generateNumber(1, 59)
 
-        if(CONST.AVIATORLOGIC == "Client"){ // Client SIDE
-            if(tb.totalbet >= 5){
-                 Number = this.generateNumber(1,2)
-            }else if(tb.totalbet < 5){
-                 Number = this.generateNumber(1,5)
+        if (CONST.AVIATORLOGIC == "Client") { // Client SIDE
+            if (tb.totalbet >= 5) {
+                Number = this.generateNumber(1, 2)
+            } else if (tb.totalbet < 5) {
+                Number = this.generateNumber(1, 5)
             }
-        }else if(CONST.AVIATORLOGIC == "User"){  // User SIDE
-             Number = this.generateNumber(1,10)
-        }   
-        console.log("Number ",Number)
-        
+        } else if (CONST.AVIATORLOGIC == "User") {  // User SIDE
+            Number = this.generateNumber(1, 10)
+        }
+        console.log("Number ", Number)
+
         let wh = {
             _id: tbId
         }
         let update = {
             $set: {
                 gameState: "StartEviator",
-                rendomNumber:Number,
-                aviatorDate:new Date()
+                rendomNumber: Number,
+                aviatorDate: new Date()
             },
-            $push:{
+            $push: {
                 "history": {
                     $each: [Number],
                     $slice: -8
@@ -107,30 +107,30 @@ module.exports.startAviator = async (tbId) => {
 
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: Number });
 
-        setTimeout(async ()=> {
+        setTimeout(async () => {
             // Clear destory 
             const tabInfonew = await AviatorTables.findOneAndUpdate(wh, {
                 $set: {
                     gameState: "",
-                    rendomNumber:0,
-                    aviatorDate:""
+                    rendomNumber: 0,
+                    aviatorDate: ""
                 }
             }, { new: true });
 
             this.gameTimerStart(tabInfonew);
 
             console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
-        },((Number+2) * 1000));
+        }, ((Number + 2) * 1000));
 
-        botLogic.PlayRobot(tabInfo,tabInfo.playerInfo,Number)
+        botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
 
     } catch (error) {
         logger.error("startAviator.js error ->", error)
     }
 
-}       
+}
 
-module.exports.generateNumber=(minRange,maxRange)=>{
+module.exports.generateNumber = (minRange, maxRange) => {
 
     // Generate a random decimal number between 0 (inclusive) and 1 (exclusive)
     const randomDecimal = Math.random().toFixed(2);
@@ -139,9 +139,9 @@ module.exports.generateNumber=(minRange,maxRange)=>{
     const randomWholeNumber = getRandomInt(minRange, maxRange);
     console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
 
-    console.log('Random Whole Number:', randomWholeNumber+parseFloat(randomDecimal));
+    console.log('Random Whole Number:', randomWholeNumber + parseFloat(randomDecimal));
 
-    return (randomWholeNumber+parseFloat(randomDecimal))
+    return (randomWholeNumber + parseFloat(randomDecimal))
 }
 
 // Generate a random whole number between a specified range (min and max)
@@ -160,7 +160,7 @@ module.exports.deduct = async (tabInfo, playerInfo) => {
             if (playerInfo[i] != {} && typeof playerInfo[i].seatIndex != "undefined" && playerInfo[i].status == "play") {
                 seatIndexs.push(playerInfo[i].seatIndex);
 
-                await walletActions.deductWallet(playerInfo[i]._id,-Number(tabInfo.boot), 1, "aviator Bet", tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex);
+                await walletActions.deductWallet(playerInfo[i]._id, -Number(tabInfo.boot), 1, "aviator Bet", tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex);
 
                 let update = {
                     $inc: {

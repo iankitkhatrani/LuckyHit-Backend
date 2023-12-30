@@ -88,19 +88,19 @@ module.exports.action = async (requestData, client) => {
 
         await walletActions.deductWallet(client.uid, -chalvalue, 2, "aviator action", tabInfo, client.id, client.seatIndex);
 
-       
+
 
         await this.AddGameHistory({
-            "userId":client.uid,
-           "DateTime":new Date(),
-           "Name": UserInfo.username,
-           "PhoneNumber":UserInfo.mobileNumber,
-           "RoomId":tabInfo.uuid,
-           "Amount":chalvalue,
-           "Type":"debit_action",
-           "game":"aviator"
-           });
-        
+            "userId": client.uid,
+            "DateTime": new Date(),
+            "Name": UserInfo.username,
+            "PhoneNumber": UserInfo.mobileNumber,
+            "RoomId": tabInfo.uuid,
+            "Amount": chalvalue,
+            "Type": "debit_action",
+            "game": "aviator"
+        });
+
 
         console.log("tabInfo.uuid ", tabInfo.uuid)
         this.MybetInsert(tabInfo.uuid, chalvalue, 0, 0, client)
@@ -222,15 +222,15 @@ module.exports.Cancel = async (requestData, client) => {
 
 
         await this.AddGameHistory({
-            "userId":client.uid,
-           "DateTime":new Date(),
-           "Name": UserInfo.username,
-           "PhoneNumber":UserInfo.mobileNumber,
-           "RoomId":tabInfo.uuid,
-           "Amount":chalvalue,
-           "Type":"credit_cancel",
-           "game":"aviator"
-           });
+            "userId": client.uid,
+            "DateTime": new Date(),
+            "Name": UserInfo.username,
+            "PhoneNumber": UserInfo.mobileNumber,
+            "RoomId": tabInfo.uuid,
+            "Amount": chalvalue,
+            "Type": "credit_cancel",
+            "game": "aviator"
+        });
 
         if (requestData.actionplace == 1)
             updateData.$set["playerInfo.$.chalValue"] = 0;
@@ -347,14 +347,14 @@ module.exports.CHECKOUT = async (requestData, client) => {
 
 
         await this.AddGameHistory({
-            "userId":client.uid,
-           "DateTime":new Date(),
-           "Name": UserInfo.username,
-           "PhoneNumber":UserInfo.mobileNumber,
-           "RoomId":tabInfo.uuid,
-           "Amount":winAmount,
-           "Type":"credit_win",
-           "game":"aviator"
+            "userId": client.uid,
+            "DateTime": new Date(),
+            "Name": UserInfo.username,
+            "PhoneNumber": UserInfo.mobileNumber,
+            "RoomId": tabInfo.uuid,
+            "Amount": winAmount,
+            "Type": "credit_win",
+            "game": "aviator"
         });
 
         console.log("Deductcom ", Deductcom)
@@ -496,7 +496,7 @@ module.exports.Redisbinding = async () => {
     rclient1.on('message', function (channel, msg, type) {
         var obj = msg.split(":")
         console.log("Obj ::::::::::::::::", obj)
-        if (obj.length > 3 && obj[0] != undefined &&  obj[1] != undefined && obj[2] != undefined && obj[3] != undefined  ) {
+        if (obj.length > 3 && obj[0] != undefined && obj[1] != undefined && obj[2] != undefined && obj[3] != undefined) {
             let response = {
                 seatIndex: -1,
                 winamount: Number(obj[3]),
