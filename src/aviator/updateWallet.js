@@ -7,6 +7,7 @@ const GameUser = mongoose.model("users");
 const commandAcions = require("../helper/socketFunctions");
 const CONST = require("../../constant");
 const logger = require("../../logger");
+const UserCards = mongoose.model("usercards");
 
 module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, seatIndex) => {
     try {
@@ -564,4 +565,109 @@ module.exports.trackUserWallet = async (obj) => {
 
     await UserWalletTracks.create(obj)
     return true;
+}
+
+/*
+    acname
+    BankName
+    bankAc
+    IFSCcode
+    upi_id
+    email
+    MobileNo
+    userId
+*/
+
+module.exports.ADDCARD = async (requestData,client) => {
+    try {
+
+    logger.info("ADDCARD requestData : ", requestData);
+
+    if (typeof client.uid == "undefined" || typeof requestData.acname == "undefined" || typeof requestData.bankAc == "undefined"
+    || typeof requestData.IFSCcode == "undefined" || typeof requestData.BankName == "undefined"
+    || typeof requestData.upi_id == "undefined" || typeof requestData.email == "undefined"
+    || typeof requestData.MobileNo == "undefined"
+    ) {
+        commandAcions.sendDirectEvent(client.sck, CONST.ADDCARD, requestData, false, "User session not set, please restart game!");
+        return false;
+    }
+
+    
+
+    let response = {
+        acname:req.body.acname,
+        BankName:req.body.BankName,
+        bankAc:req.body.bankAc,
+        IFSCcode:req.body.IFSCcode,
+        upi_id:req.body.upi_id,
+        email:req.body.email,
+        MobileNo:req.body.MobileNo,
+        userId:client.uid,
+        status:1     
+    }
+
+
+    console.log("response ", response)
+    // let RecentUser = await registerUser(response)
+    //let RecentUser = await registerUser(response)
+
+    const usercard = new UserCards(response);
+    const RecentUser = await usercard.save();
+
+    logger.info('admin/dahboard.js post dahboard  error => ', RecentUser);
+    if (RecentUser.acname != undefined) {
+        commandAcions.sendDirectEvent(client, CONST.ADDCARD, RecentUser);
+
+    } else {
+        commandAcions.sendDirectEvent(client.sck, CONST.ADDCARD, {}, false, "User session not set, please restart game!");
+    }
+
+
+    return true;
+    }catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        //res.send("error");
+
+        commandAcions.sendDirectEvent(client.sck, CONST.ADDCARD, {}, false, "User session not set, please restart game!");
+    }
+}
+
+
+/*
+  
+*/
+
+module.exports.GETCARD = async (requestData,client) => {
+    try {
+
+    logger.info("ADDCARD requestData : ", requestData);
+
+    if (typeof client.uid == "undefined"
+    ) {
+        commandAcions.sendDirectEvent(client.sck, CONST.GETCARD, requestData, false, "User session not set, please restart game!");
+        return false;
+    }
+
+
+
+    
+    const totalUsercard = await usercard.find();
+
+
+    logger.info('admin/dahboard.js post dahboard  error => ', RecentUser);
+    if (totalUsercard != undefined && totalUsercard.length > 0) {
+        commandAcions.sendDirectEvent(client, CONST.GETCARD, {totalUsercard:totalUsercard});
+
+    } else {
+        commandAcions.sendDirectEvent(client.sck, CONST.GETCARD, {}, false, "User session not set, please restart game!");
+    }
+
+
+    return true;
+    }catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        //res.send("error");
+
+        commandAcions.sendDirectEvent(client.sck, CONST.GETCARD, {}, false, "User session not set, please restart game!");
+    }
 }

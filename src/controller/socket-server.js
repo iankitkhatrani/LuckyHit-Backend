@@ -17,6 +17,8 @@ const { userReconnect } = require('../aviator/reConnectFunction');
 const { getBannerList } = require('./adminController');
 
 
+
+
 const myIo = {};
 
 // create a init function for initlize the socket object
@@ -219,6 +221,17 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.ADDCARD: {
+                        await gamePlayActions.ADDCARD(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.GETCARD:{
+                        await gamePlayActions.GETCARD(payload.data, socket);
+                        break;
+                    }
+
+            
                     default:
                         sendEvent(socket, CONST.INVALID_EVENT, {
                             msg: 'This Event Is Nothing',
