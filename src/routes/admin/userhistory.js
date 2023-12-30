@@ -97,8 +97,7 @@ router.get('/BackandWhiteHistory', async (req, res) => {
 */
 router.get('/aviatorHistory', async (req, res) => {
     try {
-        console.info('requet => ', req.query);
-
+       
         // const aviatorHistoryData =  [
         //     {
         //         "SrNo": 1,
@@ -202,8 +201,7 @@ router.get('/completeWithdrawal', async (req, res) => {
 */
 router.get('/completeDeposite', async (req, res) => {
     try {
-        console.info('requet => ', req.query);
-
+        
         if (req.query.userId == undefined) {
             res.json({ completeDepositeData: [] });
             return false

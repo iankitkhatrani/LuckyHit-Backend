@@ -7,6 +7,7 @@ const commonHelper = require('../../helper/commonHelper');
 const mainCtrl = require('../../controller/adminController');
 const logger = require('../../../logger');
 const CONST = require("../../../constant");
+const GameHistory = mongoose.model("GameHistory");
 
 
 /**
@@ -44,7 +45,7 @@ router.get('/blackwhitegamehistory', async (req, res) => {
 */
 router.get('/aviatorGameHistory', async (req, res) => {
     try {
-        
+
         const gameHistoryData = await GameHistory.find({"game": "aviator" },
         { DateTime: 1, userId: 1, Name: 1, PhoneNumber: 1, RoomId: 1, Amount: 1, Type: 1, game:1 }).sort({ DateTime: -1 })
 
