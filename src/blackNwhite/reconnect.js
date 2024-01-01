@@ -29,6 +29,7 @@ module.exports.reconnect = async (requestData, client) => {
             const finaldata = {
                 ...newData,
             };
+
             logger.info('Reconnect Final Data => ', finaldata);
             let responseResult = await filterBeforeSendSPEvent(finaldata);
 
@@ -75,6 +76,7 @@ module.exports.reconnect = async (requestData, client) => {
                 gamePlayType: tabInfo.gamePlayType,
                 sceneName: CONST.BNW_GAMEPLAY,
             };
+            logger.info('Reconnect Final Data response => ', response);
 
             if (tabInfo.gameState === "GameStartTimer") {
                 let currentDateTime = new Date();
@@ -102,7 +104,16 @@ module.exports.reconnect = async (requestData, client) => {
                 };
 
                 sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, responseRST);
-            } else {
+            } else if (tabInfo.gameState === "RoundEndState") {
+
+                const responseRET = {
+                    ...response,
+                    result: tabInfo.gameResult,
+                };
+
+                sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, responseRET);
+            }
+            else {
                 sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, response);
             }
             return;

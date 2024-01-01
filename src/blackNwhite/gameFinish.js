@@ -44,7 +44,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     };
     logger.info("winnerDeclareCall upWh updateData :: ", upWh, updateData);
 
-    const tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
+    let tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
     logger.info("winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
 
     const typeAmounts = {};
@@ -121,6 +121,15 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
       cardDetails: winnerObj,
       userInfo
     }
+
+    updateData = {
+      $set: {
+        gameResult: winnerViewResponse
+      }
+    };
+
+    tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
+    logger.info("updateData winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
 
     commandAcions.sendEventInTable(tbInfo._id.toString(), CONST.WINNER, winnerViewResponse);
 

@@ -5,7 +5,6 @@ const GameUser = mongoose.model("users");
 const MyBetTable = mongoose.model("mybetlist");
 const GameHistory = mongoose.model("GameHistory");
 
-
 const { sendEvent, sendDirectEvent, AddTime, setDelay, clearJob } = require('../helper/socketFunctions');
 const CONST = require("../../constant");
 const logger = require("../../logger");
@@ -276,9 +275,6 @@ module.exports.Cancel = async (requestData, client) => {
     }
 }
 
-
-
-
 /*
     betAmount : 10,
     actionPlace:1 || 2
@@ -508,7 +504,6 @@ module.exports.Redisbinding = async () => {
     });
 
 }
-
 
 
 module.exports.AddGameHistory = async (obj) => {
