@@ -96,7 +96,16 @@ module.exports.reconnect = async (requestData, client) => {
                 let time = currentDateTime.getSeconds();
                 let turnTime = new Date(tabInfo.blackandwhiteDate);
                 let Gtime = turnTime.getSeconds();
-                let diff = Gtime - time;
+                let diff = 10-  (time - Gtime);
+
+
+                console.log("Gtime ",Gtime)
+                console.log("time ",time)
+
+
+                console.log("diff ::::::::::::::::::::::::::::::::::::::: ",diff)
+
+                
 
                 const responseRST = {
                     ...response,

@@ -6,7 +6,7 @@ const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHand
 const {Redisbinding, Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
 const {MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD } = require("./dashboard");
 const {ADDCARD} = require("./updateWallet");
-
+const {reconnect} = require("./reconnect")
 
 
 module.exports = {
@@ -28,5 +28,6 @@ module.exports = {
   NOTICELIST:NOTICELIST,
   MAILLIST:MAILLIST,
   MAILREAD:MAILREAD,
-  ADDCARD:ADDCARD
+  ADDCARD:ADDCARD,
+  reconnect: reconnect
 };

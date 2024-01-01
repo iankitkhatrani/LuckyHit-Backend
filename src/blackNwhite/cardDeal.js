@@ -15,7 +15,7 @@ const cardLogic = require("./cardLogic");
 module.exports.cardDealStart = async (tbid) => {
     logger.info("collectBoot tbid : ", tbid);
     let wh = {
-        _id: tbid
+        _id: MongoID(tbid)
     };
     let tb = await PlayingTables.findOne(wh, {}).lean();
     logger.info("collectBoot tb : ", tb);
@@ -56,7 +56,7 @@ module.exports.setUserCards = async (cardsInfo, tb) => {
         // const cards = cardsInfo;
 
         let upWh = {
-            _id: tb._id
+            _id: MongoID(tb._id)
         }
         let updateData = {
             $set: {}

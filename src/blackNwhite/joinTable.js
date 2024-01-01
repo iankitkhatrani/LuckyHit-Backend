@@ -160,8 +160,8 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
 
         let setPlayerInfo = {
             $set: {
-                gameState: ""
-            },
+                //gameState: ""
+            }, //Ankit Start Game to not ""
             $inc: {
                 activePlayer: 1
             }
