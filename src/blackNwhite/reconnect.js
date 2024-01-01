@@ -89,6 +89,19 @@ module.exports.reconnect = async (requestData, client) => {
                 };
 
                 sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, responseRST);
+            } else if (tabInfo.gameState === "StartBatting") {
+                let currentDateTime = new Date();
+                let time = currentDateTime.getSeconds();
+                let turnTime = new Date(tabInfo.blackandwhiteDate);
+                let Gtime = turnTime.getSeconds();
+                let diff = Gtime - time;
+
+                const responseRST = {
+                    ...response,
+                    timer: diff,
+                };
+
+                sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, responseRST);
             } else {
                 sendDirectEvent(client.id.toString(), CONST.BNW_RECONNECT, response);
             }

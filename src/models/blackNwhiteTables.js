@@ -14,6 +14,7 @@ const PlayingTablesSchema = new Schema({
     potLimit: { type: Number, default: 0 },
     gameState: { type: String, default: "" },
     turnStartTimer: { type: Date },
+    blackandwhiteDate:{type:Date},
     jobId: { type: String, default: "" },
     turnDone: { type: Boolean, default: false },
     gameTimer: {},

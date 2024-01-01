@@ -67,6 +67,8 @@ module.exports.startBatting = async (tbId) => {
         let update = {
             $set: {
                 gameState: "StartBatting",
+                blackandwhiteDate:new Date()
+
             }
         }
         logger.info("bnw UserInfo : ", wh, update);
