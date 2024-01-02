@@ -8,6 +8,7 @@ const CONST = require("../../constant");
 const commandAcions = require("../helper/socketFunctions");
 const roundStartActions = require("./roundStart")
 const logger = require("../../logger");
+const { filterBeforeSendSPEvent } = require("../helper/signups/appStart");
 
 
 module.exports.leaveTable = async (requestData, client) => {
@@ -69,7 +70,7 @@ module.exports.leaveTable = async (requestData, client) => {
         reason: reason,
         tbid: tb._id,
         seatIndex: client.seatIndex,
-        userId:client.uid.toString()
+        userId: client.uid.toString()
     }
 
     let tbInfo = await AviatorTables.findOneAndUpdate(wh, updateData, { new: true });
@@ -78,11 +79,18 @@ module.exports.leaveTable = async (requestData, client) => {
     commandAcions.sendDirectEvent(client.sck.toString(), CONST.LEAVE_TABLE, response);
     commandAcions.sendEventInTable(tb._id.toString(), CONST.LEAVE_TABLE, response);
 
-    commandAcions.sendEventInTable(tb._id.toString(), CONST.PLAYERLIST, {
-        ap: tbInfo.activePlayer,
-        playerDetail: tbInfo.playerInfo,
-    });
+    // commandAcions.sendEventInTable(tb._id.toString(), CONST.PLAYERLIST, {
+    //     ap: tbInfo.activePlayer,
+    //     playerDetail: tbInfo.playerInfo,
+    // });
 
+    let userDetails = await GameUser.findOne({
+        _id: MongoID(playerInfo._id.toString()),
+    }).lean();
+
+    let finaldata = await filterBeforeSendSPEvent(userDetails);
+
+    commandAcions.sendDirectEvent(client.sck.toString(), CONST.DASHBOARD, finaldata);
     //await this.manageOnUserLeave(tbInfo);
 }
 
@@ -96,7 +104,7 @@ module.exports.manageOnUserLeave = async (tb, client) => {
         if (playerInGame.length >= 2) {
             //await roundStartActions.nextUserTurnstart(tb, false);
         } else if (playerInGame.length == 1) {
-            
+
         }
     } else if (["", "GameStartTimer"].indexOf(tb.gameState) != -1) {
         if (playerInGame.length == 0 && tb.activePlayer == 0) {

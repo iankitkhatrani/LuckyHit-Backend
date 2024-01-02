@@ -17,8 +17,6 @@ const { userReconnect } = require('../aviator/reConnectFunction');
 const { getBannerList } = require('./adminController');
 
 
-
-
 const myIo = {};
 
 // create a init function for initlize the socket object
@@ -190,22 +188,22 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.SHOPLIST:{
+                    case CONST.SHOPLIST: {
                         await gamePlayActions.SHOPLIST(payload.data, socket);
                         break;
                     }
 
-                    case CONST.NOTICELIST:{
+                    case CONST.NOTICELIST: {
                         await gamePlayActions.NOTICELIST(payload.data, socket);
                         break;
                     }
 
-                    case CONST.MAILLIST:{
+                    case CONST.MAILLIST: {
                         await gamePlayActions.MAILLIST(payload.data, socket);
                         break;
                     }
 
-                    case CONST.MAILREAD:{
+                    case CONST.MAILREAD: {
                         await gamePlayActions.MAILREAD(payload.data, socket);
                         break;
                     }
@@ -226,7 +224,7 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.GETCARD:{
+                    case CONST.GETCARD: {
                         await gamePlayActions.GETCARD(payload.data, socket);
                         break;
                     }
