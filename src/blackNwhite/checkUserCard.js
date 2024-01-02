@@ -229,9 +229,10 @@ module.exports.getRemaningCards = (remaningCards) => {
 module.exports.countCards = (cards) => {
     let sum = 0;
     for (let i = 0; i < cards.length; i++) {
-        let cardsC = (Number(cards[i].split('-')[1]) == 1) ? 14 : Number(cards[i].split('-')[1])
+        let cardsC = (Number(cards[i].split('-')[1]) == 1) ? 13 : Number(cards[i].split('-')[1])
         sum = sum + cardsC
     }
+    logger.info("countCards sum -->", sum)
     return sum
 }
 

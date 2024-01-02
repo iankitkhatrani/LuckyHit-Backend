@@ -23,7 +23,6 @@ module.exports.joinTable = async (requestData, client) => {
         client.JT = true;
         const betInfo = {
             "_id": "657c440d82167b4a3c4949ae",
-            "maxPlayer": 7,
             "entryFee": 1,
             "chalLimit": 1,
             "potLimit": 100,
@@ -76,10 +75,12 @@ module.exports.findTable = async (BetInfo, client) => {
 module.exports.getBetTable = async (BetInfo) => {
     logger.info("getBetTable BetInfo : ", JSON.stringify(BetInfo));
     let wh = {
-        activePlayer: { $gte: 1, $lt: 7 }
+        activePlayer: { $gte: 1, }
     }
     logger.info("getBetTable wh : ", JSON.stringify(wh));
     let tableInfo = await PlayingTables.find(wh, {}).sort({ activePlayer: 1 }).lean();
+    // tableInfo.push({})
+    logger.info("getBetTable tabinfo ", JSON.stringify(tableInfo));
 
     if (tableInfo.length > 0) {
         return tableInfo[0];
@@ -158,17 +159,20 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
         };
         whereCond['playerInfo.' + seatIndex + '.seatIndex'] = { $exists: false };
 
+        table.playerInfo.push({});
+
         let setPlayerInfo = {
             $set: {
-                //gameState: ""
-            }, //Ankit Start Game to not ""
+            },
             $inc: {
                 activePlayer: 1
-            }
+            },
+
         };
         setPlayerInfo["$set"]["playerInfo." + seatIndex] = playerDetails;
+        // setPlayerInfo.$set['playerInfo'] = table.playerInfo
 
-        logger.info("findEmptySeatAndUserSeat whereCond : ", whereCond, setPlayerInfo);
+        logger.info(" **  findEmptySeatAndUserSeat whereCond : ", whereCond, setPlayerInfo);
 
         let tableInfo = await PlayingTables.findOneAndUpdate(whereCond, setPlayerInfo, { new: true });
         logger.info("\nfindEmptySeatAndUserSeat tbInfo : ", tableInfo);
@@ -235,7 +239,6 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
             }
         }
 
-        //}
     } catch (error) {
         console.info("findEmptySeatAndUserSeat", error);
     }

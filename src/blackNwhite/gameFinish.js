@@ -32,27 +32,12 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     const addLastWinCard = tabInfo.lastGameResult.push(winnerCard)
     logger.info("addLastWinCard", addLastWinCard);
 
-    const upWh = {
-      _id: tbid
-    }
-    let updateData = {
-      $set: {
-        "isFinalWinner": true,
-        gameState: "RoundEndState",
-        "lastGameResult": tabInfo.lastGameResult,
-      }
-    };
-    logger.info("winnerDeclareCall upWh updateData :: ", upWh, updateData);
-
-    let tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
-    logger.info("winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
-
     const typeAmounts = {};
     let userInfo = [];
 
 
     // Iterate through betLists of each player
-    tbInfo.playerInfo.forEach(player => {
+    tabInfo.playerInfo.forEach(player => {
       if (player && player.betLists) {
         player.betLists.forEach(bet => {
           const type = bet.type;
@@ -90,6 +75,23 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
 
       }
     });
+
+    const upWh = {
+      _id: tbid
+    }
+    let updateData = {
+      $set: {
+        "isFinalWinner": true,
+        gameState: "RoundEndState",
+        "lastGameResult": tabInfo.lastGameResult,
+      }
+    };
+    logger.info("winnerDeclareCall upWh updateData :: ", upWh, updateData);
+
+    let tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
+    logger.info("winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
+
+
 
     logger.info("Total Amounts Grouped by Type:", typeAmounts);
     logger.info("Total Amounts Grouped by Type: UserInfo", userInfo);
