@@ -287,6 +287,15 @@ module.exports.MAILLIST = async (requestData, client) => {
             logger.info("action user not turn ::",constmailInfo);
             return false
         }
+       
+        for (let i = 0; i < constmailInfo.length; i++) {
+            if(constmailInfo[i].userId.indexOf(client.uid) != -1){
+                constmailInfo.isread = 1
+            }else{
+                constmailInfo.isread = 0
+            }
+          }
+
         
         let response = {
            mailInfo:constmailInfo

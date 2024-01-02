@@ -73,7 +73,10 @@ module.exports.
                     tableid: tabInfo._id,
                     gamePlayType: tabInfo.gamePlayType,
                     sceneName: CONST.GAMEPLAY,
+                    rendomNumber: tabInfo.rendomNumber,
                 };
+
+                console.log("response ",response)
 
                 if (tabInfo.gameState === "StartEviator") {
                     let currentDateTime = new Date();
