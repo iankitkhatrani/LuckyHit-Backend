@@ -74,7 +74,10 @@ router.put('/gameLogicSet', async (req, res) => {
         // console.log("req.body.gamelogic", CONST.AVIATORLOGIC)
 
         console.log("dddddddddddddddddddd 1", process.env.AVIATORLOGIC)
-        if (req.body.game == "Aviator") {
+
+        console.log("req.body.game.gamename  1", req.body.game.gameName )
+
+        if (req.body.game.gameName == "aviator") {
             GAMELOGICCONFIG.AVIATORLOGIC = req.body.gamelogic
 
             console.log("GAMELOGICCONFIG ", GAMELOGICCONFIG)
@@ -89,12 +92,20 @@ router.put('/gameLogicSet', async (req, res) => {
 
             });
 
+        } else if (req.body.game.gameName == "balckandwhite") {
+            GAMELOGICCONFIG.BLACKANDWHITE = req.body.gamelogic
 
-            console.log("dddddddddddddddddddd", process.env.AVIATORLOGIC)
-        } else if (req.body.game == "BlackWhite") {
-            CONST.BLACKWHITE = req.body.gamelogic
 
-            console.log("dddddddddddddddddddd", CONST.BLACKWHITE)
+            let link = "./gamelogic.json"
+            console.log("link ", link)
+            fs.writeFile(link, JSON.stringify(GAMELOGICCONFIG), function (err) {
+                console.log("erre", err)
+                if (err) {
+                    console.log(err);
+                }
+
+            });
+
         }
 
         logger.info('admin/dahboard.js post dahboard  error => ', CONST);
@@ -105,6 +116,49 @@ router.put('/gameLogicSet', async (req, res) => {
         res.status(config.INTERNAL_SERVER_ERROR).json(error);
     }
 });
+
+
+/**
+* @api {get} /admin/lobbies
+* @apiName  gameLogicSet
+* @apiGroup  Admin
+* @apiHeader {String}  x-access-token Admin's unique access-key
+* @apiSuccess (Success 200) {Array} badges Array of badges document
+* @apiError (Error 4xx) {String} message Validation or error message.
+*/
+router.get('/getgamelogic', async (req, res) => {
+    try {
+        console.info('requet => ', req.query);
+        // console.log("req.body.gamelogic", CONST.AVIATORLOGIC)
+
+        console.log("dddddddddddddddddddd 1", process.env.AVIATORLOGIC)
+
+        console.log("req.query.gameName", req.query.gamename )
+
+        if (req.query.gamename == "aviator") {
+          
+            res.json({ logic: GAMELOGICCONFIG.AVIATORLOGIC });
+
+        } else if (req.query.gamename == "balckandwhite") {
+            
+
+            res.json({ logic: GAMELOGICCONFIG.BLACKANDWHITE });
+
+        }else{
+            res.json({ logic: "" });
+        }
+
+        logger.info('admin/dahboard.js post dahboard  error => ', CONST);
+
+        
+    } catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        res.status(config.INTERNAL_SERVER_ERROR).json(error);
+    }
+});
+
+
+
 
 
 module.exports = router;
