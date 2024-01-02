@@ -66,4 +66,27 @@ router.get('/DeletePlaying', async (req, res) => {
   }
 });
 
+
+/**
+* @api {get} /admin/DeletePlayingAV
+* @apiName  add-bet-list
+* @apiGroup  Admin
+* @apiHeader {String}  x-access-token Admin's unique access-key
+* @apiSuccess (Success 200) {Array} badges Array of badges document
+* @apiError (Error 4xx) {String} message Validation or error message.
+*/
+router.get('/DeletePlayingAV', async (req, res) => {
+  try {
+     
+      await AviatorTables.deleteMany({})
+
+      logger.info('admin/dahboard.js post dahboard  error => ');
+
+      res.json({ status:"ok" });
+  } catch (error) {
+      logger.error('admin/dahboard.js post bet-list error => ', error);
+      res.status(config.INTERNAL_SERVER_ERROR).json(error);
+  }
+});
+
 module.exports = router;
