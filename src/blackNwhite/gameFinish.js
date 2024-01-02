@@ -35,7 +35,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     const upWh = {
       _id: tbid
     }
-    const updateData = {
+    let updateData = {
       $set: {
         "isFinalWinner": true,
         gameState: "RoundEndState",
@@ -44,7 +44,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     };
     logger.info("winnerDeclareCall upWh updateData :: ", upWh, updateData);
 
-    const tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
+    let tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
     logger.info("winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
 
     const typeAmounts = {};
@@ -122,6 +122,17 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
       userInfo
     }
 
+    logger.info("winnerViewResponse: ", JSON.stringify(winnerViewResponse));
+
+    updateData = {
+      $set: {
+        gameResult: winnerViewResponse
+      }
+    };
+
+    tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
+    logger.info("updateData winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
+
     commandAcions.sendEventInTable(tbInfo._id.toString(), CONST.WINNER, winnerViewResponse);
 
     await roundEndActions.roundFinish(tbInfo);
@@ -190,8 +201,8 @@ module.exports.manageUserScore = async (playerInfo, tabInfo) => {
   let tableInfo;
   for (let i = 0; i < playerInfo.length; i++) {
     logger.info('\n Manage User Score Player Info ==>', playerInfo[i]);
-    if( playerInfo[i].totalBet != NaN)
-    await walletActions.addWallet(playerInfo[i]._id, playerInfo[i].totalBet, 'Credit', tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex)
+    if (playerInfo[i].totalBet != NaN)
+      await walletActions.addWallet(playerInfo[i]._id, playerInfo[i].totalBet, 'Credit', tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex)
   }
   return tableInfo;
 };
