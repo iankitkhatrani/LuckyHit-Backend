@@ -73,6 +73,7 @@ module.exports.
                     tableid: tabInfo._id,
                     gamePlayType: tabInfo.gamePlayType,
                     sceneName: CONST.GAMEPLAY,
+                    rendomNumber: tabInfo.Number,
                 };
 
                 if (tabInfo.gameState === "StartEviator") {
