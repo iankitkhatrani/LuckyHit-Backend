@@ -122,7 +122,7 @@ module.exports.getPlayingUserInRound = async (p) => {
       return pl;
 
     for (let x = 0; x < p.length; x++) {
-      if (typeof p[x] == 'object' && p[x] != null && typeof p[x].seatIndex != 'undefined' && p[x].status == "play")
+      if (typeof p[x] == 'object' && p[x] != null && typeof p[x].seatIndex != 'undefined')
         pl.push(p[x]);
     }
     return pl;
