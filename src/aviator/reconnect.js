@@ -76,6 +76,8 @@ module.exports.
                     rendomNumber: tabInfo.rendomNumber,
                 };
 
+                console.log("response ",response)
+
                 if (tabInfo.gameState === "StartEviator") {
                     let currentDateTime = new Date();
                     let time = currentDateTime.getSeconds();
