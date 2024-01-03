@@ -58,6 +58,45 @@ module.exports.MYPROFILE = async (requestData, client) => {
     
 
 */
+module.exports.MYWALLET = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.MYWALLET, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+        
+        const wh = {
+            _id: MongoID(client.uid.toString()),
+        }
+        const project = {
+            name:1,chips:1,winningChips:1,bonusChips:1
+        }
+        console.log("wh ",wh)
+        const playerInfo = await GameUser.findOne(wh, project).lean();
+        logger.info("action playerInfo : ", playerInfo);
+
+        if (playerInfo == null) {
+            logger.info("action user not turn ::", playerInfo);
+            return false
+        }
+        
+        let response = {
+            playerInfo: playerInfo,
+            countryList:["india","UAE","USA"]
+        }
+        sendEvent(client, CONST.MYWALLET, response);
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+
+/*
+    
+
+*/
 module.exports.UPDATEPROFILE = async (requestData, client) => {
     try {
         logger.info("action requestData : ", requestData);

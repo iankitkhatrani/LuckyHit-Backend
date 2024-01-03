@@ -4,7 +4,7 @@ const { joinTable } = require("./joinTable");
 const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
 const {Redisbinding, Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
-const {MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD } = require("./dashboard");
+const {MYWALLET,MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD } = require("./dashboard");
 const {ADDCARD} = require("./updateWallet");
 const {reconnect} = require("./reconnect")
 
@@ -21,7 +21,7 @@ module.exports = {
   Redisbinding:Redisbinding,
   MYPROFILE:MYPROFILE,
   UPDATEPROFILE:UPDATEPROFILE,
-  MYPROFILE:MYPROFILE,
+  MYWALLET:MYWALLET,
   LB:LB,
   AVATARLIST:AVATARLIST,
   SHOPLIST:SHOPLIST,

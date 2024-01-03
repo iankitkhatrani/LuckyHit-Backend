@@ -178,6 +178,11 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.MYWALLET: { 
+                        await gamePlayActions.MYWALLET(payload.data, socket);
+                        break;
+                    }
+
                     case CONST.UPDATEPROFILE: {
                         await gamePlayActions.UPDATEPROFILE(payload.data, socket);
                         break;
