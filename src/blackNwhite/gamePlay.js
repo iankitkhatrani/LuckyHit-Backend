@@ -86,7 +86,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" blackAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalBlackChips: tabInfo.counters.totalBlackChips });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
         } else if (requestData.type === 'White') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
@@ -105,7 +105,8 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info("whiteAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalWhiteChips: tabInfo.counters.totalWhiteChips });
+
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalWhiteChips: tabInfo.counters.totalWhiteChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
 
         } else if (requestData.type === 'LuckyHit') {
@@ -124,7 +125,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" luckyHitAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalHitChips: tabInfo.counters.totalHitChips });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
         }
 

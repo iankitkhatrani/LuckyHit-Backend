@@ -17,7 +17,7 @@ module.exports.JoinRobot = async (tableInfo, BetInfo) => {
         }
 
         let robotInfo = await GameUser.findOne(user_wh, {});
-        logger.info("JoinRobot ROBOT Info : ", robotInfo)
+        logger.info("JoinRobot BNW ROBOT Info : ", robotInfo)
 
 
         await joinTable.findEmptySeatAndUserSeat(tableInfo, BetInfo, { uid: robotInfo._id });
@@ -29,13 +29,10 @@ module.exports.JoinRobot = async (tableInfo, BetInfo) => {
 
 module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
     try {
-
         // Play Robot Logic 
         logger.info("PlayRobot ", tableInfo)
 
         if (PlayerInfo != undefined && tableInfo._id != undefined) {
-
-
             logger.info("PlayRobot  tableInfo ", tableInfo)
 
             //find total Robot 
