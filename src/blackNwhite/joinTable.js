@@ -159,7 +159,6 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
         };
         whereCond['playerInfo.' + seatIndex + '.seatIndex'] = { $exists: false };
 
-        table.playerInfo.push({});
 
         let setPlayerInfo = {
             $set: {
@@ -224,7 +223,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
 
         delete client.JT;
 
-        if (tableInfo.gameState == "") {
+        if (tableInfo.gameState == "" && tableInfo.activePlayer == 1) {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
             clearJob(jobId)

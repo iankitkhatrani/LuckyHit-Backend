@@ -30,9 +30,10 @@ module.exports.gameTimerStart = async (tb) => {
                 gameState: "GameStartTimer",
                 "GameTimer.GST": new Date(),
                 "totalbet": 0,
-            }, $push: {
-                playerInfo: {} // Push an empty object into the playerInfo array
             }
+            // , $push: {
+            //     playerInfo: {} // Push an empty object into the playerInfo array
+            // }
         }
         logger.info("gameTimerStart UserInfo : ", wh, update);
 
@@ -87,7 +88,7 @@ module.exports.startBatting = async (tbId) => {
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
-        // botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
+        botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
         await cardDealActions.cardDealStart(tblId)
 
     } catch (error) {
