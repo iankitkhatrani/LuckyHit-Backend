@@ -602,8 +602,7 @@ module.exports.ADDCARD = async (requestData,client) => {
 
     if (typeof client.uid == "undefined" || typeof requestData.acname == "undefined" || typeof requestData.bankAc == "undefined"
     || typeof requestData.IFSCcode == "undefined" || typeof requestData.BankName == "undefined"
-    || typeof requestData.upi_id == "undefined" || typeof requestData.email == "undefined"
-    || typeof requestData.MobileNo == "undefined"
+    || typeof requestData.upi_id == "undefined" || typeof requestData.type == "undefined"
     ) {
         commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, requestData, false, "User session not set, please restart game!");
         return false;
@@ -617,10 +616,9 @@ module.exports.ADDCARD = async (requestData,client) => {
         bankAc:requestData.bankAc,
         IFSCcode:requestData.IFSCcode,
         upi_id:requestData.upi_id,
-        email:requestData.email,
-        mobileno:requestData.MobileNo,
         userId:client.uid,
-        status:1     
+        status:1,
+        type:requestData.type
     }
 
 
