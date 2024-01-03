@@ -42,6 +42,7 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
             let RobotPlayer = []
             let BetArray = [10, 50, 100, 200]
 
+            /*
             PlayerInfo.forEach(e => {
                 if (e.Iscom == 1) {
                     e.Number = GameStart.generateNumber(0, 1) ? GameStart.generateNumber(0, Number) : GameStart.generateNumber(Number, 60);
@@ -77,6 +78,7 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
                 }
             })
             commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.BNW_BET_COUNTEING, { totalBlackChips: tableInfo.counters.totalBlackChips });
+            */
 
         } else {
             logger.info("PlayRobot else  Robot ", tableInfo, PlayerInfo);

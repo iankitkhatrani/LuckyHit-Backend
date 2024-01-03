@@ -191,10 +191,10 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
         if (tableInfo.activePlayer >= 2 && tableInfo.gameState === CONST.ROUND_START_TIMER) {
             let currentDateTime = new Date();
             let time = currentDateTime.getSeconds();
-            let turnTime = new Date(tableInfo.gameTimer.GST);
+            let turnTime = new Date(tableInfo.gameTimer?.GST ?? 0)
             let Gtime = turnTime.getSeconds();
 
-            diff = Gtime - time;
+            diff = Number(Gtime) - time;
             diff += CONST.gameStartTime;
         }
 
@@ -223,7 +223,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
 
         delete client.JT;
 
-        if (tableInfo.gameState == "" && tableInfo.activePlayer == 1) {
+        if (tableInfo.gameState == ""/* && tableInfo.activePlayer == 1*/) {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
             clearJob(jobId)
