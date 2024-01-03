@@ -605,20 +605,20 @@ module.exports.ADDCARD = async (requestData,client) => {
     || typeof requestData.upi_id == "undefined" || typeof requestData.email == "undefined"
     || typeof requestData.MobileNo == "undefined"
     ) {
-        commandAcions.sendDirectEvent(client.sck, CONST.ADDCARD, requestData, false, "User session not set, please restart game!");
+        commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, requestData, false, "User session not set, please restart game!");
         return false;
     }
 
     
 
     let response = {
-        acname:req.body.acname,
-        BankName:req.body.BankName,
-        bankAc:req.body.bankAc,
-        IFSCcode:req.body.IFSCcode,
-        upi_id:req.body.upi_id,
-        email:req.body.email,
-        MobileNo:req.body.MobileNo,
+        acname:requestData.acname,
+        BankName:requestData.BankName,
+        bankAc:requestData.bankAc,
+        IFSCcode:requestData.IFSCcode,
+        upi_id:requestData.upi_id,
+        email:requestData.email,
+        mobileno:requestData.MobileNo,
         userId:client.uid,
         status:1     
     }
@@ -631,12 +631,14 @@ module.exports.ADDCARD = async (requestData,client) => {
     const usercard = new UserCards(response);
     const RecentUser = await usercard.save();
 
-    logger.info('admin/dahboard.js post dahboard  error => ', RecentUser);
+    logger.info('634admin/dahboard.js post dahboard  error => ', RecentUser);
+    logger.info('634admin/dahboard.js post dahboard  error =>client  ', client.id);
+
     if (RecentUser.acname != undefined) {
-        commandAcions.sendDirectEvent(client, CONST.ADDCARD, RecentUser);
+        commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, RecentUser);
 
     } else {
-        commandAcions.sendDirectEvent(client.sck, CONST.ADDCARD, {}, false, "User session not set, please restart game!");
+        commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, {}, false, "User session not set, please restart game!");
     }
 
 
@@ -645,7 +647,7 @@ module.exports.ADDCARD = async (requestData,client) => {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");
 
-        commandAcions.sendDirectEvent(client.sck, CONST.ADDCARD, {}, false, "User session not set, please restart game!");
+        commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, {}, false, "User session not set, please restart game!");
     }
 }
 

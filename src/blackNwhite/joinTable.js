@@ -94,7 +94,7 @@ module.exports.createTable = async (betInfo) => {
         let insertobj = {
             gameId: "",
             activePlayer: 0,
-            playerInfo: this.makeObjects(7),
+            playerInfo: this.makeObjects(20),
             gameState: "",
             history: [],
             BNWCards: { black: [], white: [] },
