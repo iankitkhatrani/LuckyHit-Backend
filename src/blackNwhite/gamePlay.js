@@ -86,7 +86,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" blackAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer, totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer,betAmount:requestData.betAmount,totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
         } else if (requestData.type === 'White') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
@@ -106,7 +106,7 @@ module.exports.action = async (requestData, client) => {
 
             logger.info("whiteAmount table Info -->", tabInfo)
 
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer, totalWhiteChips: tabInfo.counters.totalWhiteChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer,betAmount:requestData.betAmount, totalWhiteChips: tabInfo.counters.totalWhiteChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
 
         } else if (requestData.type === 'LuckyHit') {
@@ -125,7 +125,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" luckyHitAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer, totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer,betAmount:requestData.betAmount, totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
         }
 
