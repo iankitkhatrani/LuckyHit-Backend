@@ -6,6 +6,7 @@ const BlackNwhiteTables = mongoose.model("blackNwhiteTables");
 const logger = require('../../logger');
 const CONST = require('../../constant');
 const leaveTableActions = require('./leaveTable');
+const BNWleaveTableActions = require('../blackNwhite/leaveTable');
 
 //const { AddTime, setDelay } = require('./socketFunctions');
 
@@ -23,7 +24,48 @@ module.exports.disconnectTableHandle = async (client) => {
       logger.info('Find Table when user Disconnect =>', tabInfo);
 
       if (tabInfo === null) {
-        return false;
+        tabInfo = await BlackNwhiteTables.findOne(whe, {}).lean();
+        logger.info('BNW Find Table when user Disconnect =>', tabInfo);
+
+        if (tabInfo === null) {
+          return false;
+        }
+        let whB = {
+          _id: MongoID(client.tbid.toString()),
+          'playerInfo._id': MongoID(client.uid.toString()),
+        };
+
+        const projectB = {
+          'playerInfo.$': 1,
+        };
+
+        const tblInfo = await BlackNwhiteTables.findOne(whB, projectB);
+        logger.info('BNW check user rejoin status', tblInfo);
+
+        if (tblInfo !== null && tblInfo.playerInfo[0].rejoin !== true) {
+          await BNWleaveTableActions.leaveTable(
+            {
+              reason: 'userDisconnect',
+            },
+            {
+              uid: tblInfo.playerInfo[0]._id.toString(),
+              tbid: tblInfo._id.toString(),
+              seatIndex: tblInfo.playerInfo[0].seatIndex,
+              sck: tblInfo.playerInfo[0].sck,
+            }
+          );
+        } else {
+          let updateData = {
+            ['playerInfo.$.rejoin']: false,
+          };
+
+          let tablInfo = await BlackNwhiteTables.findOneAndUpdate(wh, updateData, {
+            new: true,
+          });
+
+          logger.info('BNW else  update table :: ', tablInfo);
+          return tablInfo;
+        }
 
       }
 

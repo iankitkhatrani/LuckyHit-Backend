@@ -21,7 +21,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     let winnerObj = this.filterWinnerResponse(winner)
     logger.info("winnerObj::  -->", winnerObj);
 
-    const winnerCardIndex = winner.filter(player => player.winResult === "Win");
+    const winnerCardIndex = winner.filter(player => player.winResult === "Win" || player.winResult === 'Tie');
     const winnerCard = winnerCardIndex[0].index
     logger.log("winnercard 1=>", winnerCardIndex[0].index)
     logger.log("winnercard 2=>", winnerCard)
@@ -203,8 +203,10 @@ module.exports.manageUserScore = async (playerInfo, tabInfo) => {
   let tableInfo;
   for (let i = 0; i < playerInfo.length; i++) {
     logger.info('\n Manage User Score Player Info ==>', playerInfo[i]);
-    if (playerInfo[i].totalBet != NaN)
+    if (!Number.isNaN(playerInfo[i].totalBet)) {
+      logger.info('\n playerInfo[i].totalBet ==>', playerInfo[i].totalBet);
       await walletActions.addWallet(playerInfo[i]._id, playerInfo[i].totalBet, 'Credit', tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex)
+    }
   }
   return tableInfo;
 };

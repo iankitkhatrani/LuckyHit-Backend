@@ -5,17 +5,17 @@ fortuna.init();
 
 module.exports.valueOfCard = (card) => {
 
-    let cardsDiff =  this.DiffColor(card)
+    let cardsDiff = this.DiffColor(card)
 
-    if(this.PureRonForCheck(cardsDiff)){
+    if (this.PureRonForCheck(cardsDiff)) {
         return 5
-    }else if(this.TeenForCheck(cardsDiff) ){
+    } else if (this.TeenForCheck(cardsDiff)) {
         return 4
-    }else if(this.RonForCheck(cardsDiff)){
+    } else if (this.RonForCheck(cardsDiff)) {
         return 3
-    }else if(this.ColorCardCheck(cardsDiff)){
+    } else if (this.ColorCardCheck(cardsDiff)) {
         return 2
-    }else if(this.PairForCheck(cardsDiff)){
+    } else if (this.PairForCheck(cardsDiff)) {
         return 1
     }
     return 0;
@@ -113,7 +113,7 @@ module.exports.PureRonForCheck = (a) => {
 }
 
 
-module.exports.RonForCheck = (a) =>{
+module.exports.RonForCheck = (a) => {
 
     let flag = true;
 
@@ -172,7 +172,7 @@ module.exports.ColorCardCheck = (a) => {
     if (count <= 2) {
         return false
     }
-  
+
     return flag;
 }
 
@@ -181,7 +181,7 @@ module.exports.PairForCheck = (a) => {
 
     let point = _.filter(a.cards, function (num) { return num != 0; });
 
-    console.log("Point ",point)
+    console.log("Point ", point)
     let count = 0
 
     for (let x in point) {
@@ -190,13 +190,13 @@ module.exports.PairForCheck = (a) => {
             count++
         }
     }
-    console.log("count ",count)
-    if(count < 2){
+    console.log("count ", count)
+    if (count < 2) {
         return false
     }
     return flag;
 }
 
-module.exports.GetRandomInt = (min, max) => {
+module.exports.getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
+};

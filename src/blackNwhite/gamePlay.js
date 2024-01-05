@@ -23,7 +23,6 @@ module.exports.action = async (requestData, client) => {
         logger.info("Bnw action client.tbid: ", client.tbid);
         logger.info("Bnw action client.uid ", client.uid);
         logger.info("Bnw action client.seatIndex ", client.seatIndex);
-        logger.info("Bnw action requestData.bet ", requestData.bet);
 
         if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined") {
             commandAcions.sendDirectEvent(client.sck, CONST.BNW_ACTION, requestData, false, "User session not set, please restart game!");
@@ -86,7 +85,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" blackAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer, totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
         } else if (requestData.type === 'White') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
@@ -106,7 +105,7 @@ module.exports.action = async (requestData, client) => {
 
             logger.info("whiteAmount table Info -->", tabInfo)
 
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer, totalWhiteChips: tabInfo.counters.totalWhiteChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, totalWhiteChips: tabInfo.counters.totalWhiteChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
 
         } else if (requestData.type === 'LuckyHit') {
@@ -125,7 +124,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" luckyHitAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, {activePlayer:tabInfo.activePlayer, totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
         }
 

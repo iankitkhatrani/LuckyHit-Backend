@@ -53,6 +53,7 @@ module.exports.cardDealStart = async (tbid) => {
 module.exports.setUserCards = async (cardsInfo, tb) => {
     try {
         logger.info("setUserCards cardsInfo : 1 ", cardsInfo);
+        logger.info("setUserCards cardsInfo tb ", tb);
         // const cards = cardsInfo;
 
         let upWh = {

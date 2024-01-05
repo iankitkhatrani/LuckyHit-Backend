@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => {
   try {
     // res.json(await mainCtrl.adminLogin(req.body));
     const data = await mainCtrl.adminLogin(req.body);
-     logger.info('data => ', data);
+    logger.info('data => ', data);
     res.status(OK_STATUS).json(data);
   } catch (err) {
     logger.error('admin/auth.js login error => ', err);
@@ -54,15 +54,13 @@ router.post('/login', async (req, res) => {
 */
 router.get('/DeletePlaying', async (req, res) => {
   try {
-     
-      await blackNwhiteTables.deleteMany({})
 
-      logger.info('admin/dahboard.js post dahboard  error => ');
+    await blackNwhiteTables.deleteMany({})
 
-      res.json({ status:"ok" });
+    res.json({ status: "ok" });
   } catch (error) {
-      logger.error('admin/dahboard.js post bet-list error => ', error);
-      res.status(config.INTERNAL_SERVER_ERROR).json(error);
+    logger.error('admin/dahboard.js post bet-list error => ', error);
+    res.status(config.INTERNAL_SERVER_ERROR).json(error);
   }
 });
 
@@ -77,15 +75,15 @@ router.get('/DeletePlaying', async (req, res) => {
 */
 router.get('/DeletePlayingAV', async (req, res) => {
   try {
-     
-      await AviatorTables.deleteMany({})
 
-      logger.info('admin/dahboard.js post dahboard  error => ');
+    await AviatorTables.deleteMany({})
 
-      res.json({ status:"ok" });
+    logger.info('admin/dahboard.js post dahboard  error => ');
+
+    res.json({ status: "ok" });
   } catch (error) {
-      logger.error('admin/dahboard.js post bet-list error => ', error);
-      res.status(config.INTERNAL_SERVER_ERROR).json(error);
+    logger.error('admin/dahboard.js post bet-list error => ', error);
+    res.status(config.INTERNAL_SERVER_ERROR).json(error);
   }
 });
 

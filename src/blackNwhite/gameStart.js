@@ -40,6 +40,9 @@ module.exports.gameTimerStart = async (tb) => {
         const tabInfo = await PlayingTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("gameTimerStart tabInfo :: ", tabInfo);
 
+        // await botLogic.JoinRobot(tb, betInfo)
+
+
         let roundTime = 3;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_GAME_START_TIMER, { timer: roundTime });
 
@@ -88,7 +91,7 @@ module.exports.startBatting = async (tbId) => {
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
-        botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
+        await botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
         await cardDealActions.cardDealStart(tblId)
 
     } catch (error) {
