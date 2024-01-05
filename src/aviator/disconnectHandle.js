@@ -13,7 +13,7 @@ const BNWleaveTableActions = require('../blackNwhite/leaveTable');
 module.exports.disconnectTableHandle = async (client) => {
   try {
     logger.info('disconnectTableHandle client.uid =>: ', client.uid);
-    logger.info('disconnectTableHandle client.tbid =>: ', client.tbid);
+    logger.info(' ', client.tbid);
 
     if (typeof client.uid !== 'undefined') {
       const whe = {

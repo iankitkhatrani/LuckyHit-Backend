@@ -90,6 +90,8 @@ module.exports.
                         ...response,
                         currentTurnUserSeatIndex: tabInfo.turnSeatIndex,
                         currentTurnTimer: GetTimeDifference(new Date(tabInfo.aviatorDate),currentDateTime),
+                        aviatorDate:new Date(tabInfo.aviatorDate),
+                        currentDateTime:currentDateTime
                     };
 
                     console.log("responseRS ",responseRS)
