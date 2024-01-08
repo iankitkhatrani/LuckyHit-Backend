@@ -65,7 +65,7 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
             //find total Robot 
             //and check out rendom 
             //PlayerInfo rendom number 
-            let RobotPlayer = []
+            //let RobotPlayer = []
             let BetArray= [10,50,100,200,150,60,160,360,1000]
 
             PlayerInfo.forEach(e => {
@@ -86,27 +86,16 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
                         })
                     }
 
-                    delete e.profile
-                    delete e.coins
-                    delete e.status
-                    delete e.playerStatus
-                    delete e.chalValue
-                    delete e.chalValue1
-                    delete e.turnMissCounter
-                    delete e.turnCount
-                    delete e.sck
-                    delete e.playerSocketId
-                    delete e.playerLostChips
-                    delete e.Iscom
+                    
 
-                    RobotPlayer.push(e)
+                    //RobotPlayer.push(e)
                 }
             })
 
             // Genrate Rendome Number 
             // 0 to Number
             
-            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.ROBOTPLAY, { RobotPlayer: RobotPlayer });
+            //commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.ROBOTPLAY, { RobotPlayer: RobotPlayer });
    
 
         }else{
