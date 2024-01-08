@@ -108,7 +108,6 @@ router.put('/gameLogicSet', async (req, res) => {
 
         }
 
-        logger.info('admin/dahboard.js post dahboard  error => ', CONST);
 
         res.json({ falgs: true });
     } catch (error) {
@@ -148,7 +147,6 @@ router.get('/getgamelogic', async (req, res) => {
             res.json({ logic: "" });
         }
 
-        logger.info('admin/dahboard.js post dahboard  error => ', CONST);
 
         
     } catch (error) {
