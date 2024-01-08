@@ -56,8 +56,9 @@ rclient1.on('error', (err) =>
   logger.info("Redis Client Error ", err));
 rclient1.on('connect', () => {
   logger.info('Redis Client connected')
+   gamePlayActions = require('./src/aviator/');
 
-  //gamePlayActions.Redisbinding()
+  gamePlayActions.Redisbinding()
 
 });
 

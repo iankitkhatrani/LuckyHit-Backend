@@ -488,18 +488,18 @@ module.exports.Redisbinding = async () => {
     //subscribing for heabeats expiration
     rclient1.send_command('config', ['set', 'notify-keyspace-events', 'Ex'])
     rclient1.subscribe('__keyevent@10__:expired');
-
+    console.log("Redisbinding ")
     rclient1.on('message', function (channel, msg, type) {
         var obj = msg.split(":")
         console.log("Obj ::::::::::::::::", obj)
-        if (obj.length > 3 && obj[0] != undefined && obj[1] != undefined && obj[2] != undefined && obj[3] != undefined) {
+        if (obj.length > 3 && obj[0] != undefined && obj[1] != undefined && obj[2] != undefined && obj[3] != undefined && obj[4] != undefined) {
             let response = {
                 seatIndex: -1,
                 winamount: Number(obj[3]),
                 userid: obj[2]
             }
 
-            commandAcions.sendEventInTable(obj[2], CONST.TABLECHECKOUT, response);
+            commandAcions.sendEventInTable(obj[4], CONST.TABLECHECKOUT, response);
         }
     });
 

@@ -81,8 +81,8 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
                     if(Number > e.Number){
                         e.winamount =  e.Number * e.bet;
 
-                        rclient.hmset("Aviator:"+tableInfo.uuid+":"+e._id.toString()+":"+e.winamount.toString(), { "uid": e._id.toString(),Number:e.Number }, function (err) {
-                            rclient.expire("Aviator:"+tableInfo.uuid+":"+e._id.toString()+":"+e.winamount.toString(), Math.round(e.Number)-1)
+                        rclient.hmset("Aviator:"+tableInfo.uuid+":"+e._id.toString()+":"+e.winamount.toString()+":"+tableInfo._id, { "uid": e._id.toString(),Number:e.Number }, function (err) {
+                            rclient.expire("Aviator:"+tableInfo.uuid+":"+e._id.toString()+":"+e.winamount.toString()+":"+tableInfo._id, Math.round(e.Number)-1)
                         })
                     }
 
