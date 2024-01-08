@@ -210,6 +210,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
         let response = {
             seatIndex: tb.turnSeatIndex,
             winamount: winAmount
+           
         }
         commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
         delete client.action;
