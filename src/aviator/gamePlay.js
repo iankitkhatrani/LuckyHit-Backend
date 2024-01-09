@@ -339,8 +339,11 @@ module.exports.CHECKOUT = async (requestData, client) => {
 
         winAmount = Number(winAmount - Deductcom).toFixed(2);
 
+        console.log("winAmount :::::::::::::::::::::::::::::",winAmount)
+
         await walletActions.addWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
 
+        console.log("winAmount :::::::::::::::::::::::::::::",winAmount)
 
         await this.AddGameHistory({
             "userId": client.uid,
