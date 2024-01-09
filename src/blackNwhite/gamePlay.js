@@ -85,7 +85,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" blackAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
         } else if (requestData.type === 'White') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
@@ -124,7 +124,7 @@ module.exports.action = async (requestData, client) => {
             });
 
             logger.info(" luckyHitAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalWhiteChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
         }
 
@@ -210,18 +210,10 @@ module.exports.CHECKOUT = async (requestData, client) => {
         let response = {
             seatIndex: tb.turnSeatIndex,
             winamount: winAmount
-           
+
         }
         commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
         delete client.action;
-
-        // let activePlayerInRound = await roundStartActions.getPlayingUserInRound(tb.playerInfo);
-        // logger.info("action activePlayerInRound :", activePlayerInRound, activePlayerInRound.length);
-        // if (activePlayerInRound.length == 1) {
-        //     await gameFinishActions.lastUserWinnerDeclareCall(tb);
-        // } else {
-        //     await roundStartActions.nextUserTurnstart(tb);
-        // }
 
         return true;
     } catch (e) {

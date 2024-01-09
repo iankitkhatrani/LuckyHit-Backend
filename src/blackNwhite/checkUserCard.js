@@ -22,53 +22,10 @@ module.exports.getWinnerUser = (userInfo, hukum, isShow, showUserSeatIndex, BNWC
     logger.info("getWinnerUser cardsResult : ", cardsResult);
 
     return cardsResult;
-    ////Old COde
-    // for (let i = 0; i < userInfo.length; i++) {
-    //     let response = this.getWinState(userInfo[i].cards, hukum);
-    //     logger.info("getWinnerUser response : ", response);
 
-    //     response.seatIndex = userInfo[i].seatIndex;
-    //     players.push(response);
-    // }
-
-    // players = players.sort((a, b) => {
-    //     return b.cardCount - a.cardCount
-    // }).sort((a, b) => {
-    //     return a.index - b.index
-    // })
-    // logger.info("getWinnerUser players : ", players);
-
-    // if (typeof isShow != "undefined" && isShow) {
-    //     let winners = [players[0]];
-    //     if (winners[0].cardCount == players[1].cardCount && winners[0].index == players[1].index) {
-    //         if (winners[0].seatIndex == showUserSeatIndex) {
-    //             winners = [players[1]];
-    //         }
-    //     }
-    //     return winners;
-    // } else {
-    //     let winners = [players[0]];
-    //     for (let i = 1; i < players.length; i++) {
-    //         if (winners[0].cardCount == players[1].cardCount && winners[0].index == players[1].index) {
-    //             winners.push(players[i]);
-    //         }
-    //     }
-    //     return winners;
-    // }
 }
 
 module.exports.getWinState = (userCards, hukum) => {
-
-    // let hukumCards = this.gethukumList(userCards, hukum);
-    // logger.info("\ngetWinState hukumCards : ", hukumCards);
-
-    // let remaningCards = _.difference(userCards, hukumCards);
-    // logger.info("getWinState hciuc :", remaningCards, hukumCards, userCards);
-
-    // remaningCards = remaningCards.sort((a, b) => {
-    //     return b.split('-')[1] - a.split('-')[1];
-    // })
-    // logger.info("getWinState remaningCards :", remaningCards);
 
     let cards = userCards //this.replaceHukumCards(remaningCards, hukum);
     logger.info("getWinState cards :", cards);

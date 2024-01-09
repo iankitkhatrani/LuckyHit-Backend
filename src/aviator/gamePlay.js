@@ -379,8 +379,8 @@ module.exports.CHECKOUT = async (requestData, client) => {
             seatIndex: tb.turnSeatIndex,
             winamount: winAmount,
             userid: client.uid,
-            bet:requestData.bet,
-            checkout:requestData.checkout
+            bet: requestData.bet,
+            checkout: requestData.checkout
         }
         //commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
         sendEvent(client, CONST.CHECKOUT, response);
@@ -493,15 +493,15 @@ module.exports.Redisbinding = async () => {
     console.log("Redisbinding ")
     rclient1.on('message', function (channel, msg, type) {
         var obj = msg.split(":")
-        console.log("Obj ::::::::::::::::", obj)
-        if (obj.length > 3 && obj[0] != undefined && obj[1] != undefined 
-            && obj[2] != undefined && obj[3] != undefined && obj[4] != undefined && obj[5] != undefined && obj[6] != undefined ) {
+        // console.log("Obj ::::::::::::::::", obj)
+        if (obj.length > 3 && obj[0] != undefined && obj[1] != undefined
+            && obj[2] != undefined && obj[3] != undefined && obj[4] != undefined && obj[5] != undefined && obj[6] != undefined) {
             let response = {
                 seatIndex: -1,
                 winamount: Number(obj[3]),
                 userid: obj[2],
-                bet:Number(obj[5]),
-                checkout:Number(obj[6])
+                bet: Number(obj[5]),
+                checkout: Number(obj[6])
 
             }
 

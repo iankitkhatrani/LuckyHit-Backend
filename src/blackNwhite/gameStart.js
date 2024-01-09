@@ -31,9 +31,7 @@ module.exports.gameTimerStart = async (tb) => {
                 "GameTimer.GST": new Date(),
                 "totalbet": 0,
             }
-            // , $push: {
-            //     playerInfo: {} // Push an empty object into the playerInfo array
-            // }
+
         }
         logger.info("gameTimerStart UserInfo : ", wh, update);
 
