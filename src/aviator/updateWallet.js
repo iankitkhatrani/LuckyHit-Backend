@@ -196,7 +196,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
         if (typeof wh == 'undefined' || typeof wh._id == 'undefined' || wh._id == null || typeof tType == 'undefined') {
             return false;
         }
-        added_chips = Number(added_chips.toFixed(2));
+        added_chips = Number(added_chips).toFixed(2);
         let projection = {
             id: 1,
             user_name: 1,
