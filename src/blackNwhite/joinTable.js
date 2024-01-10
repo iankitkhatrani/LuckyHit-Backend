@@ -153,6 +153,8 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
         }
 
         logger.info("findEmptySeatAndUserSeat playerDetails : ", playerDetails);
+        logger.info("findEmptySeatAndUserSeat userInfo playerDetails.coins ++==> : ", playerDetails.coins)
+
 
         let whereCond = {
             _id: MongoID(table._id.toString())

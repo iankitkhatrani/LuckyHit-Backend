@@ -71,7 +71,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
           seatIndex: player.seatIndex,
           totalBet: finalAmount,
           sckId: player.sck,
-          totalChips: Number(player.coins + finalAmount)
+          // totalChips: Number(player.coins + finalAmount)
         })
 
       }

@@ -80,7 +80,8 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
 
                             logger.info("whiteAmount totalBlackChips BOT LOGIC  table Info -->", tableInfo);
 
-                            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tableInfo.activePlayer, totalBlackChips: tableInfo.counters.totalBlackChips, playerId: e.playerId, seatIndex: e.seatIndex, betType: betLists });
+                            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tableInfo.activePlayer, betAmount: bet, totalBlackChips: tableInfo.counters.totalBlackChips, playerId: e.playerId, seatIndex: e.seatIndex, betType: betLists });
+
                         } else if (bet == 'White') {
                             let updateData = {
                                 $set: {},
@@ -100,7 +101,7 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
                             });
 
                             logger.info("whiteAmount totalWhiteChips BOT LOGIC  table Info -->", tableInfo);
-                            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tableInfo.activePlayer, totalWhiteChips: tableInfo.counters.totalWhiteChips, playerId: e.playerId, seatIndex: e.seatIndex, betType: betLists });
+                            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tableInfo.activePlayer, betAmount: bet, totalWhiteChips: tableInfo.counters.totalWhiteChips, playerId: e.playerId, seatIndex: e.seatIndex, betType: betLists });
                         } else {
                             let updateData = {
                                 $set: {},
@@ -120,7 +121,7 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
                             });
 
                             logger.info("whiteAmount totalHitChips BOT LOGIC  table Info -->", tableInfo);
-                            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tableInfo.activePlayer, totalHitChips: tableInfo.counters.totalHitChips, playerId: e.playerId, seatIndex: e.seatIndex, betType: betLists });
+                            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tableInfo.activePlayer, betAmount: bet, totalHitChips: tableInfo.counters.totalHitChips, playerId: e.playerId, seatIndex: e.seatIndex, betType: betLists });
                         }
                     } else {
                         logger.info(" Not Find User ");
