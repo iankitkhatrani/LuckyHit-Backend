@@ -95,6 +95,8 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
         logger.info("\ndedudctWallet wh :: ", wh, setInfo);
         let upReps = await GameUser.findOneAndUpdate(wh, setInfo, { new: true });
         logger.info("\ndedudctWallet upReps :: ", upReps);
+        logger.info("\ndedudctWallet upReps playerDetails.coins ++==> ", upReps.chips + upReps.winningChips);
+
 
         upReps.chips = (typeof upReps.chips == 'undefined' || isNaN(upReps.chips)) ? 0 : Number(upReps.chips);
         upReps.winningChips = (typeof upReps.winningChips == 'undefined' || isNaN(upReps.winningChips)) ? 0 : Number(upReps.winningChips);
@@ -242,6 +244,8 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
         logger.info("\naddWallet wh :: ", wh, setInfo);
         let upReps = await GameUser.findOneAndUpdate(wh, setInfo, { new: true });
         logger.info("\naddWallet upReps :: ", upReps);
+        logger.info("\naddWallet upReps playerDetails.coins ++==> ", upReps.chips + upReps.winningChips);
+
 
         upReps.chips = (typeof upReps.chips == 'undefined' || isNaN(upReps.chips)) ? 0 : Number(upReps.chips);
         upReps.winningChips = (typeof upReps.winningChips == 'undefined' || isNaN(upReps.winningChips)) ? 0 : Number(upReps.winningChips);
