@@ -91,9 +91,6 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
 
     let tbInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, { new: true });
     logger.info("winnerDeclareCall tbInfo : ", JSON.stringify(tbInfo));
-
-
-
     logger.info("Total Amounts Grouped by Type:", typeAmounts);
     logger.info("Total Amounts Grouped by Type: UserInfo", userInfo);
 
@@ -117,7 +114,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
 
 
     let jobId = commandAcions.GetRandomString(10);
-    let delay = commandAcions.AddTime(4);
+    let delay = commandAcions.AddTime(3);
     await commandAcions.setDelay(jobId, new Date(delay));
 
     let winnerViewResponse = {
@@ -148,13 +145,11 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
 module.exports.winnerViewResponseFilter = (playerInfos, winnerTrack, winnerIndexs) => {
   logger.info("winnerViewResponseFilter playerInfo : ", playerInfos);
 
-
   let userInfo = [];
   let playerInfo = playerInfos;
 
   for (let i = 0; i < playerInfo.length; i++) {
     if (typeof playerInfo[i].seatIndex != "undefined") {
-      logger.info("winnerViewResponseFilter playerInfo[i] : ", playerInfo[i]);
       userInfo.push({
         _id: playerInfo[i]._id,
         seatIndex: playerInfo[i].seatIndex,

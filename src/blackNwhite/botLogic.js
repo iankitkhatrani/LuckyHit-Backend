@@ -37,8 +37,8 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
             logger.info("PlayRobot  tableInfo ", tableInfo)
 
             let RobotPlayer = []
-            let BetArray = [10, 20, 50, 100, 200]
-            let BetType = ['Black', 'White', 'LuckyHit']
+            let BetArray = [10, 20, 50, 100, 200, 10, 20, 5000, 50]
+            let BetType = ['Black', 'White', 'LuckyHit', 'Black', 'White',]
 
             async function processPlayerInfo(PlayerInfo) {
                 for (const e of PlayerInfo) {
@@ -48,16 +48,6 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
                         let bet = BetArray[getRandomInt(0, BetArray.length - 1)];
 
                         logger.info("PlayRobot betIndex ", bet);
-
-                        // e.betLists.push({ betLists, bet });
-                        /*
-                        
-                        tableId "6597f7c2d401773d70894cde"
-                        playerId "65769ed020ce4166fc770550"
-                        betAmount 50
-                        type "Black"
-                        */
-                        // delete properties from 'e' object
 
                         RobotPlayer.push(e);
 

@@ -59,11 +59,6 @@ module.exports.gameTimerStart = async (tb) => {
 module.exports.startBatting = async (tbId) => {
     logger.info("table Id startBatting-- >", tbId);
     try {
-        // let whr = { _id: tbId }
-        // let tb = await PlayingTables.findOne({ whr }, {}).lean()
-
-        // logger.info("start BNW tbId : ", tb);
-        // if (tb === null || tb.gameState !== "GameStartTimer") return false;
 
         let wh = {
             _id: tbId

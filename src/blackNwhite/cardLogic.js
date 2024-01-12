@@ -21,7 +21,6 @@ module.exports.valueOfCard = (card) => {
     return 0;
 }
 
-
 module.exports.DiffColor = (card) => {
     let obj = {
         cards: [],
@@ -68,7 +67,6 @@ module.exports.TeenForCheck = (a) => {
     return flag;
 }
 
-
 module.exports.PureRonForCheck = (a) => {
 
     let flag = true;
@@ -112,7 +110,6 @@ module.exports.PureRonForCheck = (a) => {
 
 }
 
-
 module.exports.RonForCheck = (a) => {
 
     let flag = true;
@@ -155,7 +152,6 @@ module.exports.RonForCheck = (a) => {
     return flag;
 
 }
-
 
 module.exports.ColorCardCheck = (a) => {
     let flag = true;
