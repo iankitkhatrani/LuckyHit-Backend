@@ -21,17 +21,6 @@ module.exports.joinTable = async (requestData, client) => {
         if (typeof client.JT != "undefined" && client.JT) return false;
 
         client.JT = true;
-        const betInfo = {
-            "_id": "657c440d82167b4a3c4949ae",
-            "entryFee": 1,
-            "chalLimit": 1,
-            "potLimit": 100,
-        }
-        // let bwh = {
-        //     _id: requestData.betId
-        // }
-        // const BetInfo = await BetLists.findOne(bwh, {}).lean();
-        // logger.info("Join Table data : ", JSON.stringify(BetInfo));
 
         let gwh = {
             _id: MongoID(client.uid)
@@ -57,25 +46,23 @@ module.exports.joinTable = async (requestData, client) => {
             delete client.JT
             return false;
         }
-        await this.findTable(betInfo, client)
+        await this.findTable(client)
     } catch (error) {
         console.info("BNW_JOIN_TABLE", error);
     }
 }
 
-module.exports.findTable = async (BetInfo, client) => {
-    logger.info("findTable BetInfo : ", JSON.stringify(BetInfo));
+module.exports.findTable = async (client) => {
 
-    let tableInfo = await this.getBetTable(BetInfo);
+    let tableInfo = await this.getBetTable();
     logger.info("findTable tableInfo : ", JSON.stringify(tableInfo));
 
-    await this.findEmptySeatAndUserSeat(tableInfo, BetInfo, client);
+    await this.findEmptySeatAndUserSeat(tableInfo, client);
 }
 
-module.exports.getBetTable = async (BetInfo) => {
-    logger.info("getBetTable BetInfo : ", JSON.stringify(BetInfo));
+module.exports.getBetTable = async () => {
     let wh = {
-        activePlayer: { $gte: 1, }
+        activePlayer: { $gte: 0, }
     }
     logger.info("getBetTable wh : ", JSON.stringify(wh));
     let tableInfo = await PlayingTables.find(wh, {}).sort({ activePlayer: 1 }).lean();
@@ -85,11 +72,11 @@ module.exports.getBetTable = async (BetInfo) => {
     if (tableInfo.length > 0) {
         return tableInfo[0];
     }
-    let table = await this.createTable(BetInfo);
+    let table = await this.createTable({});
     return table;
 }
 
-module.exports.createTable = async (betInfo) => {
+module.exports.createTable = async () => {
     try {
         let insertobj = {
             gameId: "",
@@ -107,19 +94,19 @@ module.exports.createTable = async (betInfo) => {
         return insertInfo;
 
     } catch (error) {
-        logger.error('joinTable.js createTable error=> ', error, betInfo);
+        logger.error('joinTable.js createTable error=> ', error);
 
     }
 }
 
-module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
+module.exports.findEmptySeatAndUserSeat = async (table, client) => {
     try {
         // logger.info("findEmptySeatAndUserSeat table :=> ", table + " betInfo :=> ", betInfo + " client :=> ", client);
         let seatIndex = this.findEmptySeat(table.playerInfo); //finding empty seat
         logger.info("findEmptySeatAndUserSeat seatIndex ::", seatIndex);
 
         if (seatIndex == "-1") {
-            await this.findTable(betInfo, client)
+            await this.findTable(client)
             return false;
         }
 
@@ -235,7 +222,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, betInfo, client) => {
 
             if (tableInfo.activePlayer <= 2) {
                 setTimeout(() => {
-                    botLogic.JoinRobot(tableInfo, betInfo)
+                    botLogic.JoinRobot(tableInfo)
                 }, 2000)
             }
         }

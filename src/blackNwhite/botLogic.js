@@ -9,7 +9,7 @@ const logger = require('../../logger');
 const joinTable = require("./joinTable");
 const { getRandomInt } = require('./cardLogic');
 
-module.exports.JoinRobot = async (tableInfo, BetInfo) => {
+module.exports.JoinRobot = async (tableInfo) => {
     try {
 
         let user_wh = {
@@ -20,7 +20,7 @@ module.exports.JoinRobot = async (tableInfo, BetInfo) => {
         logger.info("JoinRobot BNW ROBOT Info : ", robotInfo)
 
 
-        await joinTable.findEmptySeatAndUserSeat(tableInfo, BetInfo, { uid: robotInfo._id });
+        await joinTable.findEmptySeatAndUserSeat(tableInfo, { uid: robotInfo._id });
 
     } catch (error) {
         logger.info("Robot Logic Join", error);
@@ -48,10 +48,11 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
                         let bet = BetArray[getRandomInt(0, BetArray.length - 1)];
 
                         logger.info("PlayRobot betIndex ", bet);
+                        logger.info("PlayRobot betLists ", betLists);
 
                         RobotPlayer.push(e);
 
-                        if (bet == 'Black') {
+                        if (betLists == 'Black') {
                             let updateData = {
                                 $set: {},
                                 $inc: {},
@@ -72,7 +73,7 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
 
                             commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tableInfo.activePlayer, betAmount: bet, totalBlackChips: tableInfo.counters.totalBlackChips, playerId: e.playerId, seatIndex: e.seatIndex, betType: betLists });
 
-                        } else if (bet == 'White') {
+                        } else if (betLists == 'White') {
                             let updateData = {
                                 $set: {},
                                 $inc: {},
