@@ -661,7 +661,7 @@ module.exports.GETCARD = async (requestData,client) => {
 
     if (typeof client.uid == "undefined"
     ) {
-        commandAcions.sendDirectEvent(client.sck, CONST.GETCARD, requestData, false, "User session not set, please restart game!");
+        commandAcions.sendDirectEvent(client.id, CONST.GETCARD, requestData, false, "User session not set, please restart game!");
         return false;
     }
 
@@ -676,7 +676,7 @@ module.exports.GETCARD = async (requestData,client) => {
         commandAcions.sendDirectEvent(client.id, CONST.GETCARD, {totalUsercard:totalUsercard});
 
     } else {
-        commandAcions.sendDirectEvent(client.sck, CONST.GETCARD, {}, false, "User session not set, please restart game!");
+        commandAcions.sendDirectEvent(client.id, CONST.GETCARD, {}, false, "User session not set, please restart game!");
     }
 
 
