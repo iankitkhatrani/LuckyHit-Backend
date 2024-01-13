@@ -5,7 +5,7 @@ const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
 const {Redisbinding, Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
 const {MYWALLET,MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD } = require("./dashboard");
-const {ADDCARD} = require("./updateWallet");
+const {ADDCARD,GETCARD} = require("./updateWallet");
 const {reconnect} = require("./reconnect")
 
 
