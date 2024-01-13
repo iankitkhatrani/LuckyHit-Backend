@@ -386,7 +386,7 @@ module.exports.addWalletAdmin = async (id, added_chips, tType, t, tbInfo, client
         logger.info("\addWalletAdmin upReps :: ", upReps);
 
         upReps.chips = (typeof upReps.chips == 'undefined' || isNaN(upReps.chips)) ? 0 : Number(upReps.chips);
-        let totalRemaningAmount = upReps.chips 
+        let totalRemaningAmount = upReps.chips
 
         if (typeof tType != 'undefined') {
 
@@ -403,9 +403,9 @@ module.exports.addWalletAdmin = async (id, added_chips, tType, t, tbInfo, client
                 winningChips: upReps.winningChips,
                 totalBucket: totalRemaningAmount
             }
-            console.log("walletTrack ::::::::::::::::::::",walletTrack)
+            console.log("walletTrack ::::::::::::::::::::", walletTrack)
 
-            await this.trackUserWallet(walletTrack,"Main");
+            await this.trackUserWallet(walletTrack, "Main");
         }
 
         if ((typeof upReps.chips.toString().split(".")[1] != "undefined" && upReps.chips.toString().split(".")[1].length > 2)) {
@@ -511,7 +511,7 @@ module.exports.deductWalletAdmin = async (id, deductChips, tType, t, tbInfo, cli
 
         //upReps.chips = (typeof upReps.chips == 'undefined' || isNaN(upReps.chips)) ? 0 : Number(upReps.chips);
         upReps.winningChips = (typeof upReps.winningChips == 'undefined' || isNaN(upReps.winningChips)) ? 0 : Number(upReps.winningChips);
-        let totalRemaningAmount =  upReps.winningChips;
+        let totalRemaningAmount = upReps.winningChips;
 
         if (typeof tType != 'undefined') {
 
@@ -528,7 +528,7 @@ module.exports.deductWalletAdmin = async (id, deductChips, tType, t, tbInfo, cli
                 winningChips: upReps.winningChips,
                 totalBucket: totalRemaningAmount
             }
-            await this.trackUserWallet(walletTrack,"Win");
+            await this.trackUserWallet(walletTrack, "Win");
         }
 
         if ((typeof upReps.winningChips.toString().split(".")[1] != "undefined" && upReps.winningChips.toString().split(".")[1].length > 2)) {
@@ -564,19 +564,19 @@ module.exports.deductWalletAdmin = async (id, deductChips, tType, t, tbInfo, cli
     }
 }
 
-module.exports.trackUserWallet = async (obj,wallet) => {
+module.exports.trackUserWallet = async (obj, wallet) => {
     logger.info("\ntrackUserWallet obj ::", obj);
 
-    if(wallet == "Main"){
+    if (wallet == "Main") {
         await UserMainWalletTracks.create(obj)
 
-    }else if(wallet == "Win"){
+    } else if (wallet == "Win") {
         await UserWinWalletTracks.create(obj)
 
-    }else if(wallet == "Referral"){
+    } else if (wallet == "Referral") {
         await UserReferralWalletTracks.create(obj)
 
-    }else{
+    } else {
         await UserWalletTracks.create(obj)
 
     }
@@ -595,53 +595,53 @@ module.exports.trackUserWallet = async (obj,wallet) => {
     userId
 */
 
-module.exports.ADDCARD = async (requestData,client) => {
+module.exports.ADDCARD = async (requestData, client) => {
     try {
 
-    logger.info("ADDCARD requestData : ", requestData);
+        logger.info("ADDCARD requestData : ", requestData);
 
-    if (typeof client.uid == "undefined" || typeof requestData.acname == "undefined" || typeof requestData.bankAc == "undefined"
-    || typeof requestData.IFSCcode == "undefined" || typeof requestData.BankName == "undefined"
-    || typeof requestData.upi_id == "undefined" || typeof requestData.type == "undefined"
-    ) {
-        commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, requestData, false, "User session not set, please restart game!");
-        return false;
-    }
-
-    
-
-    let response = {
-        acname:requestData.acname,
-        BankName:requestData.BankName,
-        bankAc:requestData.bankAc,
-        IFSCcode:requestData.IFSCcode,
-        upi_id:requestData.upi_id,
-        userId:client.uid,
-        status:1,
-        type:requestData.type
-    }
+        if (typeof client.uid == "undefined" || typeof requestData.acname == "undefined" || typeof requestData.bankAc == "undefined"
+            || typeof requestData.IFSCcode == "undefined" || typeof requestData.BankName == "undefined"
+            || typeof requestData.upi_id == "undefined" || typeof requestData.type == "undefined"
+        ) {
+            commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
 
 
-    console.log("response ", response)
-    // let RecentUser = await registerUser(response)
-    //let RecentUser = await registerUser(response)
 
-    const usercard = new UserCards(response);
-    const RecentUser = await usercard.save();
-
-    logger.info('634admin/dahboard.js post dahboard  error => ', RecentUser);
-    logger.info('634admin/dahboard.js post dahboard  error =>client  ', client.id);
-
-    if (RecentUser.acname != undefined) {
-        commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, RecentUser);
-
-    } else {
-        commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, {}, false, "User session not set, please restart game!");
-    }
+        let response = {
+            acname: requestData.acname,
+            BankName: requestData.BankName,
+            bankAc: requestData.bankAc,
+            IFSCcode: requestData.IFSCcode,
+            upi_id: requestData.upi_id,
+            userId: client.uid,
+            status: 1,
+            type: requestData.type
+        }
 
 
-    return true;
-    }catch (error) {
+        console.log("response ", response)
+        // let RecentUser = await registerUser(response)
+        //let RecentUser = await registerUser(response)
+
+        const usercard = new UserCards(response);
+        const RecentUser = await usercard.save();
+
+        logger.info('634admin/dahboard.js post dahboard  error => ', RecentUser);
+        logger.info('634admin/dahboard.js post dahboard  error =>client  ', client.id);
+
+        if (RecentUser.acname != undefined) {
+            commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, RecentUser);
+
+        } else {
+            commandAcions.sendDirectEvent(client.id, CONST.ADDCARD, {}, false, "User session not set, please restart game!");
+        }
+
+
+        return true;
+    } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");
 
@@ -654,34 +654,30 @@ module.exports.ADDCARD = async (requestData,client) => {
   
 */
 
-module.exports.GETCARD = async (requestData,client) => {
+module.exports.GETCARD = async (requestData, client) => {
     try {
 
-    logger.info("ADDCARD requestData : ", requestData);
+        logger.info("ADDCARD requestData : ", requestData);
 
-    if (typeof client.uid == "undefined"
-    ) {
-        commandAcions.sendDirectEvent(client.id, CONST.GETCARD, requestData, false, "User session not set, please restart game!");
-        return false;
-    }
+        if (typeof client.uid == "undefined"
+        ) {
+            commandAcions.sendDirectEvent(client.id, CONST.GETCARD, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
 
+        const totalUsercard = await UserCards.find({ userId: MongoID(client.uid) });
 
+        logger.info('admin/dahboard.js post dahboard  error => ', totalUsercard);
+        if (totalUsercard != undefined && totalUsercard.length > 0) {
+            commandAcions.sendDirectEvent(client.id, CONST.GETCARD, { totalUsercard: totalUsercard });
 
-    
-    const totalUsercard = await UserCards.find({userId:MongoID(client.uid)});
-
-
-    logger.info('admin/dahboard.js post dahboard  error => ', totalUsercard);
-    if (totalUsercard != undefined && totalUsercard.length > 0) {
-        commandAcions.sendDirectEvent(client.id, CONST.GETCARD, {totalUsercard:totalUsercard});
-
-    } else {
-        commandAcions.sendDirectEvent(client.id, CONST.GETCARD, {}, false, "User session not set, please restart game!");
-    }
+        } else {
+            commandAcions.sendDirectEvent(client.id, CONST.GETCARD, {}, false, "User session not set, please restart game!");
+        }
 
 
-    return true;
-    }catch (error) {
+        return true;
+    } catch (error) {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");
 
