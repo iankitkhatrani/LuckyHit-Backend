@@ -668,12 +668,12 @@ module.exports.GETCARD = async (requestData,client) => {
 
 
     
-    const totalUsercard = await usercard.find();
+    const totalUsercard = await UserCards.find({userId:MongoID(client.uid)});
 
 
-    logger.info('admin/dahboard.js post dahboard  error => ', RecentUser);
+    logger.info('admin/dahboard.js post dahboard  error => ', totalUsercard);
     if (totalUsercard != undefined && totalUsercard.length > 0) {
-        commandAcions.sendDirectEvent(client, CONST.GETCARD, {totalUsercard:totalUsercard});
+        commandAcions.sendDirectEvent(client.id, CONST.GETCARD, {totalUsercard:totalUsercard});
 
     } else {
         commandAcions.sendDirectEvent(client.sck, CONST.GETCARD, {}, false, "User session not set, please restart game!");
@@ -685,6 +685,6 @@ module.exports.GETCARD = async (requestData,client) => {
         logger.error('admin/dahboard.js post bet-list error => ', error);
         //res.send("error");
 
-        commandAcions.sendDirectEvent(client.sck, CONST.GETCARD, {}, false, "User session not set, please restart game!");
+        commandAcions.sendDirectEvent(client.id, CONST.GETCARD, {}, false, "User session not set, please restart game!");
     }
 }
