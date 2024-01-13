@@ -7,7 +7,7 @@ const GameUser = require("./users");
 
 const userDepositSchema = new Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: GameUser },
-    bankAc:{ type: Number, default: "" },
+    bankAc:{ type: String, default: "" },
     IFSCcode:{ type: String, default: "" },
     acname:{ type: String, default: "" },
     upi_id:{ type: String, default: "" },

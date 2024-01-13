@@ -29,5 +29,6 @@ module.exports = {
   MAILLIST:MAILLIST,
   MAILREAD:MAILREAD,
   ADDCARD:ADDCARD,
-  reconnect: reconnect
+  reconnect: reconnect,
+  GETCARD:GETCARD
 };
