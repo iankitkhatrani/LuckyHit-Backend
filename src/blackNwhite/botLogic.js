@@ -12,14 +12,34 @@ const { getRandomInt } = require('./cardLogic');
 module.exports.JoinRobot = async (tableInfo) => {
     try {
 
+        let RobotPlayer = []
+
+        logger.info("BnW tableInfo playerInfo =>", tableInfo.playerInfo)
+
+        tableInfo.playerInfo.forEach(e => {
+            logger.info("tableInfo.playerInfo ", e)
+            if (e.Iscom == 1) {
+                RobotPlayer.push(MongoID(e._id))
+            }
+        })
+
         let user_wh = {
-            Iscom: 1
+            Iscom: 1,
+            "_id": { $nin: RobotPlayer }
         }
 
+        logger.info("BnW JoinRobot ROBOT Not user_wh   : ", user_wh)
+
+
         let robotInfo = await GameUser.findOne(user_wh, {});
-        logger.info("JoinRobot BNW ROBOT Info : ", robotInfo)
+        logger.info("JoinRobot ROBOT Info : ", robotInfo)
 
+        if (robotInfo == null) {
+            logger.info("JoinRobot ROBOT Not Found  : ")
+            return false
+        }
 
+        await PlayingTables.updateOne(user_wh, { $set: { type: "busy" } });
         await joinTable.findEmptySeatAndUserSeat(tableInfo, { uid: robotInfo._id });
 
     } catch (error) {
@@ -27,7 +47,7 @@ module.exports.JoinRobot = async (tableInfo) => {
     }
 }
 
-module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
+module.exports.PlayRobot = async (tableInfo, PlayerInfo) => {
 
     try {
         // Play Robot Logic
@@ -128,10 +148,22 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
             logger.info("PlayRobot else  Robot ", tableInfo, PlayerInfo);
         }
 
-        let wh = {
-            Iscom: 1
-        }
-        await PlayingTables.findOneAndDelete(wh);
+        // let wh = {
+        //     _id: MongoID(tableInfo._id.toString()),
+        //     "playerInfo.Iscom": 1,
+        // };
+        // let updateData = {
+        //     $set: {
+        //         "playerInfo.$": {}
+        //     },
+        //     $inc: {
+        //         activePlayer: -1
+        //     }
+        // }
+        // let tbInfo = await PlayingTables.findOneAndUpdate(wh, updateData, { new: true });
+        // logger.info("Remove Bot : ", tbInfo);
+
+
     } catch (error) {
         logger.info("Play Robot ", error);
     }

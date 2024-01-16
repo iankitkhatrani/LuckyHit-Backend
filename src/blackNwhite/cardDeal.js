@@ -94,7 +94,7 @@ module.exports.getCards = (playerInfo) => {
         if (typeof playerInfo[i].seatIndex != "undefined" && playerInfo[i].status == "play" && playerInfo[i].Iscom == 1) {
             let card = [];
 
-            console.log(playerInfo[i].Iscom)
+            logger.info(playerInfo[i].Iscom)
 
             card = this.HighCard(deckCards, color, number)
 
@@ -106,7 +106,7 @@ module.exports.getCards = (playerInfo) => {
         if (typeof playerInfo[i].seatIndex != "undefined" && playerInfo[i].status == "play") {
             let card = [];
 
-            console.log(playerInfo[i].Iscom)
+            logger.info(playerInfo[i].Iscom)
 
 
             if (typeof playerInfo[i].seatIndex != "undefined" && playerInfo[i].Iscom == 0) {
@@ -127,7 +127,7 @@ module.exports.getCards = (playerInfo) => {
     deckCards.splice(ran, 1);
 
     logger.info("getCards hukum ::", hukum);
-    console.log("cards cards ", cards)
+    logger.info("cards cards ", cards)
     return {
         hukum: hukum,
         cards: cards
@@ -169,13 +169,13 @@ module.exports.HighCard = (pack, color, card) => {
 
     } else if (cardDealNumber == 3) {
         // Color Ron 
-        console.log("Same COLOR RON ", card)
+        logger.info("Same COLOR RON ", card)
         var c = color[cardLogic.GetRandomInt(0, color.length - 1)]
 
         var number = card[cardLogic.GetRandomInt(0, card.length - 3)]
         card.splice(card.indexOf(number), 3)
 
-        console.log("Same COLOR RON card ", card)
+        logger.info("Same COLOR RON card ", card)
 
 
         for (var i = 0; i < 3; i++) {
@@ -197,19 +197,19 @@ module.exports.HighCard = (pack, color, card) => {
 
             var number = card[cardLogic.GetRandomInt(0, card.length - 1)]
 
-            console.log("number ", number)
-            console.log("card[number] ", card)
+            logger.info("number ", number)
+            logger.info("card[number] ", card)
             poss.push(c + "-" + number + "-0");
             card.splice(card.indexOf(number), 1);
         }
 
 
-        console.log("poss ", poss)
+        logger.info("poss ", poss)
 
     } else {
 
         // pair 
-        console.log("Pair ")
+        logger.info("Pair ")
         var number = card[cardLogic.GetRandomInt(0, card.length - 3)]
         card.splice(card.indexOf(number), 1)
 
@@ -231,16 +231,16 @@ module.exports.HighCard = (pack, color, card) => {
     }
 
     var finalcard = [];
-    console.log("poss ", poss)
+    logger.info("poss ", poss)
     for (var i = 0; i < poss.length; i++) {
-        console.log("pack", pack)
+        logger.info("pack", pack)
         if (pack.indexOf(poss[i]) != -1) {
             finalcard.push(poss[i]);
             pack.splice(pack.indexOf(poss[i]), 1);
         }
     }
 
-    console.log("finalcard  ", finalcard)
+    logger.info("finalcard  ", finalcard)
     return _.flatten(finalcard)
 
 }

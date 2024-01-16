@@ -35,21 +35,15 @@ async function registerAdmin(requestBody) {
                 password,
             };
 
-            //logger.info("Before New Data", newData);
             const hashedPassword = await bcrypt.hash(password, 10);
-            //logger.info('hashedPassword => ', hashedPassword);
             newData.password = hashedPassword;
             const response = await usersHelper.registerAdmin(newData);
-            // console.info('response => ', response);
 
             delete response.data.password;
-            // response.data.playerId = response.data._id;
-            // delete response.data._id;
 
             if (response.status) {
                 const token = await commonHelper.sign(response.data);
                 response.data.token = token;
-                //logger.info("Admin Regsitration Successfully");
             } else {
                 logger.info('At mainController.js:540 User not created => ', JSON.stringify(requestBody));
             }
@@ -140,20 +134,17 @@ async function registerBetList(requestBody) {
  * @returns {Object}
  */
 async function updateBetList(requestBody) {
-    // console.info('request Body Email Send  => ', requestBody);
     const { entryFee, gamePlayType } = requestBody;
     try {
         const data = await Users.findOne({
             entryFee: commonHelper.strToMongoDb(entryFee),
         }).lean();
 
-        // console.info('updateBetList data => ', data);
         if (data !== null) {
             const res = { entryFee, gamePlayType };
 
             const result = await commonHelper.update(BetLists, { entryFee: commonHelper.strToMongoDb(entryFee) }, res);
 
-            // logger.info('Update Bet result => ', result);
             if (result.status === 1) {
                 return { status: true, message: 'Update User Details Succesfully' };
             } else {
