@@ -218,14 +218,14 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             clearJob(jobId)
 
             await gameStartActions.gameTimerStart(tableInfo);
-        } else {
+        } 
 
             if (tableInfo.activePlayer <= 2) {
                 setTimeout(() => {
                     botLogic.JoinRobot(tableInfo)
                 }, 2000)
             }
-        }
+        
 
     } catch (error) {
         console.info("findEmptySeatAndUserSeat", error);
