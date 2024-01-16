@@ -58,20 +58,25 @@ const checkReferalOrCouponCode = async (requestData, socket) => {
 
 const userLogin = async (requestData, socket) => {
 
-  const { email, password } = requestData
-  let wh = { email: email };
+  const {  password, mobileNumber} = requestData
+  let wh = { mobileNumber: mobileNumber };
   let resp = await Users.findOne(wh, {});
   logger.info('LOGIN resp :', resp);
+  logger.info('resp.password :', resp.password);
+  logger.info('password:', password);
+  // logger.info('bcrypt.compare(resp.password, password):', bcrypt.compare(resp.password, password));
 
   if (resp !== null) {
-    if (bcrypt.compare(resp.password, password)) {
+    const result = await bcrypt.compare(password,resp.password);
+  logger.info("userLogin result --> ",result)
+    if (result) {
       await userSesssionSet(resp, socket);
 
       let response = await filterBeforeSendSPEvent(resp);
 
       commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
     } else {
-      commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
+      commandAcions.sendEvent(socket, CONST.DASHBOARD, {},false,'Password or mobile number is not valid');
     }
 
   } else {
