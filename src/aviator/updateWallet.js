@@ -707,7 +707,7 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
         logger.info("WITHDRAWALREQ requestData : ", requestData);
 
         if (typeof client.uid == "undefined" || typeof requestData.name == "undefined" || typeof requestData.userId == "undefined"
-            || typeof requestData.email == "undefined" || typeof requestData.mobileno == "undefined"
+            || typeof requestData.mobileno == "undefined"
             || typeof requestData.depositamount == "undefined" || typeof requestData.bankAc == "undefined"
             || typeof requestData.IFSCcode == "undefined"
             || typeof requestData.acname == "undefined"
@@ -722,7 +722,7 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
         let response = {
             name: requestData.name,
             userId: requestData.userId,
-            email: requestData.email,
+            email: "",
             mobileno: requestData.mobileno,
             depositamount: requestData.depositamount,
             bankAc: requestData.bankAc,
