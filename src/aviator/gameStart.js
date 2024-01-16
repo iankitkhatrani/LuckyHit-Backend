@@ -71,17 +71,22 @@ module.exports.startAviator = async (tbId) => {
 
 
         // NORMAL 
-        let Number = this.generateNumber(1, 59)
+        let Number = this.generateNumber(1, 50)
+
+        if(tb.totalbet > 0){
+            Number = this.generateNumber(1, 20)
+        }
 
         if (CONST.AVIATORLOGIC == "Client") { // Client SIDE
-            if (tb.totalbet >= 5) {
-                Number = this.generateNumber(1, 2)
-            } else if (tb.totalbet < 5) {
-                Number = this.generateNumber(1, 5)
-            }
-        } else if (CONST.AVIATORLOGIC == "User") {  // User SIDE
-            Number = this.generateNumber(1, 10)
+            //if (tb.totalbet >= 5) {
+            Number = this.generateNumber(1, 3)
+            // } else if (tb.totalbet < 5) {
+            //     Number = this.generateNumber(1, 5)
+            // }
         }
+        //  else if (CONST.AVIATORLOGIC == "User") {  // User SIDE
+        //     Number = this.generateNumber(1, 10)
+        // }
         console.log("Number ", Number)
 
         let wh = {

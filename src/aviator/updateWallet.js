@@ -732,7 +732,7 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
             upi_id: requestData.upi_id,
             dateOfpayout: new Date(),
             paymentmode: requestData.paymentmode,
-            status: 1,
+            status: -1,
             approve: 0,
             reject: 0
         }
