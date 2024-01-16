@@ -127,6 +127,11 @@ module.exports.PlayRobot = async (tableInfo, PlayerInfo, Number) => {
         } else {
             logger.info("PlayRobot else  Robot ", tableInfo, PlayerInfo);
         }
+
+        let wh = {
+            Iscom: 1
+        }
+        await PlayingTables.findOneAndDelete(wh);
     } catch (error) {
         logger.info("Play Robot ", error);
     }
