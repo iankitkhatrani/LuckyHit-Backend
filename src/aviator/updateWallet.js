@@ -750,7 +750,7 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
         logger.info('634admin/dahboard.js post dahboard  error =>client  ', client.id);
 
         if (RecentUser.acname != undefined) {
-            commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, RecentUser);
+            commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, RecentUser,true,"Withdrawal Request Forward to Admin Successfully...!!");
 
         } else {
             commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, {}, false, "User session not set, please restart game!");
