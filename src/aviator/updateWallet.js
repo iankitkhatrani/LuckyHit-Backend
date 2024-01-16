@@ -13,6 +13,7 @@ const commandAcions = require("../helper/socketFunctions");
 const CONST = require("../../constant");
 const logger = require("../../logger");
 const UserCards = mongoose.model("usercards");
+const Userpayout = mongoose.model('userpayout');
 
 module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, seatIndex) => {
     try {
@@ -682,5 +683,84 @@ module.exports.GETCARD = async (requestData, client) => {
         //res.send("error");
 
         commandAcions.sendDirectEvent(client.id, CONST.GETCARD, {}, false, "User session not set, please restart game!");
+    }
+}
+
+
+
+/*
+    withdrawal
+
+    acname
+    BankName
+    bankAc
+    IFSCcode
+    upi_id
+    email
+    MobileNo
+    userId
+*/
+
+module.exports.WITHDRAWALREQ = async (requestData, client) => {
+    try {
+
+        logger.info("WITHDRAWALREQ requestData : ", requestData);
+
+        if (typeof client.uid == "undefined" || typeof requestData.name == "undefined" || typeof requestData.userId == "undefined"
+            || typeof requestData.email == "undefined" || typeof requestData.mobileno == "undefined"
+            || typeof requestData.depositamount == "undefined" || typeof requestData.bankAc == "undefined"
+            || typeof requestData.IFSCcode == "undefined"
+            || typeof requestData.acname == "undefined"
+            || typeof requestData.upi_id == "undefined"
+            || typeof requestData.paymentmode == "undefined"
+        ) {
+            commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+
+
+        let response = {
+            name: requestData.name,
+            userId: requestData.userId,
+            email: requestData.email,
+            mobileno: requestData.mobileno,
+            depositamount: requestData.depositamount,
+            bankAc: requestData.bankAc,
+            IFSCcode: requestData.IFSCcode,
+            acname: requestData.acname,
+            upi_id: requestData.upi_id,
+            dateOfpayout: new Date(),
+            paymentmode: requestData.paymentmode,
+            status: 1,
+            approve: 0,
+            reject: 0
+        }
+
+
+
+        console.log("response ", response)
+        // let RecentUser = await registerUser(response)
+        //let RecentUser = await registerUser(response)
+
+        const userpayout = new Userpayout(response);
+        const RecentUser = await userpayout.save();
+
+        logger.info('634admin/dahboard.js post dahboard  error => ', RecentUser);
+        logger.info('634admin/dahboard.js post dahboard  error =>client  ', client.id);
+
+        if (RecentUser.acname != undefined) {
+            commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, RecentUser);
+
+        } else {
+            commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, {}, false, "User session not set, please restart game!");
+        }
+
+
+        return true;
+    } catch (error) {
+        logger.error('admin/dahboard.js post bet-list error => ', error);
+        //res.send("error");
+
+        commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, {}, false, "User session not set, please restart game!");
     }
 }

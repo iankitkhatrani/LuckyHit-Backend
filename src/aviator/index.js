@@ -5,7 +5,7 @@ const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
 const {Redisbinding, Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
 const {MYWALLET,MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD } = require("./dashboard");
-const {ADDCARD,GETCARD} = require("./updateWallet");
+const {ADDCARD,GETCARD,WITHDRAWALREQ} = require("./updateWallet");
 const {reconnect} = require("./reconnect")
 
 
@@ -30,5 +30,6 @@ module.exports = {
   MAILREAD:MAILREAD,
   ADDCARD:ADDCARD,
   reconnect: reconnect,
-  GETCARD:GETCARD
+  GETCARD:GETCARD,
+  WITHDRAWALREQ:WITHDRAWALREQ
 };
