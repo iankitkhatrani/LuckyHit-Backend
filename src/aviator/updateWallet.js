@@ -706,26 +706,27 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
 
         logger.info("WITHDRAWALREQ requestData : ", requestData);
 
+    
+
         if (typeof client.uid == "undefined" || typeof requestData.name == "undefined" || typeof requestData.userId == "undefined"
             || typeof requestData.mobileno == "undefined"
-            || typeof requestData.depositamount == "undefined" || typeof requestData.bankAc == "undefined"
+            || typeof requestData.payoutAmount == "undefined" || typeof requestData.bankAcNum == "undefined"
             || typeof requestData.IFSCcode == "undefined"
             || typeof requestData.acname == "undefined"
             || typeof requestData.upi_id == "undefined"
-            || typeof requestData.paymentmode == "undefined"
         ) {
             commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, requestData, false, "User session not set, please restart game!");
             return false;
         }
-
 
         let response = {
             name: requestData.name,
             userId: requestData.userId,
             email: "",
             mobileno: requestData.mobileno,
-            depositamount: requestData.depositamount,
-            bankAc: requestData.bankAc,
+            bankName:requestData.bankName,
+            payoutAmount: requestData.payoutAmount,
+            bankAcNum: requestData.bankAcNum,
             IFSCcode: requestData.IFSCcode,
             acname: requestData.acname,
             upi_id: requestData.upi_id,
