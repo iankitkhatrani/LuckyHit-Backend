@@ -9,8 +9,8 @@ const BannerSchema = new Schema(
         imageUrl: { type: String },
         createdAt: { type: Date, default: Date.now },
         modifiedAt: { type: Date, default: Date.now },
-
-    },
+        link:{ type: String },
+    },  
     { versionKey: false }
 );
 

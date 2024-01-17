@@ -4,7 +4,7 @@ const { joinTable } = require("./joinTable");
 const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
 const {Redisbinding, Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
-const {MYWALLET,MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD } = require("./dashboard");
+const {MYWALLET,MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD,BANNERLIST } = require("./dashboard");
 const {ADDCARD,GETCARD,WITHDRAWALREQ} = require("./updateWallet");
 const {reconnect} = require("./reconnect")
 
@@ -31,5 +31,6 @@ module.exports = {
   ADDCARD:ADDCARD,
   reconnect: reconnect,
   GETCARD:GETCARD,
-  WITHDRAWALREQ:WITHDRAWALREQ
+  WITHDRAWALREQ:WITHDRAWALREQ,
+  BANNERLIST:BANNERLIST
 };
