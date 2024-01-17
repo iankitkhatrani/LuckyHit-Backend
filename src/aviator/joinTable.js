@@ -231,7 +231,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             await gameStartActions.gameTimerStart(tableInfo);
         }
 
-        if (tableInfo.activePlayer <= 2) {
+        if (tableInfo.activePlayer <= 6) {
             setTimeout(() => {
                 botLogic.JoinRobot(tableInfo)
             }, 2000)
