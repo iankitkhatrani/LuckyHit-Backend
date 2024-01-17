@@ -12,6 +12,7 @@ const avatarTable = mongoose.model("avatarTable");
 const ShopTable = mongoose.model("ShopTable");
 const Noticetext = mongoose.model('noticeText');
 const mailTable = mongoose.model('mailTable');
+const Banners = mongoose.model('banner');
 
 
 
@@ -369,6 +370,39 @@ module.exports.MAILREAD = async (requestData, client) => {
         }
         
         sendEvent(client, CONST.MAILREAD, {status:true});
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+
+/*
+    data:{_id:""}
+*/
+module.exports.BANNERLIST = async (requestData, client) => {
+    try {
+        logger.info("action requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.BANNERLIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+
+        const bannerListData = await Banners.find({}, {})
+       
+        logger.info('admin/dahboard.js post dahboard  error => ', bannerListData);
+
+        if (bannerListData == null) {
+            logger.info("action user not turn ::",bannerListData);
+            sendEvent(client, CONST.BANNERLIST, {status:false},false, "Not Banner List..!");
+            return false
+        }
+        
+        let response = {
+            BannerList:bannerListData
+        }
+ 
+         sendEvent(client, CONST.BANNERLIST, response);
         return true;
     } catch (e) {
         logger.info("Exception action : ", e);

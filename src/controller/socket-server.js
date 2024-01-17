@@ -239,6 +239,11 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.BANNERLIST:{
+                        await gamePlayActions.BANNERLIST(payload.data, socket);
+                        break;
+                    }
+
                     
 
                     default:
