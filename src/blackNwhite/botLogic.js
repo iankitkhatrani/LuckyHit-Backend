@@ -19,7 +19,7 @@ module.exports.JoinRobot = async (tableInfo) => {
         tableInfo.playerInfo.forEach(e => {
             logger.info("tableInfo.playerInfo ", e)
             if (e.Iscom == 1) {
-                RobotPlayer.push(MongoID(e._id))
+                RobotPlayer.push(MongoID(e._id).toString())
             }
         })
 
@@ -39,7 +39,6 @@ module.exports.JoinRobot = async (tableInfo) => {
             return false
         }
 
-        await PlayingTables.updateOne(user_wh, { $set: { type: "busy" } });
         await joinTable.findEmptySeatAndUserSeat(tableInfo, { uid: robotInfo._id });
 
     } catch (error) {

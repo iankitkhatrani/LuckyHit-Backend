@@ -49,7 +49,12 @@ module.exports.gameTimerStart = async (tb) => {
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
-        await botLogic.JoinRobot(tb)
+
+        // for (let i = 0; i < 10; i++) {
+        //     await botLogic.JoinRobot(tb);
+        // }
+
+
         await this.startBatting(tbId)
     } catch (error) {
         logger.error("gameTimerStart.js error ->", error)
@@ -72,7 +77,7 @@ module.exports.startBatting = async (tbId) => {
         }
         logger.info("bnw UserInfo : ", wh, update);
         const tabInfo = await PlayingTables.findOneAndUpdate(wh, update, { new: true });
-        logger.info("bnw tabInfo :: ", tabInfo);
+        logger.info("bnw tabInfo :: ====>", tabInfo);
 
 
         let roundTime = 10;
