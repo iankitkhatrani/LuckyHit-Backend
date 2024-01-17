@@ -177,7 +177,7 @@ module.exports.PairForCheck = (a) => {
 
     let point = _.filter(a.cards, function (num) { return num != 0; });
 
-    console.log("Point ", point)
+    logger.info("Point ", point)
     let count = 0
 
     for (let x in point) {
@@ -186,7 +186,7 @@ module.exports.PairForCheck = (a) => {
             count++
         }
     }
-    console.log("count ", count)
+    logger.info("count ", count)
     if (count < 2) {
         return false
     }

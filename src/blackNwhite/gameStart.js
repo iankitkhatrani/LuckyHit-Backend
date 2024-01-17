@@ -38,7 +38,6 @@ module.exports.gameTimerStart = async (tb) => {
         const tabInfo = await PlayingTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("gameTimerStart tabInfo :: ", tabInfo);
 
-        // await botLogic.JoinRobot(tb, betInfo)
 
 
         let roundTime = 3;
@@ -50,6 +49,7 @@ module.exports.gameTimerStart = async (tb) => {
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
+        await botLogic.JoinRobot(tb)
         await this.startBatting(tbId)
     } catch (error) {
         logger.error("gameTimerStart.js error ->", error)
@@ -78,13 +78,35 @@ module.exports.startBatting = async (tbId) => {
         let roundTime = 10;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_START_BATTING_TIMER, { timer: roundTime });
 
+        // Define an asynchronous function
+        const playRobotInterval = async () => {
+            // Your asynchronous logic here
+            await botLogic.PlayRobot(tabInfo, tabInfo.playerInfo);
+        };
+
+        (async () => {
+            // Call the function immediately
+            await playRobotInterval();
+
+            let executionCount = 0;
+            const maxExecutions = 2;
+
+            const intervalId = setInterval(async () => {
+                await playRobotInterval();
+                executionCount++;
+
+                if (executionCount >= maxExecutions) {
+                    clearInterval(intervalId);
+                }
+            }, 3000);
+        })();
+
         let tblId = tabInfo._id;
         let jobId = CONST.BNW_START_BATTING_TIMER + ":" + tblId;
         let delay = commandAcions.AddTime(roundTime);
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
-        await botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
         await cardDealActions.cardDealStart(tblId)
 
     } catch (error) {
@@ -96,7 +118,6 @@ module.exports.startBatting = async (tbId) => {
 module.exports.generateNumber = async (minRange, maxRange) => {
     // Generate a random decimal number between 0 (inclusive) and 1 (exclusive)
     const randomDecimal = Math.random().toFixed(2);
-    console.log('Random Decimal:', randomDecimal);
 
     // Generate a random whole number between a specified range (min and max)
     function getRandomInt(min, max) {
@@ -106,10 +127,6 @@ module.exports.generateNumber = async (minRange, maxRange) => {
     }
 
     const randomWholeNumber = getRandomInt(minRange, maxRange);
-    console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
-
-    console.log('Random Whole Number:', randomWholeNumber + parseFloat(randomDecimal));
-
     return randomWholeNumber + parseFloat(randomDecimal)
 }
 

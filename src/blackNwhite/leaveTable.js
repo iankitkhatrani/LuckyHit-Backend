@@ -49,21 +49,7 @@ module.exports.leaveTable = async (requestData, client) => {
             activePlayer: -1
         }
     }
-    // if (tb.activePlayer == 2 && tb.gameState == "GameStartTimer") {
-    //     let jobId = CONST.GAME_START_TIMER + ":" + tb._id.toString();
-    //     commandAcions.clearJob(jobId)
-    //     updateData["$set"]["gameState"] = "";
-    // }
-    // if (tb.activePlayer == 1) {
-    //     let jobId = "LEAVE_SINGLE_USER:" + tb._id;
-    //     commandAcions.clearJob(jobId)
-    // }
 
-    // if (tb.gameState == "RoundStated") {
-    //     if (client.seatIndex == tb.turnSeatIndex) {
-    //         commandAcions.clearJob(tb.jobId)
-    //     }
-    // }
 
     logger.info("leaveTable updateData : ", wh, updateData);
 
@@ -117,18 +103,15 @@ module.exports.manageOnUserLeave = async (tb, client) => {
 }
 
 module.exports.leaveSingleUser = async (tbid) => {
-    console.log("leaveSingleUser call tbid : ", tbid);
     let tbId = tbid
     let jobId = "LEAVE_SINGLE_USER:" + tbid;
     let delay = commandAcions.AddTime(120);
     const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
-    console.log("leaveSingleUser delayRes : ", delayRes);
 
     const wh1 = {
         _id: MongoID(tbId.toString())
     }
     const tabInfo = await PlayingTables.findOne(wh1, {}).lean();
-    console.log("leaveSingleUser tabInfo : ", tabInfo);
     if (tabInfo.activePlayer == 1) {
         let playerInfos = tabInfo.playerInfo
         for (let i = 0; i < playerInfos.length; i++) {

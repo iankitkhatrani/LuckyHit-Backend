@@ -20,7 +20,7 @@ module.exports.appLunchDetails = async (requestData, client) => {
     //logger.info('Guest Final response Dashboard', response);
     commandAcions.sendEvent(client, CONST.DASHBOARD, response);
   } else {
-    commandAcions.sendEvent(client, CONST.DASHBOARD, requestData, false, 'Please register the user first');
+    commandAcions.sendEvent(client, CONST.DASHBOARD, {}, false, 'Please register the user first');
     return false;
   }
 

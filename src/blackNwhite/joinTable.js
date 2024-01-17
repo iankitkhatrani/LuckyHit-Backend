@@ -48,7 +48,7 @@ module.exports.joinTable = async (requestData, client) => {
         }
         await this.findTable(client)
     } catch (error) {
-        console.info("BNW_JOIN_TABLE", error);
+        logger.error("BNW_JOIN_TABLE", error);
     }
 }
 
@@ -128,15 +128,10 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             status: "",
             playerStatus: "",
             betLists: [],
-            chalValue: 0, // place bet or not
-            chalValue1: 0, // place bet or not 
-            turnMissCounter: 0,
-            turnCount: 0,
             sck: client.id,
             playerSocketId: client.id,
             playerLostChips: 0,
             Iscom: userInfo.Iscom != undefined ? userInfo.Iscom : 0,
-
         }
 
         logger.info("findEmptySeatAndUserSeat playerDetails : ", playerDetails);
@@ -216,7 +211,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
             clearJob(jobId)
-            await botLogic.JoinRobot(tableInfo)
+            // await botLogic.JoinRobot(tableInfo)
             await gameStartActions.gameTimerStart(tableInfo);
         }
 
@@ -228,7 +223,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
 
 
     } catch (error) {
-        console.info("findEmptySeatAndUserSeat", error);
+        logger.error("findEmptySeatAndUserSeat", error);
     }
 }
 
