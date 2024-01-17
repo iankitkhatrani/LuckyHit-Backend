@@ -383,10 +383,7 @@ module.exports.MAILREAD = async (requestData, client) => {
 module.exports.BANNERLIST = async (requestData, client) => {
     try {
         logger.info("action requestData : ", requestData);
-        if (typeof client.uid == "undefined") {
-            commandAcions.sendDirectEvent(client.sck, CONST.BANNERLIST, requestData, false, "User session not set, please restart game!");
-            return false;
-        }
+        
 
         const bannerListData = await Banners.find({}, {})
        
