@@ -78,6 +78,13 @@ module.exports.startBatting = async (tbId) => {
         let roundTime = 10;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_START_BATTING_TIMER, { timer: roundTime });
 
+        //One second delay
+        let tblId = tabInfo._id;
+        let jobId = CONST.BNW_START_BATTING_TIMER + ":" + tblId;
+        let delay = commandAcions.AddTime(1);
+
+        await commandAcions.setDelay(jobId, new Date(delay));
+
         // Define an asynchronous function
         const playRobotInterval = async () => {
             // Your asynchronous logic here
@@ -89,7 +96,7 @@ module.exports.startBatting = async (tbId) => {
             await playRobotInterval();
 
             let executionCount = 0;
-            const maxExecutions = 2;
+            const maxExecutions = 4;
 
             const intervalId = setInterval(async () => {
                 await playRobotInterval();
@@ -98,12 +105,12 @@ module.exports.startBatting = async (tbId) => {
                 if (executionCount >= maxExecutions) {
                     clearInterval(intervalId);
                 }
-            }, 3000);
+            }, 1500);
         })();
 
-        let tblId = tabInfo._id;
-        let jobId = CONST.BNW_START_BATTING_TIMER + ":" + tblId;
-        let delay = commandAcions.AddTime(roundTime);
+        tblId = tabInfo._id;
+        jobId = CONST.BNW_START_BATTING_TIMER + ":" + tblId;
+        delay = commandAcions.AddTime(roundTime);
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 

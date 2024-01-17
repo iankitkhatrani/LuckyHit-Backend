@@ -135,8 +135,6 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
         }
 
         logger.info("findEmptySeatAndUserSeat playerDetails : ", playerDetails);
-        logger.info("findEmptySeatAndUserSeat userInfo playerDetails.coins ++==> : ", playerDetails.coins)
-
 
         let whereCond = {
             _id: MongoID(table._id.toString())
@@ -211,7 +209,6 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
             clearJob(jobId)
-            // await botLogic.JoinRobot(tableInfo)
             await gameStartActions.gameTimerStart(tableInfo);
         }
 

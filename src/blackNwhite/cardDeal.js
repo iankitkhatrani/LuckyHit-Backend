@@ -248,7 +248,7 @@ module.exports.HighCard = (pack, color, card) => {
 module.exports.getCardsDeatil = () => {
     try {
         let deckCards = Object.assign([], CONST.deckOne);
-        // deckCards = shuffle(deckCards);
+        deckCards = _.shuffle(deckCards);
 
         let cards = [];
 
