@@ -80,16 +80,17 @@ module.exports.startBatting = async (tbId) => {
         logger.info("bnw tabInfo :: ====>", tabInfo);
 
 
-        let roundTime = 10;
+
+        let roundTime = 17;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_START_BATTING_TIMER, { timer: roundTime });
 
-        //One second delay
+
+        //2 second delay for Bet
         let tblId = tabInfo._id;
-        let jobId = CONST.BNW_START_BATTING_TIMER + ":" + tblId;
-        let delay = commandAcions.AddTime(1);
+        let jobId = CONST.BNW_START_BATTING_TIMER_DELAY + ":" + tblId;
+        let delay = commandAcions.AddTime(2);
 
         await commandAcions.setDelay(jobId, new Date(delay));
-
         // Define an asynchronous function
         const playRobotInterval = async () => {
             // Your asynchronous logic here
