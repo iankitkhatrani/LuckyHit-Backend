@@ -54,7 +54,9 @@ module.exports.winnercall = async (tb, isShow, showUserSeatIndex) => {
     logger.info("winnercall condition 1: ", tabInfo.callFinalWinner);
     logger.info("winnercall condition 2: ", tabInfo.gameState);
 
-    if (tabInfo.callFinalWinner) return false;
+    // if (tabInfo.callFinalWinner){
+    //     return false;
+    // } 
 
     // if (tabInfo.gameState != "RoundStated") return false;
 

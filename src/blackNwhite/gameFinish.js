@@ -176,8 +176,7 @@ module.exports.filterWinnerResponse = (winnerList) => {
     return currentObj.cardCount > maxObj.cardCount ? currentObj : maxObj;
   }, winner[0]); // Start with the first object as the initial max
 
-  logger.info("/n  obj.cardCount =>", obj.cardCount)
-  logger.info("/n  maxCardCountObject.cardCount =>", maxCardCountObject.cardCount)
+  logger.info("/n  maxCardCountObject.cardCount =>", maxCardCountObject)
   // Check if there's a tie
   const isTie = winner.every(obj => obj.cardCount >= 34) && maxCardCountObject.cardCount >= 34;
   // Set the winResult accordingly

@@ -49,12 +49,6 @@ module.exports.gameTimerStart = async (tb) => {
 
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
-
-        // for (let i = 0; i < 10; i++) {
-        //     await botLogic.JoinRobot(tb);
-        // }
-
-
         await this.startBatting(tbId)
     } catch (error) {
         logger.error("gameTimerStart.js error ->", error)
@@ -102,7 +96,7 @@ module.exports.startBatting = async (tbId) => {
             await playRobotInterval();
 
             let executionCount = 0;
-            const maxExecutions = 4;
+            const maxExecutions = 8;
 
             const intervalId = setInterval(async () => {
                 await playRobotInterval();
