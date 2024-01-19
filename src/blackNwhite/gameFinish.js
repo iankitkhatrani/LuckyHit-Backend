@@ -112,9 +112,9 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     logger.info("winnerDeclareCall tbInfo.gameTracks :: ", tbInfo.gameTracks);
 
 
-    let jobId = commandAcions.GetRandomString(10);
-    let delay = commandAcions.AddTime(3);
-    await commandAcions.setDelay(jobId, new Date(delay));
+    // let jobId = commandAcions.GetRandomString(10);
+    // let delay = commandAcions.AddTime(3);
+    // await commandAcions.setDelay(jobId, new Date(delay));
 
     let winnerViewResponse = {
       cardDetails: winnerObj,

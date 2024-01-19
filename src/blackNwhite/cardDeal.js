@@ -52,7 +52,7 @@ module.exports.cardDealStart = async (tbid) => {
 
 module.exports.setUserCards = async (cardsInfo, tb) => {
     try {
-        logger.info("setUserCards cardsInfo : 1 ", cardsInfo);
+        logger.info("setUserCards cardsInfo : 1  check --> ", cardsInfo);
         logger.info("setUserCards cardsInfo tb ", tb);
         // const cards = cardsInfo;
 
@@ -269,9 +269,23 @@ module.exports.getCardsDeatil = () => {
             cards.push(card);
         }
         logger.info("\n getCardsDeatil cards ->", cards)
-        return {
-            cards,
-        };
+
+        // Check counts after generating cards
+        const blackCardCount = cards[0].length;
+        const whiteCardCount = cards[1].length;
+
+        // Decide the distribution based on counts
+        if (blackCount + blackCardCount <= whiteCount + whiteCardCount) {
+            // If black count plus new cards is less than or equal to white count plus new cards, assign to black
+            blackCount += blackCardCount;
+            return { cards };
+        } else {
+            // Otherwise, assign to white
+            whiteCount += whiteCardCount;
+            return { cards: [cards[1], cards[0]] }; // Swap the order for white
+        }
+
+
     } catch (err) {
         logger.error('cardDeal.js getCards error => ', err);
     }
