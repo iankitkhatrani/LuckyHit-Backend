@@ -134,6 +134,7 @@ module.exports.saveGameUser = async (userInfoDetails, client) => {
     userInfo.id = uCounter;
     userInfo.username = 'USER_' + uCounter;
     userInfo.uniqueId = uniqueId;
+    userInfo.referralCode= "R"+this.GetRandomInt(0,9)+"S"+uCounter;
 
     logger.info('saveGameUser uniqueId ::', userInfo.uniqueId, userInfo.id);
     logger.info('\nsaveGameUser userInfo :: ', userInfo);
@@ -235,3 +236,8 @@ module.exports.filterBeforeSendSPEvent = async (userData) => {
   //logger.info('filter Before Send SP Event -->', res);
   return res;
 };
+
+
+module.exports.GetRandomInt=(min,max)=>{
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
