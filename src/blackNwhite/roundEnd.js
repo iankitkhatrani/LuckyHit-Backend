@@ -10,20 +10,20 @@ module.exports.roundFinish = async (tb) => {
     try {
 
         /*        leave BOT        */
-        let whr = {
-            _id: MongoID(tb._id.toString()),
-            "playerInfo.Iscom": 1,
-        };
-        let updateData = {
-            $set: {
-                "playerInfo.$": {}
-            },
-            $inc: {
-                activePlayer: -1
-            }
-        }
-        tb = await PlayingTables.findOneAndUpdate(whr, updateData, { new: true });
-        logger.info("Remove Bot : ", tb);
+        // let whr = {
+        //     _id: MongoID(tb._id.toString()),
+        //     "playerInfo.Iscom": 1,
+        // };
+        // let updateData = {
+        //     $set: {
+        //         "playerInfo.$": {}
+        //     },
+        //     $inc: {
+        //         activePlayer: -1
+        //     }
+        // }
+        // tb = await PlayingTables.findOneAndUpdate(whr, updateData, { new: true });
+        // logger.info("Remove Bot : ", tb);
 
         logger.info("\n roundFinish tb :: ", tb);
         tb = await this.resetPlayer(tb)
