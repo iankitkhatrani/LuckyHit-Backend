@@ -247,6 +247,9 @@ module.exports.HighCard = (pack, color, card) => {
 
 module.exports.getCardsDeatil = () => {
     try {
+        let blackCount = 0;
+        let whiteCount = 0;
+
         let deckCards = [
             'H-1-0', 'H-2-0', 'H-3-0', 'H-4-0', 'H-5-0', 'H-6-0', 'H-7-0', 'H-8-0', 'H-9-0', 'H-10-0', 'H-11-0', 'H-12-0', 'H-13-0',
             'S-1-0', 'S-2-0', 'S-3-0', 'S-4-0', 'S-5-0', 'S-6-0', 'S-7-0', 'S-8-0', 'S-9-0', 'S-10-0', 'S-11-0', 'S-12-0', 'S-13-0',
