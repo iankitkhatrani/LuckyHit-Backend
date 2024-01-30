@@ -46,7 +46,7 @@ module.exports.referralReward = async (referal_code) => {
     // })
 
     // if(reward.otc > 0){
-         await walletActions.addWalletBonus(res._id.toString(), Number(reward.otc),2, "friend signup otc", res);
+         await walletActions.addWalletBonus(res._id.toString(), Number(500),2, "friend signup otc", res);
     // }else{
     //     return false;
     // }
