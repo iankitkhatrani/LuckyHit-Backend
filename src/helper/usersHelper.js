@@ -4,12 +4,19 @@ const Admin = mongoose.model('admin');
 const BetLists = mongoose.model('betList');
 const bcrypt = require('bcrypt');
 const logger = require('../../logger');
+const AppStart = require('./signups/appStart');
+
 
 
 const usersHelper = {
   registerUser: async function (newData) {
     const newUser = new User(newData);
     const data = await newUser.save();
+    
+    if(newData.other_referal_code != undefined){
+      AppStart.referralReward(other_referal_code)
+    }
+    
 
     if (data) {
       return {

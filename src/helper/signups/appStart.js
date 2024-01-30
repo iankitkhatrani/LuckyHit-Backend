@@ -36,17 +36,17 @@ module.exports.referralReward = async (referal_code) => {
   logger.info('referralReward res : ', res);
 
   if (res !== null) {
-    await UserReferTracks.create({
-      // eslint-disable-next-line no-undef
-      user_id: MongoID(userData._id.toString()),
-      rId: MongoID(res._id.toString()),
-    });
+    // await UserReferTracks.create({
+    //   // eslint-disable-next-line no-undef
+    //   user_id: MongoID(userData._id.toString()),
+    //   rId: MongoID(res._id.toString()),
+    // });
     // let reward = await bonusActions.getReferalBonus({
     //     referCounter : urc
     // })
 
     // if(reward.otc > 0){
-    //     await walletActions.addotcWallet(userData._id.toString(), Number(reward.otc), "friend signup otc", 2);
+         await walletActions.addWalletBonus(res._id.toString(), Number(reward.otc),2, "friend signup otc", res);
     // }else{
     //     return false;
     // }
@@ -230,7 +230,8 @@ module.exports.filterBeforeSendSPEvent = async (userData) => {
     winningChips: userData.winningChips,
     tableId: userData.tableId || 0,
     createdAt: userData.createdAt,
-    profileUrl: userData.profileUrl
+    profileUrl: userData.profileUrl,
+    referralCode:userData.referralCode
   };
 
   //logger.info('filter Before Send SP Event -->', res);

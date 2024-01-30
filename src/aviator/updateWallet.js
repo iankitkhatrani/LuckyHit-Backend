@@ -331,6 +331,107 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
     }
 }
 
+
+module.exports.addWalletBonus = async (id, added_chips, tType, t, client) => {
+    try {
+        logger.info('\ndedudctWallet : call.-->>>', id, added_chips, t);
+        const wh = (typeof id == 'string') ? { _id: MongoID(id) } : { _id: id };
+        if (typeof wh == 'undefined' || typeof wh._id == 'undefined' || wh._id == null || typeof tType == 'undefined') {
+            return false;
+        }
+        added_chips = Number(added_chips).toFixed(2);
+        let projection = {
+            id: 1,
+            user_name: 1,
+            uniqueId: 1,
+            chips: 1,
+            winningChips: 1,
+            bonusChips:1,
+            sck_id: 1,
+            flags: 1
+        }
+
+        const userInfo = await GameUser.findOne(wh, projection);
+        logger.info("dedudctWallet userInfo : ", userInfo);
+        if (userInfo == null) {
+            return false;
+        }
+        logger.info("dedudctWallet userInfo :: ", userInfo);
+
+        userInfo.chips = (typeof userInfo.chips == 'undefined' || isNaN(userInfo.chips)) ? 0 : Number(userInfo.chips);
+        userInfo.bonusChips = (typeof userInfo.bonusChips == 'undefined' || isNaN(userInfo.bonusChips)) ? 0 : Number(userInfo.bonusChips);
+
+        let opbonusChips = userInfo.bonusChips;
+        let opChips = userInfo.chips;
+
+
+        let setInfo = {
+            $inc: {}
+        };
+        let totalDeductChips = added_chips;
+
+        setInfo['$inc']['bonusChips'] = Number(Number(added_chips).toFixed(2));
+
+        userInfo.bonusChips = Number(userInfo.bonusChips) + Number(bonusChips);
+        userInfo.bonusChips = Number(userInfo.bonusChips.toFixed(2))
+
+
+        logger.info("\ndedudctWallet setInfo :: ", setInfo);
+        let tranferAmount = totalDeductChips;
+        logger.info("dedudctWallet userInfo :: ", userInfo);
+
+        if (Object.keys(setInfo["$inc"]).length > 0) {
+            for (let key in setInfo["$inc"]) {
+                setInfo["$inc"][key] = parseFloat(setInfo["$inc"][key].toString());
+            }
+        }
+        if (Object.keys(setInfo["$inc"]).length == 0) {
+            delete setInfo["$inc"];
+        }
+
+        logger.info("\ndedudctWallet wh :: ", wh, setInfo);
+        let upReps = await GameUser.findOneAndUpdate(wh, setInfo, { new: true });
+        logger.info("\ndedudctWallet upReps :: ", upReps);
+
+        upReps.chips = (typeof upReps.chips == 'undefined' || isNaN(upReps.chips)) ? 0 : Number(upReps.chips);
+        upReps.bonusChips = (typeof upReps.bonusChips == 'undefined' || isNaN(upReps.bonusChips)) ? 0 : Number(upReps.bonusChips);
+        let totalRemaningAmount = upReps.chips + upReps.bonusChips;
+
+        if (typeof tType != 'undefined') {
+
+            let walletTrack = {
+                id: userInfo.id,
+                uniqueId: userInfo.uniqueId,
+                user_id: wh._id.toString(),
+                trnx_type: tType,
+                trnx_type_txt: t,
+                trnx_amount: tranferAmount,
+                opChips: opChips,
+                opbonusChips: opbonusChips,
+                chips: upReps.chips,
+                bonusChips: upReps.bonusChips,
+                total_bucket: totalRemaningAmount
+            }
+            await this.trackUserWallet(walletTrack,"Referral");
+        }
+
+      
+        commandAcions.sendDirectEvent(client, CONST.WALLET_UPDATE, {
+            bonusChips: upReps.bonusChips,
+            chips: upReps.chips,
+            totalWallet: totalRemaningAmount,
+            msg: t,
+            seatIndex: seatIndex
+        });
+
+        
+        return totalRemaningAmount;
+    } catch (e) {
+        logger.info("deductWallet : 1 : Exception : 1", e)
+        return 0
+    }
+}
+
 module.exports.addWalletAdmin = async (id, added_chips, tType, t, tbInfo, client, seatIndex) => {
     try {
         logger.info('\addWalletAdmin : call.-->>>', id, added_chips, t);

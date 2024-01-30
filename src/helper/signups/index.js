@@ -8,5 +8,5 @@ module.exports = {
   userSignup: userSignup,
   verifyOTP: verifyOTP,
   resendOTP: resendOTP,
-  appLunchDetail: appLunchDetails,
+  appLunchDetail: appLunchDetails
 };
