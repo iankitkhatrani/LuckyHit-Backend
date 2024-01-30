@@ -76,8 +76,8 @@ module.exports.startAviator = async (tbId) => {
         if(tb.totalbet > 0){
             Number = this.generateNumber(1, 20)
         }
-        console.log("CONST.AVIATORLOGIC ",CONST.AVIATORLOGIC)
-        if (CONST.AVIATORLOGIC == "Client") { // Client SIDE
+        console.log("CONST.AVIATORLOGIC ",config.AVIATORLOGIC)
+        if (config.AVIATORLOGIC == "Client") { // Client SIDE
             //if (tb.totalbet >= 5) {
             Number = this.generateNumber(1, 3)
             // } else if (tb.totalbet < 5) {
