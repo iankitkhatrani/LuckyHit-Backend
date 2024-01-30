@@ -65,7 +65,7 @@ module.exports.startAviator = async (tbId) => {
 
 
         //Genrate Rendom Number 
-        logger.info("startAviator config.AVIATORLOGIC : ", config.AVIATORLOGIC);
+        logger.info("startAviator config.AVIATORLOGIC : ", GAMELOGICCONFIG.AVIATORLOGIC);
         logger.info("startAviator tb.totalbet : ", tb.totalbet);
 
 
@@ -75,8 +75,8 @@ module.exports.startAviator = async (tbId) => {
         if(tb.totalbet > 0){
             Number = this.generateNumber(1, 20)
         }
-        console.log("CONST.AVIATORLOGIC ",config.AVIATORLOGIC)
-        if (config.AVIATORLOGIC == "Client") { // Client SIDE
+        console.log("CONST.AVIATORLOGIC ",GAMELOGICCONFIG.AVIATORLOGIC)
+        if (GAMELOGICCONFIG.AVIATORLOGIC == "Client") { // Client SIDE
             //if (tb.totalbet >= 5) {
             Number = this.generateNumber(1, 3)
             // } else if (tb.totalbet < 5) {
