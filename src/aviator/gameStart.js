@@ -8,7 +8,6 @@ const commandAcions = require("../helper/socketFunctions");
 const CONST = require("../../constant");
 const logger = require("../../logger");
 const walletActions = require("./updateWallet");
-const { config } = require("dotenv");
 
 const botLogic = require("./botLogic");
 const { v4: uuidv4 } = require('uuid');
