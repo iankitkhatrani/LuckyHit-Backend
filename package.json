@@ -46,6 +46,7 @@
     "redis-adapter": "^0.2.0",
     "redis-server": "^1.2.2",
     "socket.io": "^4.7.2",
+    "telesignsdk": "^2.2.3",
     "underscore": "^1.13.6",
     "uuid": "^9.0.1"
   }
