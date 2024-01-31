@@ -209,7 +209,7 @@ async function verifyOTP(payload) {
 
     const result = await OtpMobile.findOne({
       mobileNumber: mobileNumber,
-      otpCode: otp,
+      otpCode: parseInt(otp),
       otpType,
     });
 
@@ -221,7 +221,7 @@ async function verifyOTP(payload) {
 
       return { status: true, message: 'OTP Verified', data: response.data };
     } else {
-      const key = 7575;
+      const key = 7575// parseInt(otp);
 
       let query = {
         mobileNumber: payload.mobileNumber,
