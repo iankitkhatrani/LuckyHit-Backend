@@ -58,6 +58,109 @@ async function registerAdmin(requestBody) {
     }
 }
 
+/**
+ * @description . Create Admin User
+ * @param {Object} requestBody
+ * @returns {Object}
+ */
+
+async function registerAdminUpdate(requestBody) {
+    try {
+        const { email,oldPwd, newPwd, newEmail } = requestBody;
+       console.log('111111111111requestBody => ', requestBody);
+        console.log("dddd")
+        const data = await Admin.findOne({ email }).lean();
+        console.log("11111111111user =>", data);
+
+        if (data !== null) {
+            const passwordMatch = await bcrypt.compare(oldPwd, data.password);
+            console.log('passwordMatch =====> ', passwordMatch, "\n data =====> ", data);
+            if (passwordMatch) {
+
+                const updateData = {
+                    $set:{
+    
+                    }
+                };
+                if(newPwd != ""){
+                    
+                    const hashedPassword = await bcrypt.hash(newPwd, 10);
+                    updateData["$set"]["password"] = hashedPassword
+                
+                }
+    
+                if(newEmail != ""){
+                    updateData["$set"]["email"] = newEmail
+                
+                }
+    
+    
+                console.log("updateData ",updateData)
+    
+                const response = await Admin.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(data._id) }, updateData, { new: true });
+            
+                console.log("res",response)
+                
+                const token = await commonHelper.sign(data);
+                data.token = token;
+                delete data.password;
+                return { status: 1, message: 'Update Admin Id Password Succesfully', data };
+            } else return { status: 0, message: 'Incorrect Password' };
+        } else {
+            logger.info('At mainController.js:571 userId not found => ', JSON.stringify(requestBody));
+            return { status: 0, message: 'Id not Found' };
+        }
+
+        
+        if (user == 0) {
+            return {
+                message: 'Your Old is Not Match',
+                status: 0,
+            };
+        } else {
+            const updateData = {
+                $set:{
+
+                }
+            };
+            if(newPwd != ""){
+                
+                const hashedPassword = await bcrypt.hash(newPwd, 10);
+                updateDat["$set"]["password"] = hashedPassword
+            
+            }
+
+            if(newEmail != ""){
+                updateDat["$set"]["email"] = newEmail
+            
+            }
+
+
+            
+
+            const response = await Users.findOneAndUpdate({ password:hashedOldPassword }, updateData, { new: true });
+            
+            console.log('admin/dahboard.js post dahboard  error => ', response);
+
+            delete response.data.password;
+
+            if (response.status) {
+                const token = await commonHelper.sign(response.data);
+                response.data.token = token;
+            } else {
+                logger.info('At mainController.js:540 User not created => ', JSON.stringify(requestBody));
+            }
+            return { status: "ok" };
+        }
+    } catch (error) {
+        logger.error('adminController.js registerAdmin error=> ', error, requestBody);
+        return {
+            message: 'something went wrong while registering, please try again',
+            status: 0,
+        };
+    }
+}
+
 
 /**
  * @description . Admin Login
@@ -67,19 +170,19 @@ async function registerAdmin(requestBody) {
 async function adminLogin(requestBody) {
 
     const { email, password } = requestBody;
-    console.info('email => ', email, '\n password => ', password);
+    console.log('email => ', email, '\n password => ', password);
     try {
         const data = await Admin.findOne({ email }).lean();
 
-        const token = await commonHelper.sign(data);
-        data.token = token;
-        delete data.password;
-        return { status: 1, message: 'Login Succesfully', data };
+        // const token = await commonHelper.sign(data);
+        // data.token = token;
+        // delete data.password;
+        // return { status: 1, message: 'Login Succesfully', data };
 
 
         if (data !== null) {
             const passwordMatch = await bcrypt.compare(password, data.password);
-            //logger.info('passwordMatch =====> ', passwordMatch, "\n data =====> ", data);
+            console.log('passwordMatch =====> ', passwordMatch, "\n data =====> ", data);
             if (passwordMatch) {
                 const token = await commonHelper.sign(data);
                 data.token = token;
@@ -246,6 +349,7 @@ async function getBannerList(requestBody) {
 
 module.exports = {
     registerAdmin,
+    registerAdminUpdate,
     adminLogin,
     registerBetList,
     updateBetList,
