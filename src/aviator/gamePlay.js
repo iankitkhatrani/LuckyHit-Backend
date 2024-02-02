@@ -417,7 +417,7 @@ module.exports = PLAYERLIST = async (requestData, client) => {
 
         if (tabInfo == null) {
             logger.info("check out user not turn ::", tabInfo);
-            delete client.action;
+      
             return false
         }
 
@@ -432,6 +432,43 @@ module.exports = PLAYERLIST = async (requestData, client) => {
         logger.info("Exception action : ", e);
     }
 }
+
+
+module.exports = MYREFLIST = async (requestData, client) => {
+    try {
+        logger.info("check out requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.MYREFLIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+        
+        
+        const wh = {
+            rId: MongoID(client.uid.toString()),
+        }
+        const project = {
+            
+        }
+        const refInfo = await userReferTracks.find(wh, project).lean();
+        logger.info("check out refInfo : ", refInfo);
+
+        if (refInfo == null) {
+            logger.info("check out user not turn ::", refInfo);
+          
+            return false
+        }
+
+        response=  {
+            data: refInfo,
+        }
+        sendEvent(client, CONST.MYREFLIST, response);
+
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
 /*
     
 */

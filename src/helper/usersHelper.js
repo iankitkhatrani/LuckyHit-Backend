@@ -14,7 +14,7 @@ const usersHelper = {
     const data = await newUser.save();
     
     if(newData.other_referal_code != undefined){
-      AppStart.referralReward(other_referal_code)
+      AppStart.referralReward(other_referal_code,data)
     }
     
 

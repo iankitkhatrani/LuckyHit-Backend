@@ -151,6 +151,12 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.MYREFLIST:{
+                        gamePlayActions.MYREFLIST(payload.data, socket);
+                        break;
+                    }
+                    
+
                     case CONST.LEAVE_TABLE: {
                         gamePlayActions.leaveTable(payload.data, socket);
                         break;
