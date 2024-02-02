@@ -12,11 +12,10 @@ const usersHelper = {
   registerUser: async function (newData) {
     const newUser = new User(newData);
     const data = await newUser.save();
+
     
-    if(newData.other_referal_code != undefined){
-      AppStart.referralReward(other_referal_code,data)
-    }
-    
+
+
 
     if (data) {
       return {

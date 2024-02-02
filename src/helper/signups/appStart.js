@@ -33,24 +33,26 @@ module.exports.appLunchDetails = async (requestData, client) => {
 };
 
 module.exports.referralReward = async (referal_code,data) => {
+  console.log("referal_code ",referal_code)
   let wh = {
-    referal_code: referal_code,
+    referralCode: referal_code,
   };
 
   let res = await GameUser.findOne(wh, {});
-  logger.info('referralReward res : ', res);
+  console.log('referralReward res : ', res);
 
   if (res !== null) {
     let res = await GameUser.findOne(wh, {});
-    logger.info('referralReward res : ', res);
+    console.log('referralReward res : ', res);
   
-    await UserReferTracks.create({
+    await userReferTracks.create({
       // eslint-disable-next-line no-undef
       user_id: MongoID(data._id.toString()),
-      country: data.country,
+      country: data.Country,
       rId: MongoID(res._id.toString()),
+      name:data.username
     });
-   
+    
       await walletActions.addWalletBonus(res._id.toString(), Number(500), 2, "friend signup otc", res);
     
     return true;

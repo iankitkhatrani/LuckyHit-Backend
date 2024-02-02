@@ -4,6 +4,7 @@ const AviatorTables = mongoose.model("aviatorTables");
 const GameUser = mongoose.model("users");
 const MyBetTable = mongoose.model("mybetlist");
 const GameHistory = mongoose.model("GameHistory");
+const userReferTracks = mongoose.model("userReferTracks");
 
 const { sendEvent, sendDirectEvent, AddTime, setDelay, clearJob } = require('../helper/socketFunctions');
 const CONST = require("../../constant");
@@ -397,7 +398,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
 }
 
 
-module.exports = PLAYERLIST = async (requestData, client) => {
+module.exports.PLAYERLIST = async (requestData, client) => {
     try {
         logger.info("check out requestData : ", requestData);
         if (typeof client.tbid == "undefined") {
@@ -434,7 +435,7 @@ module.exports = PLAYERLIST = async (requestData, client) => {
 }
 
 
-module.exports = MYREFLIST = async (requestData, client) => {
+module.exports.MYREFLIST = async (requestData, client) => {
     try {
         logger.info("check out requestData : ", requestData);
         if (typeof client.uid == "undefined") {
