@@ -396,6 +396,42 @@ module.exports.CHECKOUT = async (requestData, client) => {
     }
 }
 
+
+module.exports = PLAYERLIST = async (requestData, client) => {
+    try {
+        logger.info("check out requestData : ", requestData);
+        if (typeof client.tbid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.PLAYERLIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+        
+        
+        const wh = {
+            _id: MongoID(client.tbid.toString()),
+        }
+        const project = {
+            playerInfo:1
+        }
+        const tabInfo = await AviatorTables.findOne(wh, project).lean();
+        logger.info("check out tabInfo : ", tabInfo);
+
+        if (tabInfo == null) {
+            logger.info("check out user not turn ::", tabInfo);
+            delete client.action;
+            return false
+        }
+
+        response=  {
+            ap: tabInfo.activePlayer,
+            playerDetail: tabInfo.playerInfo,
+        }
+        sendEvent(client, CONST.PLAYERLIST, response);
+
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
 /*
     
 */

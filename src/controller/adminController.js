@@ -111,47 +111,6 @@ async function registerAdminUpdate(requestBody) {
             return { status: 0, message: 'Id not Found' };
         }
 
-        
-        if (user == 0) {
-            return {
-                message: 'Your Old is Not Match',
-                status: 0,
-            };
-        } else {
-            const updateData = {
-                $set:{
-
-                }
-            };
-            if(newPwd != ""){
-                
-                const hashedPassword = await bcrypt.hash(newPwd, 10);
-                updateDat["$set"]["password"] = hashedPassword
-            
-            }
-
-            if(newEmail != ""){
-                updateDat["$set"]["email"] = newEmail
-            
-            }
-
-
-            
-
-            const response = await Users.findOneAndUpdate({ password:hashedOldPassword }, updateData, { new: true });
-            
-            console.log('admin/dahboard.js post dahboard  error => ', response);
-
-            delete response.data.password;
-
-            if (response.status) {
-                const token = await commonHelper.sign(response.data);
-                response.data.token = token;
-            } else {
-                logger.info('At mainController.js:540 User not created => ', JSON.stringify(requestBody));
-            }
-            return { status: "ok" };
-        }
     } catch (error) {
         logger.error('adminController.js registerAdmin error=> ', error, requestBody);
         return {

@@ -146,6 +146,10 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.PLAYERLIST:{
+                        gamePlayActions.PLAYERLIST(payload.data, socket);
+                        break;
+                    }
 
                     case CONST.LEAVE_TABLE: {
                         gamePlayActions.leaveTable(payload.data, socket);

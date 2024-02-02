@@ -250,6 +250,8 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
     }
 }
 
+
+
 module.exports.findEmptySeat = (playerInfo) => {
     for (x in playerInfo) {
         if (typeof playerInfo[x] == 'object' && playerInfo[x] != null && typeof playerInfo[x].seatIndex == 'undefined') {
