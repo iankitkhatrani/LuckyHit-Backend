@@ -339,11 +339,11 @@ module.exports.CHECKOUT = async (requestData, client) => {
 
         winAmount = Number(winAmount - Deductcom).toFixed(2);
 
-        console.log("winAmount :::::::::::::::::::::::::::::",winAmount)
+        console.log("winAmount :::::::::::::::::::::::::::::", winAmount)
 
         await walletActions.addWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
 
-        console.log("winAmount :::::::::::::::::::::::::::::",winAmount)
+        console.log("winAmount :::::::::::::::::::::::::::::", winAmount)
 
         await this.AddGameHistory({
             "userId": client.uid,
@@ -493,7 +493,7 @@ module.exports.Redisbinding = async () => {
     //subscribing for heabeats expiration
     rclient1.send_command('config', ['set', 'notify-keyspace-events', 'Ex'])
     rclient1.subscribe('__keyevent@10__:expired');
-    console.log("Redisbinding ")
+    // console.log("Redisbinding ")
     rclient1.on('message', function (channel, msg, type) {
         var obj = msg.split(":")
         // console.log("Obj ::::::::::::::::", obj)

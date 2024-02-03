@@ -41,6 +41,7 @@ module.exports.roundFinish = async (tb) => {
                     totalHitChips: 0,
                 },
                 gameTracks: [],
+                betLists: [],
                 gameId: "",
                 gameState: "",
                 isLastUserFinish: false,

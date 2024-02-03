@@ -14,11 +14,11 @@ module.exports.getWinnerUser = (userInfo, hukum, isShow, showUserSeatIndex, BNWC
         cardsResult.push(response);
     }
 
-    cardsResult = cardsResult.sort((a, b) => {
-        return b.cardCount - a.cardCount
-    }).sort((a, b) => {
-        return a.index - b.index
-    })
+    // cardsResult = cardsResult.sort((a, b) => {
+    //     return b.cardCount - a.cardCount
+    // }).sort((a, b) => {
+    //     return a.index - b.index
+    // })
     logger.info("getWinnerUser cardsResult : ", cardsResult);
 
     return cardsResult;

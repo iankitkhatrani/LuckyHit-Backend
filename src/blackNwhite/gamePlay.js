@@ -17,123 +17,130 @@ const walletActions = require("./updateWallet");
     actionplace:1 || 2
 */
 
-module.exports.action = async (requestData, client) => {
-    try {
-        logger.info("Bnw action requestData : ", requestData);
-        logger.info("Bnw action client.tbid: ", client.tbid);
-        logger.info("Bnw action client.uid ", client.uid);
-        logger.info("Bnw action client.seatIndex ", client.seatIndex);
+module.exports.
+    action = async (requestData, client) => {
+        try {
+            logger.info("Bnw action requestData : ", requestData);
+            logger.info("Bnw action client.tbid: ", client.tbid);
+            logger.info("Bnw action client.uid ", client.uid);
+            logger.info("Bnw action client.seatIndex ", client.seatIndex);
 
-        if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined") {
-            commandAcions.sendDirectEvent(client.sck, CONST.BNW_ACTION, requestData, false, "User session not set, please restart game!");
-            return false;
-        }
+            if (typeof client.tbid == "undefined" || typeof client.uid == "undefined" || typeof client.seatIndex == "undefined") {
+                commandAcions.sendDirectEvent(client.sck, CONST.BNW_ACTION, requestData, false, "User session not set, please restart game!");
+                return false;
+            }
 
-        client.action = true;
+            client.action = true;
 
-        let gwh = {
-            _id: MongoID(client.uid)
-        }
-        let UserInfo = await GameUser.findOne(gwh, {}).lean();
-        logger.info("action UserInfo : ", gwh, JSON.stringify(UserInfo));
+            let gwh = {
+                _id: MongoID(client.uid)
+            }
+            let UserInfo = await GameUser.findOne(gwh, {}).lean();
+            logger.info("action UserInfo : ", gwh, JSON.stringify(UserInfo));
 
 
-        const wh = {
-            _id: MongoID(client.tbid.toString()),
-            // status: "StartBatting"
-        }
-        const project = {}
-        let tabInfo = await PlayingTables.findOne(wh, project).lean();
-        logger.info("action tabInfo : ", tabInfo);
+            const wh = {
+                _id: MongoID(client.tbid.toString()),
+                // status: "StartBatting"
+            }
+            const project = {}
+            let tabInfo = await PlayingTables.findOne(wh, project).lean();
+            logger.info("action tabInfo : ", tabInfo);
 
-        let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
+            let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
 
-        if (Number(requestData.betAmount) > Number(totalWallet)) {
-            logger.info("action client.su ::", client.seatIndex);
+            if (Number(requestData.betAmount) > Number(totalWallet)) {
+                logger.info("action client.su ::", client.seatIndex);
+                delete client.action;
+                commandAcions.sendDirectEvent(client.sck, CONST.BNW_ACTION, requestData, false, "Please add wallet!!");
+                return false;
+            }
+            requestData.betAmount = Number(Number(requestData.betAmount).toFixed(2))
+
+            await walletActions.deductWallet(client.uid, -requestData.betAmount, 2, "blackNwhite", tabInfo, client.id, client.seatIndex);
+
+            if (tabInfo == null) {
+                logger.info("action user not turn ::", tabInfo);
+                delete client.action;
+                return false
+            }
+
+            let updateData = {
+                $set: {},
+                $inc: {},
+            };
+
+            if (requestData.type === 'Black') {
+                let playerInfo = tabInfo.playerInfo[client.seatIndex];
+                playerInfo.betLists.push(requestData);
+                tabInfo.betLists.push(requestData);
+                updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
+                updateData.$set['betLists'] = playerInfo.betLists;
+                updateData.$inc['counters.totalBlackChips'] = requestData.betAmount;
+
+                const upWh = {
+                    _id: MongoID(client.tbid.toString()),
+                    'playerInfo.seatIndex': Number(client.seatIndex),
+                };
+
+                tabInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, {
+                    new: true,
+                });
+
+                logger.info(" blackAmount table Info -->", tabInfo)
+                commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+
+            } else if (requestData.type === 'White') {
+                let playerInfo = tabInfo.playerInfo[client.seatIndex];
+                playerInfo.betLists.push(requestData);
+                tabInfo.betLists.push(requestData);
+                updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
+                updateData.$set['betLists'] = playerInfo.betLists;
+                updateData.$inc['counters.totalWhiteChips'] = requestData.betAmount;
+
+
+                const upWh = {
+                    _id: MongoID(client.tbid.toString()),
+                    'playerInfo.seatIndex': Number(client.seatIndex),
+                };
+
+                tabInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, {
+                    new: true,
+                });
+
+                logger.info("whiteAmount table Info -->", tabInfo)
+
+                commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalWhiteChips: tabInfo.counters.totalWhiteChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+
+
+            } else if (requestData.type === 'LuckyHit') {
+                let playerInfo = tabInfo.playerInfo[client.seatIndex];
+                playerInfo.betLists.push(requestData);
+                tabInfo.betLists.push(requestData);
+                updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
+                updateData.$set['betLists'] = playerInfo.betLists;
+                updateData.$inc['counters.totalHitChips'] = requestData.betAmount;
+
+                const upWh = {
+                    _id: MongoID(client.tbid.toString()),
+                    'playerInfo.seatIndex': Number(client.seatIndex),
+                };
+
+                tabInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, {
+                    new: true,
+                });
+
+                logger.info(" luckyHitAmount table Info -->", tabInfo)
+                commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
+
+            }
+
             delete client.action;
-            commandAcions.sendDirectEvent(client.sck, CONST.BNW_ACTION, requestData, false, "Please add wallet!!");
-            return false;
+            return true;
+        } catch (e) {
+            logger.info("Exception action : ", e);
         }
-        requestData.betAmount = Number(Number(requestData.betAmount).toFixed(2))
-
-        await walletActions.deductWallet(client.uid, -requestData.betAmount, 2, "blackNwhite", tabInfo, client.id, client.seatIndex);
-
-        if (tabInfo == null) {
-            logger.info("action user not turn ::", tabInfo);
-            delete client.action;
-            return false
-        }
-
-        let updateData = {
-            $set: {},
-            $inc: {},
-        };
-
-        if (requestData.type === 'Black') {
-            let playerInfo = tabInfo.playerInfo[client.seatIndex];
-            playerInfo.betLists.push(requestData);
-            updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
-            updateData.$inc['counters.totalBlackChips'] = requestData.betAmount;
-
-            const upWh = {
-                _id: MongoID(client.tbid.toString()),
-                'playerInfo.seatIndex': Number(client.seatIndex),
-            };
-
-            tabInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, {
-                new: true,
-            });
-
-            logger.info(" blackAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
-
-        } else if (requestData.type === 'White') {
-            let playerInfo = tabInfo.playerInfo[client.seatIndex];
-            playerInfo.betLists.push(requestData);
-            updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
-            updateData.$inc['counters.totalWhiteChips'] = requestData.betAmount;
-
-
-            const upWh = {
-                _id: MongoID(client.tbid.toString()),
-                'playerInfo.seatIndex': Number(client.seatIndex),
-            };
-
-            tabInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, {
-                new: true,
-            });
-
-            logger.info("whiteAmount table Info -->", tabInfo)
-
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalWhiteChips: tabInfo.counters.totalWhiteChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
-
-
-        } else if (requestData.type === 'LuckyHit') {
-            let playerInfo = tabInfo.playerInfo[client.seatIndex];
-            playerInfo.betLists.push(requestData);
-            updateData.$set['playerInfo.$.betLists'] = playerInfo.betLists;
-            updateData.$inc['counters.totalHitChips'] = requestData.betAmount;
-
-            const upWh = {
-                _id: MongoID(client.tbid.toString()),
-                'playerInfo.seatIndex': Number(client.seatIndex),
-            };
-
-            tabInfo = await PlayingTables.findOneAndUpdate(upWh, updateData, {
-                new: true,
-            });
-
-            logger.info(" luckyHitAmount table Info -->", tabInfo)
-            commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
-
-        }
-
-        delete client.action;
-        return true;
-    } catch (e) {
-        logger.info("Exception action : ", e);
     }
-}
 
 /*
     winamount : 10,
