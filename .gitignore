@@ -3,3 +3,4 @@
 /log_file.log
 /logs
 .env
+src/blackNwhite/gameStart.js

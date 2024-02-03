@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const logger = require('../../../logger');
 const { userSesssionSet, filterBeforeSendSPEvent, getUserDefaultFields, saveGameUser } = require('./appStart');
 const Users = mongoose.model('users');
+const AppStart = require('./appStart');
 
 const checkMobileNumber = async (requestData, socket) => {
   logger.info(' Signup validation Request Data ->', requestData);
@@ -202,6 +203,14 @@ const registerUser = async (requestBody, socket) => {
       socket && await userSesssionSet(userData, socket);
 
       let response = await filterBeforeSendSPEvent(userData);
+
+      console.log("registerUser :::::::::::::::::::::",requestBody.other_referal_code)
+
+    if(requestBody.other_referal_code != undefined){
+      console.log("registerUser :::::::::::::::::::::",requestBody.other_referal_code)
+
+      AppStart.referralReward(requestBody.other_referal_code,userInsertInfo)
+    }
 
       commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
     } else {

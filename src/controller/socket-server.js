@@ -9,6 +9,7 @@ const CONST = require('../../constant');
 const signupActions = require('../helper/signups/index');
 const commonHelper = require('../helper/commonHelper');
 const gamePlayActions = require('../aviator/');
+
 const BNWgamePlayActions = require('../blackNwhite/');
 const { registerUser } = require('../helper/signups/signupValidation');
 const mainCtrl = require('./mainController');
@@ -146,6 +147,16 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.PLAYERLIST:{
+                        gamePlayActions.PLAYERLIST(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.MYREFLIST:{
+                        gamePlayActions.MYREFLIST(payload.data, socket);
+                        break;
+                    }
+                    
 
                     case CONST.LEAVE_TABLE: {
                         gamePlayActions.leaveTable(payload.data, socket);

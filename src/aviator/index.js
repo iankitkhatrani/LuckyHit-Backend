@@ -3,7 +3,7 @@
 const { joinTable } = require("./joinTable");
 const { leaveTable } = require("./leaveTable");
 const { disconnectTableHandle, findDisconnectTable } = require("./disconnectHandle");
-const {Redisbinding, Cancel, action,CHECKOUT,mybetlist } = require("./gamePlay");
+const {Redisbinding, Cancel, action,CHECKOUT,PLAYERLIST,MYREFLIST,mybetlist } = require("./gamePlay");
 const {MYWALLET,MYPROFILE,UPDATEPROFILE,LB,AVATARLIST,SHOPLIST,NOTICELIST,MAILLIST,MAILREAD,BANNERLIST } = require("./dashboard");
 const {ADDCARD,GETCARD,WITHDRAWALREQ} = require("./updateWallet");
 const {reconnect} = require("./reconnect")
@@ -32,5 +32,7 @@ module.exports = {
   reconnect: reconnect,
   GETCARD:GETCARD,
   WITHDRAWALREQ:WITHDRAWALREQ,
-  BANNERLIST:BANNERLIST
+  BANNERLIST:BANNERLIST,
+  PLAYERLIST:PLAYERLIST,
+  MYREFLIST:MYREFLIST
 };

@@ -3,6 +3,11 @@ const bcrypt = require('bcrypt');
 const MongoID = mongoose.Types.ObjectId;
 const GameUser = mongoose.model('users');
 const IdCounter = mongoose.model('idCounter');
+
+const userReferTracks = mongoose.model('userReferTracks');
+
+
+
 //const bcrypt = require('bcrypt');
 const CONST = require('../../../constant');
 const logger = require('../../../logger');
@@ -27,29 +32,29 @@ module.exports.appLunchDetails = async (requestData, client) => {
   return true;
 };
 
-module.exports.referralReward = async (referal_code) => {
+module.exports.referralReward = async (referal_code,data) => {
+  console.log("referal_code ",referal_code)
   let wh = {
-    referal_code: referal_code,
+    referralCode: referal_code,
   };
 
   let res = await GameUser.findOne(wh, {});
-  logger.info('referralReward res : ', res);
+  console.log('referralReward res : ', res);
 
   if (res !== null) {
-    // await UserReferTracks.create({
-    //   // eslint-disable-next-line no-undef
-    //   user_id: MongoID(userData._id.toString()),
-    //   rId: MongoID(res._id.toString()),
-    // });
-    // let reward = await bonusActions.getReferalBonus({
-    //     referCounter : urc
-    // })
-
-    // if(reward.otc > 0){
-         await walletActions.addWalletBonus(res._id.toString(), Number(500),2, "friend signup otc", res);
-    // }else{
-    //     return false;
-    // }
+    let res = await GameUser.findOne(wh, {});
+    console.log('referralReward res : ', res);
+  
+    await userReferTracks.create({
+      // eslint-disable-next-line no-undef
+      user_id: MongoID(data._id.toString()),
+      country: data.Country,
+      rId: MongoID(res._id.toString()),
+      name:data.username
+    });
+    
+      await walletActions.addWalletBonus(res._id.toString(), Number(500), 2, "friend signup otc", res);
+    
     return true;
   } else {
     return false;
@@ -134,7 +139,7 @@ module.exports.saveGameUser = async (userInfoDetails, client) => {
     userInfo.id = uCounter;
     userInfo.username = 'USER_' + uCounter;
     userInfo.uniqueId = uniqueId;
-    userInfo.referralCode= "R"+this.GetRandomInt(0,9)+"S"+uCounter;
+    userInfo.referralCode = "R" + this.GetRandomInt(0, 9) + "S" + uCounter;
 
     logger.info('saveGameUser uniqueId ::', userInfo.uniqueId, userInfo.id);
     logger.info('\nsaveGameUser userInfo :: ', userInfo);
@@ -231,7 +236,7 @@ module.exports.filterBeforeSendSPEvent = async (userData) => {
     tableId: userData.tableId || 0,
     createdAt: userData.createdAt,
     profileUrl: userData.profileUrl,
-    referralCode:userData.referralCode
+    referralCode: userData.referralCode
   };
 
   //logger.info('filter Before Send SP Event -->', res);
@@ -239,6 +244,6 @@ module.exports.filterBeforeSendSPEvent = async (userData) => {
 };
 
 
-module.exports.GetRandomInt=(min,max)=>{
+module.exports.GetRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }

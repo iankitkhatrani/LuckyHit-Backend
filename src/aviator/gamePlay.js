@@ -4,6 +4,7 @@ const AviatorTables = mongoose.model("aviatorTables");
 const GameUser = mongoose.model("users");
 const MyBetTable = mongoose.model("mybetlist");
 const GameHistory = mongoose.model("GameHistory");
+const userReferTracks = mongoose.model("userReferTracks");
 
 const { sendEvent, sendDirectEvent, AddTime, setDelay, clearJob } = require('../helper/socketFunctions');
 const CONST = require("../../constant");
@@ -389,6 +390,79 @@ module.exports.CHECKOUT = async (requestData, client) => {
         sendEvent(client, CONST.CHECKOUT, response);
         commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLECHECKOUT, response);
         delete client.action;
+
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+
+module.exports.PLAYERLIST = async (requestData, client) => {
+    try {
+        logger.info("check out requestData : ", requestData);
+        if (typeof client.tbid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.PLAYERLIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+
+
+        const wh = {
+            _id: MongoID(client.tbid.toString()),
+        }
+        const project = {
+            playerInfo: 1
+        }
+        const tabInfo = await AviatorTables.findOne(wh, project).lean();
+        logger.info("check out tabInfo : ", tabInfo);
+
+        if (tabInfo == null) {
+            logger.info("check out user not turn ::", tabInfo);
+
+            return false
+        }
+
+        response = {
+            ap: tabInfo.activePlayer,
+            playerDetail: tabInfo.playerInfo,
+        }
+        sendEvent(client, CONST.PLAYERLIST, response);
+
+        return true;
+    } catch (e) {
+        logger.info("Exception action : ", e);
+    }
+}
+
+
+module.exports.MYREFLIST = async (requestData, client) => {
+    try {
+        logger.info("check out requestData : ", requestData);
+        if (typeof client.uid == "undefined") {
+            commandAcions.sendDirectEvent(client.sck, CONST.MYREFLIST, requestData, false, "User session not set, please restart game!");
+            return false;
+        }
+
+
+        const wh = {
+            rId: MongoID(client.uid.toString()),
+        }
+        const project = {
+
+        }
+        const refInfo = await userReferTracks.find(wh, project).lean();
+        logger.info("check out refInfo : ", refInfo);
+
+        if (refInfo == null) {
+            logger.info("check out user not turn ::", refInfo);
+
+            return false
+        }
+
+        response = {
+            data: refInfo,
+        }
+        sendEvent(client, CONST.MYREFLIST, response);
 
         return true;
     } catch (e) {
