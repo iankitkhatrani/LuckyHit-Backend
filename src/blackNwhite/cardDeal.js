@@ -253,7 +253,8 @@ randome
 
 
 module.exports.getCardsDeatil = (betLists, tb) => {
-    logger.info("getCardsDeatil betLists", betLists)
+    logger.info("Black n white game win type config.BLACKANDWHITE : ", GAMELOGICCONFIG.BLACKANDWHITE);
+
     let deckCards = [
         'H-1-0', 'H-2-0', 'H-3-0', 'H-4-0', 'H-5-0', 'H-6-0', 'H-7-0', 'H-8-0', 'H-9-0', 'H-10-0', 'H-11-0', 'H-12-0', 'H-13-0',
         'S-1-0', 'S-2-0', 'S-3-0', 'S-4-0', 'S-5-0', 'S-6-0', 'S-7-0', 'S-8-0', 'S-9-0', 'S-10-0', 'S-11-0', 'S-12-0', 'S-13-0',
@@ -261,18 +262,10 @@ module.exports.getCardsDeatil = (betLists, tb) => {
         'C-1-0', 'C-2-0', 'C-3-0', 'C-4-0', 'C-5-0', 'C-6-0', 'C-7-0', 'C-8-0', 'C-9-0', 'C-10-0', 'C-11-0', 'C-12-0', 'C-13-0',
     ];
 
-    let blackTotal = 0;
-    let whiteTotal = 0;
 
-    for (const bet of betLists) {
-        if (bet.type === "Black") {
-            blackTotal += bet.betAmount;
-        } else if (bet.type === "White") {
-            whiteTotal += bet.betAmount;
-        }
-    }
-    logger.info("\n blacktotal -->", blackTotal)
-    logger.info("\n whiteTotal -->", whiteTotal)
+    logger.info("getCardsDeatil betLists", betLists)
+
+
 
     //Distribute the cards
     let cards = [];
@@ -288,57 +281,81 @@ module.exports.getCardsDeatil = (betLists, tb) => {
     };
     logger.log("final card check =>", cards)
 
+    if (GAMELOGICCONFIG.BLACKANDWHITE == "NoOneWin") {
+        logger.info("check no One will cards", cards)
+        return cards
 
-    if (blackTotal < whiteTotal) { // Compare total bet amounts
+    } else if (GAMELOGICCONFIG.BLACKANDWHITE == "LeastAmount") {
 
-        logger.info("\n getCardsDeatil winning for black *->", cards);
+        let blackTotal = 0;
+        let whiteTotal = 0;
 
-        const sumArray = (cards) => {
-            return cards.reduce((acc, val) => {
-                const value = parseInt(val.split('-')[1]);
-                return acc + value;
-            }, 0);
-
+        for (const bet of betLists) {
+            if (bet.type === "Black") {
+                blackTotal += bet.betAmount;
+            } else if (bet.type === "White") {
+                whiteTotal += bet.betAmount;
+            }
         }
-        // Calculate the sums of values in the arrays
-        const sum1 = sumArray(cards[0]);
-        const sum2 = sumArray(cards[1]);
-        logger.log("Black Win sum1 ->", sum1);
-        logger.log("Black Win sum2 ->", sum2);
+        logger.info("\n blacktotal -->", blackTotal)
+        logger.info("\n whiteTotal -->", whiteTotal)
 
-        // Swap arrays based on the sums
-        if (sum1 < sum2) {
-            [cards[0], cards[1]] = [cards[1], cards[0]];
-            logger.log("Change")
+
+        if (blackTotal < whiteTotal) { // Compare total bet amounts
+
+            logger.info("\n getCardsDeatil winning for black *->", cards);
+
+            const sumArray = (cards) => {
+                return cards.reduce((acc, val) => {
+                    const value = parseInt(val.split('-')[1]);
+                    return acc + value;
+                }, 0);
+
+            }
+            // Calculate the sums of values in the arrays
+            const sum1 = sumArray(cards[0]);
+            const sum2 = sumArray(cards[1]);
+            logger.log("Black Win sum1 ->", sum1);
+            logger.log("Black Win sum2 ->", sum2);
+
+            // Swap arrays based on the sums
+            if (sum1 < sum2) {
+                [cards[0], cards[1]] = [cards[1], cards[0]];
+                logger.log("Change")
+            }
+            // cards.push(card)
+            logger.info("\n getCardsDeatil Final cards Black->", cards);
+
+            return cards; // "black";
+        } else {
+            logger.info("\n getCardsDeatil winning for White *->", cards);
+
+            const sumArray = (cards) => {
+                return cards.reduce((acc, val) => {
+                    const value = parseInt(val.split('-')[1]);
+                    return acc + value;
+                }, 0);
+            };
+
+            // Calculate the sums of values in the arrays
+            const sum1 = sumArray(cards[0]);
+            const sum2 = sumArray(cards[1]);
+
+            logger.log("sum1 ->", sum1);
+            logger.log("sum2 ->", sum2);
+
+            // Swap arrays based on the sums
+            if (sum1 > sum2) {
+                [cards[1], cards[0]] = [cards[0], cards[1]];
+            }
+            // cards.push(card)
+            logger.info("\n getCardsDeatil winning for White *->", cards);
+            return cards; // "white
         }
-        // cards.push(card)
-        logger.info("\n getCardsDeatil Final cards Black->", cards);
-
-        return cards; // "black";
     } else {
-        logger.info("\n getCardsDeatil winning for White *->", cards);
-
-        const sumArray = (cards) => {
-            return cards.reduce((acc, val) => {
-                const value = parseInt(val.split('-')[1]);
-                return acc + value;
-            }, 0);
-        };
-
-        // Calculate the sums of values in the arrays
-        const sum1 = sumArray(cards[0]);
-        const sum2 = sumArray(cards[1]);
-
-        logger.log("sum1 ->", sum1);
-        logger.log("sum2 ->", sum2);
-
-        // Swap arrays based on the sums
-        if (sum1 > sum2) {
-            [cards[1], cards[0]] = [cards[0], cards[1]];
-        }
-        // cards.push(card)
-        logger.info("\n getCardsDeatil winning for White *->", cards);
-        return cards; // "white
+        logger.info("Normal Game Play == randome win", cards)
+        return cards
     }
+
 }
 

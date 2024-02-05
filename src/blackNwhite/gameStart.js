@@ -40,7 +40,7 @@ module.exports.gameTimerStart = async (tb) => {
 
 
 
-        let roundTime = 0;
+        let roundTime = 3;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_GAME_START_TIMER, { timer: roundTime });
 
         let tbId = tabInfo._id;

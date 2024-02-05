@@ -65,7 +65,7 @@ const CONST = {
   UPDATEPROFILE: "UPDATEPROFILE",
   LB: "LB",
   PLAYERLIST: "PLAYERLIST",
-  MYREFLIST:"MYREFLIST",
+  MYREFLIST: "MYREFLIST",
   AVATARLIST: "AVATARLIST",
   SHOPLIST: "SHOPLIST",
   NOTICELIST: "NOTICELIST",
@@ -310,6 +310,7 @@ const CONST = {
   MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 
   AVIATORLOGIC: "Normal",
+  BLACKANDWHITE: "Normal",
 
   // HTTP Status Codes
   STATUS: {
