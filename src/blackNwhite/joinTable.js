@@ -205,10 +205,10 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
 
         delete client.JT;
 
-        // for (let i = 0; i < 10; i++) {
-        //     let res = await botLogic.JoinRobot(tableInfo);
-        //     logger.info("Result ->", res);
-        // }
+        for (let i = 0; i < 10; i++) {
+            let res = await botLogic.JoinRobot(tableInfo);
+            logger.info("Result ->", res);
+        }
 
         if (tableInfo.gameState == "" /*&& tableInfo.activePlayer > 1*/) {
 
