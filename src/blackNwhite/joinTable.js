@@ -210,7 +210,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             logger.info("Result ->", res);
         }
 
-        if (tableInfo.gameState == "" /*&& tableInfo.activePlayer > 1*/) {
+        if (tableInfo.gameState == "" && tableInfo.activePlayer > 1) {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
             clearJob(jobId)
