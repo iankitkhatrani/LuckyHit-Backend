@@ -35,10 +35,10 @@ const redis = require('redis');
 // logger.info('http.js \nSERVER_PORT', SERVER_PORT + ' \nSERVER_ID', SERVER_ID);
 
 
-rclient = module.exports = redis.createClient(6379, "13.60.4.196", () => { });
+rclient = module.exports = redis.createClient(6379, "luckyhits.in", () => { });
 rclient.auth("luckyhit123", function () { });
 
-rclient1 = module.exports = redis.createClient(6379, "13.60.4.196", () => { });
+rclient1 = module.exports = redis.createClient(6379, "luckyhits.in", () => { });
 rclient1.auth("luckyhit123", function () { });
 
 rclient.select(10);
