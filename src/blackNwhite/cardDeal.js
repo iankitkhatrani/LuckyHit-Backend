@@ -282,8 +282,8 @@ module.exports.getCardsDeatil = (betLists, tb) => {
     logger.log("final card check =>", cards)
 
     if (GAMELOGICCONFIG.BLACKANDWHITE == "NoOneWin") {
-
-
+        logger.info("check no One will cards", cards)
+        return cards
 
     } else if (GAMELOGICCONFIG.BLACKANDWHITE == "LeastAmount") {
 
