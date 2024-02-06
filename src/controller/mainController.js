@@ -221,7 +221,7 @@ async function verifyOTP(payload) {
 
       return { status: true, message: 'OTP Verified', data: response.data };
     } else {
-      const key = 7575// parseInt(otp);
+      const key =  parseInt(otp);
 
       let query = {
         mobileNumber: payload.mobileNumber,
