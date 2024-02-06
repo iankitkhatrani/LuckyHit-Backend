@@ -21,7 +21,6 @@ const GameUser = mongoose.model("users");
  */
 
 router.post('/signup-admin', async (req, res) => {
-  console.log("signup-admin :::::::::::::::",req.body)
   res.json(await mainCtrl.registerAdmin(req.body));
 });
 
