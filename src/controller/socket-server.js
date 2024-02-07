@@ -72,6 +72,27 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    // forgot Password 
+                    case CONST.SEND_OTP_FORGOT: {
+                        try {
+                            let result = await mainCtrl.SEND_OTP_FORGOT(payload.data);
+                            sendEvent(socket, CONST.SEND_OTP_FORGOT, result);
+                        } catch (error) {
+                            logger.error('socketServer.js Send Otp error => ', error);
+                        }
+                        break;
+                    }
+
+                    case CONST.CHANGE_PASSWORD: {
+                        try {
+                            let result = await mainCtrl.CHANGE_PASSWORD(payload.data);
+                            sendEvent(socket, CONST.CHANGE_PASSWORD, result);
+                        } catch (error) {
+                            logger.error('socketServer.js Send Otp error => ', error);
+                        }
+                        break;
+                    }
+
                     case CONST.VERIFY_OTP: {
                         try {
                             const result = await mainCtrl.verifyOTP(payload.data);
