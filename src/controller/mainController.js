@@ -354,9 +354,10 @@ async function CHANGE_PASSWORD(requestBody) {
 
         }
       };
-      if (newPassword != "") {
 
-        updateData["$set"]["password"] = newPassword
+      if (newPassword != "") {
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+        updateData["$set"]["password"] =  hashedPassword
 
       }
 
@@ -367,7 +368,7 @@ async function CHANGE_PASSWORD(requestBody) {
 
       console.log("res", response)
 
-      return { status: 1, message: 'Update Your Password Succesfully', data };
+      return { status: 1, message: 'Update Your Password Succesfully',data:{} };
 
 
     } else {
