@@ -12,20 +12,20 @@ const commonHelper = require('../helper/commonHelper');
 const Users = mongoose.model('users');
 const OtpMobile = mongoose.model('otpMobile');
 //SMS
-  var TeleSignSDK = require('telesignsdk');
-  const customerId = process.env.CUSTOMER_ID || "1FC81A59-689B-4805-95D4-8BE00B7C5482";
-  const apiKey = process.env.API_KEY || "rDRFayVJQsIyHfGH+bkmcjni+XyT9E/rpGvvjyCQT75+wii8Cm58rH2y7E4VH4PtiptdtMlxb/Uj1JYn5zHMiA==";
+var TeleSignSDK = require('telesignsdk');
+const customerId = process.env.CUSTOMER_ID || "1FC81A59-689B-4805-95D4-8BE00B7C5482";
+const apiKey = process.env.API_KEY || "rDRFayVJQsIyHfGH+bkmcjni+XyT9E/rpGvvjyCQT75+wii8Cm58rH2y7E4VH4PtiptdtMlxb/Uj1JYn5zHMiA==";
 
 
-  var restEndpoint = "https://rest-api.telesign.com";
-  var timeout = 10 * 1000; // 10 secs
+var restEndpoint = "https://rest-api.telesign.com";
+var timeout = 10 * 1000; // 10 secs
 
 
-  var telesign = new TeleSignSDK(customerId,
-    apiKey,
-    restEndpoint,
-    timeout // optional
-  );
+var telesign = new TeleSignSDK(customerId,
+  apiKey,
+  restEndpoint,
+  timeout // optional
+);
 //============
 
 /**
@@ -148,49 +148,49 @@ async function otpSend(requestBody) {
     };
 
 
-    var phoneNumber = "+91"+""+mobileNumber.toString(); // Your end user’s phone number, as a string of digits without spaces or
+    var phoneNumber = "+91" + "" + mobileNumber.toString(); // Your end user’s phone number, as a string of digits without spaces or
     // punctuation, beginning with the country dialing code (for example, “1” for North America)
-    var message = "Your OTP is "+otpCode+".Please do not share it with anyone.";
+    var message = "Your OTP is " + otpCode + ".Please do not share it with anyone.";
     var messageType = "OTP"; // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
     var referenceId = null; // need this to check status later
 
-    telesign.sms.message(async function(err, reply){
-            if(err){
-                console.log("Error: Could not reach TeleSign's servers");
-                console.error(err); // network failure likely cause for error
-                return { status: 0, message: 'Send Otp No data found' };  
-            }
-            else{
-                console.log("YAY!, the SMS message is being sent now by TeleSign!");
-                console.log(reply);
-                console.log(err);
+    telesign.sms.message(async function (err, reply) {
+      if (err) {
+        console.log("Error: Could not reach TeleSign's servers");
+        console.error(err); // network failure likely cause for error
+        return { status: 0, message: 'Send Otp No data found' };
+      }
+      else {
+        console.log("YAY!, the SMS message is being sent now by TeleSign!");
+        console.log(reply);
+        console.log(err);
 
-                referenceId=reply.reference_id; // save the reference_id to check status of the message
+        referenceId = reply.reference_id; // save the reference_id to check status of the message
 
-                const otpData = new OtpMobile({
-                  mobileNumber,
-                  otpCode,
-                  type: otpType,
-                  expireIn: new Date().getTime() * 60000,
-                });
-            
-            
-                const result = await otpData.save();
-                if (result) {
-                  logger.info('Result Otp Data Save => ', result);
-                  return { status: 1, message: 'Otp Data Save Succesfully', data: result };
-                } else {
-                  return { status: 0, message: 'data Not save' };
-                }
+        const otpData = new OtpMobile({
+          mobileNumber,
+          otpCode,
+          type: otpType,
+          expireIn: new Date().getTime() * 60000,
+        });
 
-            }
-        },
-        phoneNumber,
-        message,
-        messageType
+
+        const result = await otpData.save();
+        if (result) {
+          logger.info('Result Otp Data Save => ', result);
+          return { status: 1, message: 'Otp Data Save Succesfully', data: result };
+        } else {
+          return { status: 0, message: 'data Not save' };
+        }
+
+      }
+    },
+      phoneNumber,
+      message,
+      messageType
     );
 
-    
+
   } catch (error) {
     logger.error('mainController.js otpSend error=> ', error, requestBody);
     return { status: 0, message: 'Send Otp No data found' };
@@ -221,7 +221,7 @@ async function verifyOTP(payload) {
 
       return { status: true, message: 'OTP Verified', data: response.data };
     } else {
-      const key = 7575// parseInt(otp);
+      const key = parseInt(otp);
 
       let query = {
         mobileNumber: payload.mobileNumber,
@@ -255,6 +255,132 @@ async function verifyOTP(payload) {
 }
 
 
+/**
+ * @description . Otp Send
+ * @param {Object} requestBody
+ * @returns {Object}
+ */
+
+async function SEND_OTP_FORGOT(requestBody) {
+  // console.info('request Body Email Send  => ', requestBody);
+  const { mobileNumber, otpType } = requestBody;
+  // console.info('mobileNumber => ', mobileNumber + '  || Type =>' + otpType);
+  try {
+
+    const userData = await Users.findOne({ mobileNumber }).lean();
+    logger.info('SEND_OTP_FORGOT login userData => ', userData);
+    if (userData !== null) {
+
+      const otpCode = Math.floor(Math.random() * 100000 + 1);
+
+
+      const params = {
+        verify_code: otpCode
+      };
+
+
+      var phoneNumber = "+91" + "" + mobileNumber.toString(); // Your end user’s phone number, as a string of digits without spaces or
+      // punctuation, beginning with the country dialing code (for example, “1” for North America)
+      var message = "Your OTP is " + otpCode + ".Please do not share it with anyone.";
+      var messageType = "OTP"; // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
+      var referenceId = null; // need this to check status later
+
+      telesign.sms.message(async function (err, reply) {
+        if (err) {
+          console.log("Error: Could not reach TeleSign's servers");
+          console.error(err); // network failure likely cause for error
+          return { status: 0, message: 'Send Otp No data found' };
+        }
+        else {
+          console.log("YAY!, the SMS message is being sent now by TeleSign!");
+          console.log(reply);
+          console.log(err);
+
+          referenceId = reply.reference_id; // save the reference_id to check status of the message
+
+          const otpData = new OtpMobile({
+            mobileNumber,
+            otpCode,
+            type: otpType,
+            expireIn: new Date().getTime() * 60000,
+          });
+
+
+          const result = await otpData.save();
+          if (result) {
+            logger.info('Result Otp Data Save => ', result);
+            return { status: 1, message: 'Otp Data Save Succesfully', data: result };
+          } else {
+            return { status: 0, message: 'data Not save' };
+          }
+
+        }
+      },
+        phoneNumber,
+        message,
+        messageType
+      );
+    } else {
+      return { status: 0, message: 'Mobile Number Not Existing' };
+    }
+
+
+  } catch (error) {
+    logger.error('mainController.js otpSend error=> ', error, requestBody);
+    return { status: 0, message: 'Send Otp No data found' };
+  }
+}
+
+
+
+/**
+ * @description . Otp Send
+ * @param {Object} requestBody
+ * @returns {Object}
+ */
+
+async function CHANGE_PASSWORD(requestBody) {
+  // console.info('request Body Email Send  => ', requestBody);
+  const { mobileNumber, newPassword } = requestBody;
+  // console.info('mobileNumber => ', mobileNumber + '  || Type =>' + otpType);
+  try {
+
+    const userData = await Users.findOne({ mobileNumber }).lean();
+    logger.info('SEND_OTP_FORGOT login userData => ', userData);
+    if (userData !== null && newPassword != undefined) {
+
+      const updateData = {
+        $set: {
+
+        }
+      };
+
+      if (newPassword != "") {
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+        updateData["$set"]["password"] =  hashedPassword
+
+      }
+
+
+      console.log("updateData ", updateData)
+
+      const response = await Users.findOneAndUpdate({ mobileNumber: mobileNumber }, updateData, { new: true });
+
+      console.log("res", response)
+
+      return { status: 1, message: 'Update Your Password Succesfully',data:{} };
+
+
+    } else {
+      return { status: 0, message: 'Mobile Number Not Existing' };
+    }
+
+
+  } catch (error) {
+    logger.error('mainController.js otpSend error=> ', error, requestBody);
+    return { status: 0, message: 'Mobile Number Not Existing' };
+  }
+}
 
 // Export Functions
 module.exports = {
@@ -262,4 +388,7 @@ module.exports = {
   autoLogin,
   otpSend,
   verifyOTP,
+  SEND_OTP_FORGOT,
+  CHANGE_PASSWORD
+
 };

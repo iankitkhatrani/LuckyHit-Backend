@@ -17,6 +17,7 @@ const commandAcions = require('../socketFunctions');
 module.exports.appLunchDetails = async (requestData, client) => {
   let { playerId, mobileNumber } = requestData;
   let query = { _id: playerId.toString() };
+  console.log("query ",query)
   let result = await GameUser.findOne(query, {});
   if (result) {
     await this.userSesssionSet(result, client);
