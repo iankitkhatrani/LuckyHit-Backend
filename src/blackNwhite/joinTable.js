@@ -44,7 +44,22 @@ module.exports.joinTable = async (requestData, client) => {
         if (tableInfo != null) {
             sendEvent(client, CONST.BNW_JOIN_TABLE, requestData, false, "Already In playing table!!");
             delete client.JT
+
+            let updateData = {
+                $set: {
+                    'playerInfo.$': {},
+                },
+            };
+
+            tableInfo = await PlayingTables.findOneAndUpdate(gwh1, updateData, {
+                new: true,
+            });
+
+            logger.info("BNW Remove User table -->", tableInfo)
+
             return false;
+
+
         }
         await this.findTable(client)
     } catch (error) {
@@ -81,7 +96,7 @@ module.exports.createTable = async () => {
         let insertobj = {
             gameId: "",
             activePlayer: 0,
-            playerInfo: this.makeObjects(20),
+            playerInfo: this.makeObjects(50),
             gameState: "",
             history: [],
             BNWCards: { black: [], white: [] },
@@ -210,7 +225,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             logger.info("Result ->", res);
         }
 
-        if (tableInfo.gameState == "" && tableInfo.activePlayer > 1) {
+        if (tableInfo.gameState == "" /*&& tableInfo.activePlayer > 1*/) {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
             clearJob(jobId)

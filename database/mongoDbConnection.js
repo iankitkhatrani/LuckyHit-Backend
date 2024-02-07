@@ -11,11 +11,11 @@ mongoose.connect(mongoDB,
     dbName: 'lukcyhitssb',
   },
   {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-});
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  });
 
 //Get the default connection
 const db = mongoose.connection;
@@ -24,7 +24,7 @@ const db = mongoose.connection;
 
 
 // When successfully connected
-db.on('connected',async () => {
+db.on('connected', async () => {
   logger.info('Mongoose connection open');
 });
 

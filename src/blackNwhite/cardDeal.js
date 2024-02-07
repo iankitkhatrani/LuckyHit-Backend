@@ -281,11 +281,12 @@ module.exports.getCardsDeatil = (betLists, tb) => {
     };
     logger.log("final card check =>", cards)
 
-    if (GAMELOGICCONFIG.BLACKANDWHITE == "NoOneWin") {
-        logger.info("check no One will cards", cards)
-        return cards
+    // if (GAMELOGICCONFIG.BLACKANDWHITE == "User") {
+    //     logger.info("check no One will cards", cards)
+    //     return cards
 
-    } else if (GAMELOGICCONFIG.BLACKANDWHITE == "LeastAmount") {
+    // } else 
+    if (GAMELOGICCONFIG.BLACKANDWHITE == "LeastAmount" || GAMELOGICCONFIG.BLACKANDWHITE == "Client") {
 
         let blackTotal = 0;
         let whiteTotal = 0;
@@ -359,3 +360,72 @@ module.exports.getCardsDeatil = (betLists, tb) => {
 
 }
 
+/*
+
+let deckCards = [
+    // List of deck cards
+];
+
+let blackTotal = 0;
+let whiteTotal = 0;
+let roundsPlayed = 0;
+const tieThreshold = 20; // Define the tie threshold (e.g., 20 or 30)
+
+for (const bet of betLists) {
+    // Calculate total bet amounts for black and white bets
+    if (bet.type === "Black") {
+        blackTotal += bet.betAmount;
+    } else if (bet.type === "White") {
+        whiteTotal += bet.betAmount;
+    }
+}
+
+// Function to calculate the total value of cards in an array
+const calculateTotalValue = (cards) => {
+    return cards.reduce((total, card) => {
+        const value = parseInt(card.split('-')[1]);
+        return total + value;
+    }, 0);
+};
+
+const distributeCards = () => {
+    // Distribute the cards
+    let cards = [];
+    for (let i = 0; i < 2; i++) {
+        let card = [];
+        for (let j = 0; j < 3; j++) {
+            let ran = Math.floor(Math.random() * deckCards.length);
+            card.push(deckCards[ran]);
+            deckCards.splice(ran, 1);
+        }
+        cards.push(card);
+    }
+    return cards;
+};
+
+const checkTie = () => {
+    // Check for a tie condition
+    if (blackTotal === whiteTotal && roundsPlayed >= tieThreshold) {
+        // Declare a tie
+        return true;
+    }
+    return false;
+};
+
+while (!checkTie()) {
+    // Play rounds until there's a tie or the tie threshold is reached
+    roundsPlayed++;
+    const cards = distributeCards();
+    // Handle the distribution of cards and other game logic here
+}
+
+// At this point, either a tie has been declared or the tie threshold has been reached
+if (checkTie()) {
+    // Handle tie scenario
+    console.log("Tie! Total values of black and white cards are the same after " + tieThreshold + " rounds.");
+} else {
+    // Handle other game outcomes
+}
+
+
+*/
