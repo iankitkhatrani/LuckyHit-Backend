@@ -5,12 +5,11 @@ const logger = require('../logger');
 
 //Set up default mongoose connection
 const mongoDB = config.DATABASE;
-// {
-//   dbName: 'lukcyhitssb',
-// },
 
 mongoose.connect(mongoDB,
-  
+  {
+    dbName: 'lukcyhitdb',
+  },
   {
   useNewUrlParser: true,
   useUnifiedTopology: true,
