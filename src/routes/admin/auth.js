@@ -96,7 +96,7 @@ router.get('/DeletePlayingAV', async (req, res) => {
   }
 });
 
-router.post('/api/PayinAPI/Payinnotify', async (req, res) => {
+router.post('/webhook', async (req, res) => {
   console.log("sdddddddddddddddddddddd",req.body)
   logger.info(':::::::::::::::::::::::::::::::::::::responce => ', req.body);
 

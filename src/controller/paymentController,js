@@ -1,0 +1,313 @@
+const mongoose = require('mongoose');
+const MongoID = mongoose.Types.ObjectId;
+const Users = mongoose.model('users');
+const paymentin = mongoose.model('paymentin');
+const axios = require('axios');
+const commandAcions = require('../helper/socketFunctions');
+const CONST = require('../constant');
+
+const PaymentInOrderCreate = {
+    url: 'https://unionepay.in/init-payment-v1.php',
+    accountID: "aid_2430304080",
+    secret_key: 'key_d9ecf7efae4dc0e2e3905e270a3395e5',
+};
+
+// const PaymentInDeepLink = {
+//     url: 'https://api.wowpe.in/api/DeepLinks/intentinitiate',
+//     token: "250066b4-3b16-4b6f-a76e-d5478f701ef5",
+//     secret_key: '04d34b84-e065-42a7-bbef-795965535275',
+// };
+
+/*
+    
+
+
+*/
+
+async function initiatePayment(requestData,socket) {
+    try {
+        console.log("initiatePayment requestData ",requestData)
+        const paymentindata = await paymentin.create({
+            userId: requestData.playerId,
+            transactionId: "aaa",
+            name: requestData.customerName,
+            email: requestData.customerEmail,
+            phone: requestData.customerPhone,
+            amount: requestData.amount,
+            paymentStatus: "Pending"
+          });
+
+        if(paymentindata){
+
+            console.log("paymentindata ",paymentindata)
+            const payload = {
+                "accountID" : PaymentInOrderCreate.accountID,
+                "secret_key" : PaymentInOrderCreate.secret_key,
+                "buyer_name": requestData.customerName,
+                "buyer_phone": requestData.customerPhone,
+                "buyer_email": requestData.customerEmail,
+                "pay_amount": requestData.amount,
+                "payment_id": paymentindata._id.toString(),
+                payment_purpose:"account Added"
+            };
+
+
+            // {"pay_request":{
+            //     "accountID" : "aid_2430304080",
+            //     "secret_key" : "key_d9ecf7efae4dc0e2e3905e270a3395e5",
+            //     "payment_id" : "111111111",
+            //     "payment_purpose" : "sale",
+            //     "buyer_name" :"ankit",
+            //     "buyer_phone" : "8866672045",
+            //     "buyer_email" : "iankitkhatrani",
+            //     "pay_amount" : 11
+            // }
+            // }
+
+            const response = await axios.post(PaymentInOrderCreate.url, payload);
+            console.log("response    ",response.data)
+            if (response.data.code == "OK") {
+                //add amount in coins
+
+                //await walletActions.addWallet(tableInfo.gameTracks[i]._id, Number(winnerTrack.winningAmount), 'Credit', 'Win', tableInfo);
+                if(response.data.body != undefined && response.data.body != null && response.data.body.orderID != undefined){
+
+                    const Updatedata = await paymentin.findOneAndUpdate({_id:MongoID(paymentindata._id.toString())}, {$set:{"OrderID": response.data.body.orderID}}, {
+                        new: true,
+                    });     
+                    console.log("Updatedata ",Updatedata)
+                    const payloaddeeplink = {
+                        "note": "rechargeMoney_103",
+                        "OrderID": response.data.body.orderID,
+                        "token": PaymentInOrderCreate.token
+                    }
+
+                    const responseDeep = await axios.post(PaymentInDeepLink.url, payloaddeeplink);
+                    console.log("response Deeplink ",responseDeep.data)
+                    commandAcions.sendEvent(socket, CONST.PAY_IN, responseDeep.data);
+
+                }else{
+                    commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false,response.data.message); 
+                }
+            } else {
+                commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, response.data.message);   
+            }   
+        }else{
+            console.log("Data Not Insert ")
+            commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+        }
+            
+    } catch (error) {
+        console.error('Error initiating payment:', error.response ? error.response.data : error.message);
+
+        commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+
+        throw error; // Throw the error to be caught by the caller
+    }
+}
+
+
+
+const Account_WOWPE_PAYOUT = {
+    base_url: 'https://api.wowpe.in/api/PayoutAPI/accountverification',
+    clientId: 'aa482292-1675-444d-91d0-57d68829f560',
+    secretKey: '5ccb3ea7-a7b1-4927-8fe6-a83bd6e5a330'
+};
+
+/*
+playerId
+customerName
+customerEmail
+customerPhone
+amount
+accountNo
+ifscCode
+*/
+
+async function addBeneficiary(requestData,socket) {
+    try {
+
+        //Insert Payout Table 
+        const paymentindata = await paymentin.create({
+            userId: requestData.playerId,
+            transactionId: "aaa",
+            name: requestData.customerName,
+            email: requestData.customerEmail,
+            phone: requestData.customerPhone,
+            amount: requestData.amount,
+            accountNo: requestData.accountNo,
+            ifscCode: requestData.ifscCode,
+            paymentStatus: "Pending"
+        });
+
+        if(paymentindata){
+
+            console.log("paymentindata ",paymentindata)
+            const Paylod = {
+                "clientId": Account_WOWPE_PAYOUT.clientId,
+                "secretKey": Account_WOWPE_PAYOUT.secretKey,
+                "number":  requestData.customerPhone,
+                "accountNo": requestData.accountNo,
+                "ifscCode": requestData.ifscCode,
+                "orderID": paymentindata._id.toString()
+            }
+     
+            const response = await axios.post(Account_WOWPE_PAYOUT.base_url, Paylod, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept':'application/json'
+                }
+            });
+
+            if (response.data.code == "OK") {
+                //add amount in coins
+
+                //await walletActions.addWallet(tableInfo.gameTracks[i]._id, Number(winnerTrack.winningAmount), 'Credit', 'Win', tableInfo);
+                if(response.data.body != undefined && response.data.body != null && response.data.body.orderID != undefined){
+
+                    const Updatedata = await paymentin.findOneAndUpdate({_id:MongoID(paymentindata._id.toString())}, {$set:{"OrderID": response.data.body.orderID}}, {
+                        new: true,
+                    });     
+                    console.log("Updatedata ",Updatedata)
+                    const payloaddeeplink = {
+                        "note": "rechargeMoney_103",
+                        "OrderID": response.data.body.orderID,
+                        "token": PaymentInOrderCreate.token
+                    }
+
+                    const responseDeep = await axios.post(PaymentInDeepLink.url, payloaddeeplink);
+                    console.log("response Deeplink ",responseDeep.data)
+                    commandAcions.sendEvent(socket, CONST.PAY_IN, responseDeep.data);
+
+                }else{
+                    commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false,response.data.message); 
+                }
+            } else {
+                commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, response.data.message);   
+            }   
+        }else{
+            console.log("Data Not Insert ")
+            commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+        }
+      
+    } catch (error) {
+        throw error.response ? error.response.data : error.message;
+    }
+}
+
+// const FRENZOPAY_PAYOUT = {
+//     base_url: 'https://api.frenzopay.com/api/v1',
+//     add_beneficiary_endpoint: '/payout/beneficiary',
+//     create_payout_endpoint: '/payout/',
+//     check_payout_status_endpoint: '/payout',
+//     account_balance_endpoint: '/payout/balance',
+//     access_key: '188dda4667a6b9f0873f87a98cb29074',
+//     secret_key: '9ddfe1310dd91ad14996f6c5d64deb3b',
+//     business_id: 204
+// };
+
+// async function addBeneficiary(beneficiaryData) {
+//     try {
+//         const url = `${FRENZOPAY_PAYOUT.base_url}${FRENZOPAY_PAYOUT.add_beneficiary_endpoint}`;
+//         const response = await axios.post(url, beneficiaryData, {
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-Access-Key': FRENZOPAY_PAYOUT.access_key,
+//                 'X-Secret-Key': FRENZOPAY_PAYOUT.secret_key
+//             }
+//         });
+//         return response.data;
+//     } catch (error) {
+//         throw error.response ? error.response.data : error.message;
+//     }
+// }
+
+// //payoutData (amount,payment_method_name,account_number,ifsc,name,address,email,bank_name,mobile_number)
+// async function createPayout(payoutData) {
+//     try {
+//         const url = `${FRENZOPAY_PAYOUT.base_url}${FRENZOPAY_PAYOUT.create_payout_endpoint}`;
+//         const response = await axios.post(url, payoutData, {
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-Access-Key': FRENZOPAY_PAYOUT.access_key,
+//                 'X-Secret-Key': FRENZOPAY_PAYOUT.secret_key
+//             }
+//         });
+//         if (response.data) {
+//             //Deduct a coin
+//         }
+//         return response.data;
+//     } catch (error) {
+//         throw error.response ? error.response.data : error.message;
+//     }
+// }
+
+// //
+// async function checkPayoutStatus(payoutId) {
+//     try {
+//         const url = `${FRENZOPAY_PAYOUT.base_url}${FRENZOPAY_PAYOUT.check_payout_status_endpoint}/${payoutId}`;
+//         const response = await axios.get(url, {
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-Access-Key': FRENZOPAY_PAYOUT.access_key,
+//                 'X-Secret-Key': FRENZOPAY_PAYOUT.secret_key
+//             }
+//         });
+//         return response.data;
+//     } catch (error) {
+//         throw error.response ? error.response.data : error.message;
+//     }
+// }
+
+// async function getAccountBalance() {
+//     try {
+//         const url = `${FRENZOPAY_PAYOUT.base_url}${FRENZOPAY_PAYOUT.account_balance_endpoint}`;
+//         const response = await axios.get(url, {
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-Access-Key': FRENZOPAY_PAYOUT.access_key,
+//                 'X-Secret-Key': FRENZOPAY_PAYOUT.secret_key
+//             }
+//         });
+//         return response.data;
+//     } catch (error) {
+//         throw error.response ? error.response.data : error.message;
+//     }
+// }
+
+// Example usage:
+// (async () => {
+//     try {
+//         // Add beneficiary
+//         const beneficiaryData = { /* Add beneficiary data here */ };
+//         const addedBeneficiary = await addBeneficiary(beneficiaryData);
+//         console.log('Added beneficiary:', addedBeneficiary);
+
+//         // Create payout
+//         const payoutData = { /* Add payout data here */ };
+//         const createdPayout = await createPayout(payoutData);
+//         console.log('Created payout:', createdPayout);
+
+//         // Check payout status
+//         const payoutId = '123'; // Replace with actual payout ID
+//         const payoutStatus = await checkPayoutStatus(payoutId);
+//         console.log('Payout status:', payoutStatus);
+
+//         // Get account balance
+//         const accountBalance = await getAccountBalance();
+//         console.log('Account balance:', accountBalance);
+//     } catch (error) {
+//         console.error('Error:', error);
+//     }
+// })();
+
+
+module.exports = {
+    initiatePayment,
+    addBeneficiary,
+    // createPayout,
+    // checkPayoutStatus,
+    // getAccountBalance
+};
+
+
