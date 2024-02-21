@@ -16,7 +16,9 @@ const mainCtrl = require('./mainController');
 const { sendEvent, sendDirectEvent } = require('../helper/socketFunctions');
 const { userReconnect } = require('../aviator/reConnectFunction');
 const { getBannerList } = require('./adminController');
-
+const { initiatePayment } = require('./paymentController,js');
+const { createPayout } = require('./paymentController,js');
+const { checkPayoutStatus } = require('./paymentController,js');
 
 const myIo = {};
 
@@ -124,7 +126,41 @@ myIo.init = function (server) {
                             logger.info('CONST.DASHBOARD Exception appLunchDetail :', e);
                         }
                         break;
-                    }
+                    }   
+
+
+                    case CONST.PAY_IN: {
+                        try {
+                          console.log("PAY_IN ",payload.data)
+                          await initiatePayment(payload.data,socket)
+                        } catch (error) {
+                          logger.error("Error in pay in ->", error)
+                        }
+                        break;
+                      }
+            
+                      case CONST.CREATE_PAY_OUT: {
+                        try {
+                          const res = await createPayout(payload.data)
+                          sendEvent(socket, CONST.CREATE_PAY_OUT, res)
+            
+                        } catch (error) {
+                          logger.error("Error in pay out ->", error)
+                        }
+                        break;
+                      }
+            
+                      case CONST.CHECK_PAY_OUT_STATUS: {
+                        try {
+                          const res = await checkPayoutStatus(payload.data)
+                          sendEvent(socket, CONST.CHECK_PAY_OUT_STATUS, res)
+            
+                        } catch (error) {
+                          logger.error("Error in pay out ->", error)
+                        }
+                        break;
+                      }
+            
 
                     case CONST.JOIN_SIGN_UP: {
                         socket.uid = payload.data.playerId;

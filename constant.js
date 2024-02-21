@@ -47,6 +47,12 @@ const CONST = {
   CHANGE_PASSWORD:'CHANGE_PASSWORD',
   BANNER: 'BANNER',
 
+
+    //Payment Getway
+    PAY_IN: 'PAYIN',
+    CREATE_PAY_OUT: 'PAYOUT',
+    CHECK_PAY_OUT_STATUS: 'PAYOUT_STATUS',
+    
   // Socket events names
 
   JOIN_TABLE: "JT",
