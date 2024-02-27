@@ -120,7 +120,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
         let user_wh = {
             _id: client.uid
         }
-        console.log("user_wh ", user_wh)
+       // console.log("user_wh ", user_wh)
         let userInfo = await GameUser.findOne(user_wh, {}).lean();
         logger.info("findEmptySeatAndUserSeat userInfo : ", userInfo)
 
