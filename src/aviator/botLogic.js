@@ -15,10 +15,10 @@ module.exports.JoinRobot = async (tableInfo) => {
 
         let RobotPlayer = []
 
-        console.log("tableInfo.playerInfo ",tableInfo.playerInfo)
+        //console.log("tableInfo.playerInfo ",tableInfo.playerInfo)
 
         tableInfo.playerInfo.forEach(e => {
-            console.log("tableInfo.playerInfo ",e)
+            //console.log("tableInfo.playerInfo ",e)
             if(e.Iscom == 1){
                 RobotPlayer.push(MongoID(e._id))
             }
@@ -72,8 +72,8 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
                     e.bet =  BetArray[this.GetRandomInt(0,BetArray.length-1)];
                     e.winamount = 0;
 
-                    console.log("Number ",Number)
-                    console.log("e.Number ",e.Number)
+                    //console.log("Number ",Number)
+                    //console.log("e.Number ",e.Number)
 
 
                     if(Number > e.Number){

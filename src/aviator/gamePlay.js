@@ -35,7 +35,7 @@ module.exports.action = async (requestData, client) => {
         const project = {
 
         }
-        console.log("wh ", wh)
+        //console.log("wh ", wh)
         const tabInfo = await AviatorTables.findOne(wh, project).lean();
         logger.info("action tabInfo : ", tabInfo);
 
@@ -102,7 +102,7 @@ module.exports.action = async (requestData, client) => {
         });
 
 
-        console.log("tabInfo.uuid ", tabInfo.uuid)
+        //console.log("tabInfo.uuid ", tabInfo.uuid)
         this.MybetInsert(tabInfo.uuid, chalvalue, 0, 0, client)
 
         if (requestData.actionplace == 1)
@@ -168,7 +168,7 @@ module.exports.Cancel = async (requestData, client) => {
         const project = {
 
         }
-        console.log("wh ", wh)
+        //console.log("wh ", wh)
         const tabInfo = await AviatorTables.findOne(wh, project).lean();
         logger.info("CANCEL tabInfo : ", tabInfo);
 
@@ -334,17 +334,17 @@ module.exports.CHECKOUT = async (requestData, client) => {
         updateData.$set["playerInfo.$.playStatus"] = "check out"
 
         winAmount = Number(Number(requestData.bet) * (requestData.checkout))
-        console.log("winAmount ", winAmount)
+        //console.log("winAmount ", winAmount)
 
         Deductcom = Number((winAmount * 2) / 100)
 
         winAmount = Number(winAmount - Deductcom).toFixed(2);
 
-        console.log("winAmount :::::::::::::::::::::::::::::", winAmount)
+        //console.log("winAmount :::::::::::::::::::::::::::::", winAmount)
 
         await walletActions.addWallet(client.uid, winAmount, 2, "aviator Win", tabInfo, client.id, client.seatIndex);
 
-        console.log("winAmount :::::::::::::::::::::::::::::", winAmount)
+        //console.log("winAmount :::::::::::::::::::::::::::::", winAmount)
 
         await this.AddGameHistory({
             "userId": client.uid,
@@ -357,7 +357,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
             "game": "aviator"
         });
 
-        console.log("Deductcom ", Deductcom)
+        //console.log("Deductcom ", Deductcom)
 
         if (requestData.actionplace == 1)
             updateData.$set["playerInfo.$.chalValue"] = 0;
@@ -487,7 +487,7 @@ module.exports.mybetlist = async (requestData, client) => {
         const project = {
 
         }
-        console.log("wh ", wh)
+        //console.log("wh ", wh)
         const mybetlist = await MyBetTable.find(wh, project).sort({ _id: -1 }).limit(10).lean();
         logger.info("mybetlist mybetlist : ", mybetlist);
 
@@ -496,7 +496,7 @@ module.exports.mybetlist = async (requestData, client) => {
             return false
         }
 
-        console.log("mybetlist ", mybetlist)
+        //console.log("mybetlist ", mybetlist)
 
 
         sendEvent(client, CONST.MYBET, { mybetlist: mybetlist });
@@ -535,8 +535,8 @@ module.exports.MybetInsert = async (gameId, amount, x, winamount, client) => {
                 winamount: winamount
             }
 
-            console.log("upWh ", upWh)
-            console.log("updateData ", updateData)
+            //console.log("upWh ", upWh)
+            //console.log("updateData ", updateData)
 
 
             const tb = await MyBetTable.findOneAndUpdate(upWh, updateData, { new: true });

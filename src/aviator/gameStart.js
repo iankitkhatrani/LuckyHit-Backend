@@ -75,20 +75,20 @@ module.exports.startAviator = async (tbId) => {
         if(tb.totalbet > 0){
             Number = this.generateNumber(1, 20)
         }
-        console.log("CONST.AVIATORLOGIC ",GAMELOGICCONFIG.AVIATORLOGIC)
+        //console.log("CONST.AVIATORLOGIC ",GAMELOGICCONFIG.AVIATORLOGIC)
         if (GAMELOGICCONFIG.AVIATORLOGIC == "Client") { // Client SIDE
             //if (tb.totalbet >= 5) {
             Number = this.generateNumber(0, 3)
             // } else if (tb.totalbet < 5) {
             //     Number = this.generateNumber(1, 5)
             // }
-            console.log("Number qqqqqqqqqq",Number)
+            //console.log("Number qqqqqqqqqq",Number)
         }
         //  else if (CONST.AVIATORLOGIC == "User") {  // User SIDE
         //     Number = this.generateNumber(1, 10)
         // }
-        console.log("Number ", Number)
-
+        //console.log("Number ", Number)
+//
         let wh = {
             _id: tbId
         }
@@ -124,7 +124,7 @@ module.exports.startAviator = async (tbId) => {
 
             this.gameTimerStart(tabInfonew);
 
-            console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
+            //console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
         }, (((Number+2) * 6) * 1000));
 
         botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
@@ -139,12 +139,12 @@ module.exports.generateNumber = (minRange, maxRange) => {
 
     // Generate a random decimal number between 0 (inclusive) and 1 (exclusive)
     const randomDecimal = Math.random().toFixed(2);
-    console.log('Random Decimal:', randomDecimal);
+    //console.log('Random Decimal:', randomDecimal);
 
     const randomWholeNumber = getRandomInt(minRange, maxRange);
-    console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
+    //console.log('Random Whole Number:randomWholeNumber ', randomWholeNumber);
 
-    console.log('Random Whole Number:', randomWholeNumber + parseFloat(randomDecimal));
+    //console.log('Random Whole Number:', randomWholeNumber + parseFloat(randomDecimal));
 
     return (randomWholeNumber + parseFloat(randomDecimal))
 }
