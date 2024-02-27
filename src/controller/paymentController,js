@@ -4,7 +4,7 @@ const Users = mongoose.model('users');
 const paymentin = mongoose.model('paymentin');
 const axios = require('axios');
 const commandAcions = require('../helper/socketFunctions');
-const CONST = require('../constant');
+const CONST = require('../../constant');
 
 const PaymentInOrderCreate = {
     url: 'https://unionepay.in/init-payment-v1.php',
