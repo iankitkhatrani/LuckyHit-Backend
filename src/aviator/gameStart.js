@@ -125,7 +125,7 @@ module.exports.startAviator = async (tbId) => {
             this.gameTimerStart(tabInfonew);
 
             //console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
-        }, (((Number+2) * 6) * 1000));
+        }, (((Number+0.8) * 6) * 1000));
 
         botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
 
