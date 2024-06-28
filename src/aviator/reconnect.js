@@ -68,6 +68,7 @@ module.exports.
                 const response = {
                     pi: tabInfo.playerInfo,
                     spi: client.uid,
+                    history:tabInfo.history,
                     gameState: tabInfo.gameState,
                     ap: playerInGame.length,
                     tableid: tabInfo._id,
