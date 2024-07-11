@@ -42,8 +42,7 @@ module.exports.gameTimerStart = async (tb) => {
 
         let tbId = tabInfo._id;
         let jobId = CONST.GAME_START_TIMER + ":" + tbId;
-        let delay = commandAcions.AddTime(roundTime);
-
+        let delay = commandAcions.AddTime((roundTime+2));
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
         this.startAviator(tbId)
@@ -78,7 +77,7 @@ module.exports.startAviator = async (tbId) => {
         //console.log("CONST.AVIATORLOGIC ",GAMELOGICCONFIG.AVIATORLOGIC)
         if (GAMELOGICCONFIG.AVIATORLOGIC == "Client") { // Client SIDE
             //if (tb.totalbet >= 5) {
-            Number = this.generateNumber(0, 3)
+            Number = this.generateNumber(1, 4)
             // } else if (tb.totalbet < 5) {
             //     Number = this.generateNumber(1, 5)
             // }
@@ -125,7 +124,7 @@ module.exports.startAviator = async (tbId) => {
             this.gameTimerStart(tabInfonew);
 
             //console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
-        }, (((Number+0.8) * 6) * 1000));
+        }, ((((Number-1)+0.8) * 6) * 1000));
 
         botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
 

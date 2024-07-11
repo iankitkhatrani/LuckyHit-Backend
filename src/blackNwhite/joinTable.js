@@ -10,7 +10,7 @@ const gameStartActions = require("./gameStart");
 const CONST = require("../../constant");
 const logger = require("../../logger");
 const botLogic = require("./botLogic");
-
+const leaveTableActions = require('./leaveTable');
 
 module.exports.joinTable = async (requestData, client) => {
     try {
@@ -38,24 +38,38 @@ module.exports.joinTable = async (requestData, client) => {
         let gwh1 = {
             "playerInfo._id": MongoID(client.uid)
         }
-        let tableInfo = await PlayingTables.findOne(gwh1, {}).lean();
+        let tableInfo = await PlayingTables.findOne(gwh1, {"playerInfo.$":1}).lean();
         logger.info("JoinTable tableInfo : ", gwh, JSON.stringify(tableInfo));
 
         if (tableInfo != null) {
-            sendEvent(client, CONST.BNW_JOIN_TABLE, requestData, false, "Already In playing table!!");
-            delete client.JT
 
-            let updateData = {
-                $set: {
-                    'playerInfo.$': {},
+            await leaveTableActions.leaveTable(
+                {
+                    reason: 'autoLeave',
                 },
-            };
+                {
+                    uid: tableInfo.playerInfo[0]._id?.toString(),
+                    tbid: tableInfo._id?.toString(),
+                    seatIndex: tableInfo.playerInfo[0].seatIndex,
+                    sck: tableInfo.playerInfo[0].sck,
+                }
+            );
+            await this.findTable(client, requestData)
 
-            tableInfo = await PlayingTables.findOneAndUpdate(gwh1, updateData, {
-                new: true,
-            });
+            // sendEvent(client, CONST.BNW_JOIN_TABLE, requestData, false, "Already In playing table!!");
+            // delete client.JT
 
-            logger.info("BNW Remove User table -->", tableInfo)
+            // let updateData = {
+            //     $set: {
+            //         'playerInfo.$': {},
+            //     },
+            // };
+
+            // tableInfo = await PlayingTables.findOneAndUpdate(gwh1, updateData, {
+            //     new: true,
+            // });
+
+            // logger.info("BNW Remove User table -->", tableInfo)
 
             return false;
 
