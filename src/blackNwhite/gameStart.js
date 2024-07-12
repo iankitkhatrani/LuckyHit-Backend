@@ -75,7 +75,7 @@ module.exports.startBatting = async (tbId) => {
 
 
 
-        let roundTime = 17;
+        let roundTime = 15;
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_START_BATTING_TIMER, { timer: roundTime });
 
 

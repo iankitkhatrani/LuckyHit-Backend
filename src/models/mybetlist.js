@@ -9,6 +9,7 @@ const BetTablesSchema = new Schema({
     x:{ type: Number, default: 0},
     winamount:{ type: Number, default: 0},
     uid: { type: String, default: "" },
+    dateTime: { type: String, default: ""},
 }, { versionKey: false });
 
 module.exports = mongoose.model(collectionName, BetTablesSchema, collectionName);

@@ -336,7 +336,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
         winAmount = Number(Number(requestData.bet) * (requestData.checkout))
         //console.log("winAmount ", winAmount)
 
-        Deductcom = Number((winAmount * 2) / 100)
+        Deductcom = Number((winAmount * 1) / 100)
 
         winAmount = Number(winAmount - Deductcom).toFixed(2);
 
@@ -488,7 +488,7 @@ module.exports.mybetlist = async (requestData, client) => {
 
         }
         //console.log("wh ", wh)
-        const mybetlist = await MyBetTable.find(wh, project).sort({ _id: -1 }).limit(10).lean();
+        const mybetlist = await MyBetTable.find(wh, project).sort({ _id: -1 }).limit(50).lean();
         logger.info("mybetlist mybetlist : ", mybetlist);
 
         if (mybetlist == null) {
@@ -532,7 +532,8 @@ module.exports.MybetInsert = async (gameId, amount, x, winamount, client) => {
             }
             let updateData = {
                 x: x,
-                winamount: winamount
+                winamount: winamount,
+                dateTime: new Date()
             }
 
             //console.log("upWh ", upWh)
@@ -547,7 +548,8 @@ module.exports.MybetInsert = async (gameId, amount, x, winamount, client) => {
                 betamount: amount,
                 x: x,
                 winamount: winamount,
-                uid: client.uid
+                uid: client.uid,
+                dateTime: new Date()
             }
 
             let insertInfo = await MyBetTable.create(insertobj);

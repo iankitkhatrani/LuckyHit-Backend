@@ -63,11 +63,12 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
             //find total Robot 
             //and check out rendom 
             //PlayerInfo rendom number 
-            //let RobotPlayer = []
+            let RobotPlayer = []
             let BetArray= [10,50,100,200,150,60,160,360,1000]
 
             PlayerInfo.forEach(e => {
                 if(e.Iscom == 1){
+                    logger.info("PlayRobot  Under Is Com ")
                     e.Number = GameStart.generateNumber(0,1)?GameStart.generateNumber(0,Number):GameStart.generateNumber(Number,60);
                     e.bet =  BetArray[this.GetRandomInt(0,BetArray.length-1)];
                     e.winamount = 0;
@@ -86,14 +87,13 @@ module.exports.PlayRobot = async (tableInfo,PlayerInfo,Number) => {
 
                     
 
-                    //RobotPlayer.push(e)
+                    RobotPlayer.push(e)
                 }
             })
 
             // Genrate Rendome Number 
             // 0 to Number
-            
-            //commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.ROBOTPLAY, { RobotPlayer: RobotPlayer });
+            commandAcions.sendEventInTable(tableInfo._id.toString(), CONST.ROBOTPLAY, { RobotPlayer: RobotPlayer });
    
 
         }else{

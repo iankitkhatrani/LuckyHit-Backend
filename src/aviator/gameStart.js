@@ -110,6 +110,8 @@ module.exports.startAviator = async (tbId) => {
         logger.info("startAviator tabInfo :: ", tabInfo);
 
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: Number });
+        
+        botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
 
         setTimeout(async () => {
             // Clear destory 
@@ -126,7 +128,7 @@ module.exports.startAviator = async (tbId) => {
             //console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
         }, ((((Number-1)+0.8) * 6) * 1000));
 
-        botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
+        
 
     } catch (error) {
         logger.error("startAviator.js error ->", error)
