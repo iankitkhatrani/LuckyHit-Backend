@@ -28,7 +28,7 @@ module.exports.joinTable = async (requestData, client) => {
         let UserInfo = await GameUser.findOne(gwh, {}).lean();
         logger.info("JoinTable UserInfo : ", gwh, JSON.stringify(UserInfo));
 
-        let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
+        let totalWallet = Number(UserInfo.chips) // + Number(UserInfo.winningChips)
         if (Number(totalWallet) < 1) {
             sendEvent(client, CONST.BNW_JOIN_TABLE, requestData, false, "Please add Wallet!!");
             delete client.JT
@@ -146,7 +146,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
         let userInfo = await GameUser.findOne(user_wh, {}).lean();
         logger.info("findEmptySeatAndUserSeat userInfo : ", userInfo)
 
-        let totalWallet = Number(userInfo.chips) + Number(userInfo.winningChips)
+        let totalWallet = Number(userInfo.chips) //+ Number(userInfo.winningChips)
         let playerDetails = {
             seatIndex: seatIndex,
             _id: userInfo._id,
