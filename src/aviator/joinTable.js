@@ -29,7 +29,7 @@ module.exports.joinTable = async (requestData, client) => {
         let UserInfo = await GameUser.findOne(gwh, {}).lean();
         logger.info("JoinTable UserInfo : ", gwh, JSON.stringify(UserInfo));
 
-        let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
+        let totalWallet = Number(UserInfo.chips) //+ Number(UserInfo.winningChips)
         if (Number(totalWallet) < 1) {
             sendEvent(client, CONST.JOIN_TABLE, requestData, false, "Please add Wallet!!");
             delete client.JT
@@ -39,7 +39,7 @@ module.exports.joinTable = async (requestData, client) => {
         let gwh1 = {
             "playerInfo._id": MongoID(client.uid)
         }
-        let tableInfo = await AviatorTables.findOne(gwh1, {"playerInfo.$":1}).lean();  
+        let tableInfo = await AviatorTables.findOne(gwh1, { "playerInfo.$": 1 }).lean();
         logger.info("JoinTable tableInfo : ", gwh, JSON.stringify(tableInfo));
 
         if (tableInfo != null) {
@@ -97,12 +97,12 @@ module.exports.createTable = async () => {
             gameId: "",
             activePlayer: 0,
             playerInfo: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                         {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                         {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                         {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-                         {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
-                        
-                        ],
+            {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+            {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+            {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+            {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
+
+            ],
             gameState: "",
             history: [],
             betamount: [10, 50, 100, 200]
@@ -134,7 +134,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
         let user_wh = {
             _id: client.uid
         }
-       // console.log("user_wh ", user_wh)
+        // console.log("user_wh ", user_wh)
         let userInfo = await GameUser.findOne(user_wh, {}).lean();
         logger.info("findEmptySeatAndUserSeat userInfo : ", userInfo)
 
@@ -143,14 +143,14 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
         // };
         // let tbInfo = await AviatorTables.findOne(wh,{}).lean();
         // logger.info("findEmptySeatAndUserSeat tbInfo : ", tbInfo)
-        let totalWallet = Number(userInfo.chips) + Number(userInfo.winningChips)
+        let totalWallet = Number(userInfo.chips) //+ Number(userInfo.winningChips)
         let playerDetails = {
             seatIndex: seatIndex,
             _id: userInfo._id,
             playerId: userInfo._id,
             username: userInfo.username,
             profile: userInfo.profileUrl,
-            coins: totalWallet,
+            coins: Number(totalWallet).toFixed(2),
             status: "",
             playerStatus: "",
             chalValue: 0, // place bet or not

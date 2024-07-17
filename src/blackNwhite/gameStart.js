@@ -59,20 +59,20 @@ module.exports.startBatting = async (tbId) => {
     logger.info("table Id startBatting-- >", tbId);
     try {
 
+        let gameId = await this.getCount("gameId");
         let wh = {
             _id: tbId
         }
         let update = {
             $set: {
                 gameState: "StartBatting",
-                blackandwhiteDate: new Date()
-
+                blackandwhiteDate: new Date(),
+                gameId: gameId
             }
         }
         logger.info("bnw UserInfo : ", wh, update);
         const tabInfo = await PlayingTables.findOneAndUpdate(wh, update, { new: true });
         logger.info("bnw tabInfo :: ====>", tabInfo);
-
 
 
         let roundTime = 15;

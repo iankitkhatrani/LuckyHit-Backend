@@ -13,6 +13,7 @@ const PlayingTablesSchema = new Schema({
     playerInfo: [],
     potLimit: { type: Number, default: 0 },
     gameState: { type: String, default: "" },
+    winnerCard: { type: String, default: "" },
     turnStartTimer: { type: Date },
     blackandwhiteDate: { type: Date },
     jobId: { type: String, default: "" },

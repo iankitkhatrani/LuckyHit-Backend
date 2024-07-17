@@ -13,6 +13,7 @@ const roundEndActions = require("./roundEnd");
 const roundStartActions = require("./roundStart");
 const walletActions = require("./updateWallet");
 const logger = require("../../logger");
+const gamePlayAction = require("./gamePlay");
 
 module.exports.winnerDeclareCall = async (winner, tabInfo) => {
   try {
@@ -84,6 +85,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
         "isFinalWinner": true,
         gameState: "RoundEndState",
         "lastGameResult": tabInfo.lastGameResult,
+        "winnerCard": winnerCard,
       }
     };
     logger.info("winnerDeclareCall upWh updateData :: ", upWh, updateData);
@@ -96,7 +98,7 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     const playerInGame = await roundStartActions.getPlayingUserInRound(tbInfo.playerInfo);
     logger.info("getWinner playerInGame ::", playerInGame);
 
-    const updateWallet = await this.manageUserScore(userInfo, tabInfo);
+    const updateWallet = await this.manageUserScore(userInfo, tbInfo);
     logger.info("getWinner updateWallet ::", updateWallet);
 
     for (let i = 0; i < playerInGame.length; i++) {
@@ -196,11 +198,13 @@ module.exports.filterWinnerResponse = (winnerList) => {
 
 module.exports.manageUserScore = async (playerInfo, tabInfo) => {
   let tableInfo;
+  logger.info('\n Manage User ScoretabInfo ==>', tabInfo.winnerCard);
   for (let i = 0; i < playerInfo.length; i++) {
     logger.info('\n Manage User Score Player Info ==>', playerInfo[i]);
     if (!Number.isNaN(playerInfo[i].totalBet)) {
       logger.info('\n playerInfo[i].totalBet ==>', playerInfo[i].totalBet);
       await walletActions.addWallet(playerInfo[i]._id, playerInfo[i].totalBet, 'Credit', tabInfo, playerInfo[i].sck, playerInfo[i].seatIndex)
+      await gamePlayAction.MybetInsert(tabInfo.gameId, 0, tabInfo.winnerCard, playerInfo[i].totalBet, { uid: playerInfo[i]._id.toString(), tbid: tabInfo._id.toString() })
     }
   }
   return tableInfo;

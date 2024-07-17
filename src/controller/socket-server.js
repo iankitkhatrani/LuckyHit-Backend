@@ -195,6 +195,10 @@ myIo.init = function (server) {
                         gamePlayActions.mybetlist(payload.data, socket);
                         break;
                     }
+                    case CONST.BNW_MYBET: {
+                        BNWgamePlayActions.mybetlist(payload.data, socket);
+                        break;
+                    }
 
                     case CONST.CHECKOUT: {
                         gamePlayActions.CHECKOUT(payload.data, socket);
