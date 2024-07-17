@@ -17,7 +17,7 @@ const commandAcions = require('../socketFunctions');
 module.exports.appLunchDetails = async (requestData, client) => {
   let { playerId, mobileNumber } = requestData;
   let query = { _id: playerId.toString() };
-  console.log("query ",query)
+  console.log("query ", query)
   let result = await GameUser.findOne(query, {});
   if (result) {
     await this.userSesssionSet(result, client);
@@ -33,8 +33,8 @@ module.exports.appLunchDetails = async (requestData, client) => {
   return true;
 };
 
-module.exports.referralReward = async (referal_code,data) => {
-  console.log("referal_code ",referal_code)
+module.exports.referralReward = async (referal_code, data) => {
+  console.log("referal_code ", referal_code)
   let wh = {
     referralCode: referal_code,
   };
@@ -45,17 +45,17 @@ module.exports.referralReward = async (referal_code,data) => {
   if (res !== null) {
     let res = await GameUser.findOne(wh, {});
     console.log('referralReward res : ', res);
-  
+
     await userReferTracks.create({
       // eslint-disable-next-line no-undef
       user_id: MongoID(data._id.toString()),
       country: data.Country,
       rId: MongoID(res._id.toString()),
-      name:data.username
+      name: data.username
     });
-    
-      await walletActions.addWalletBonus(res._id.toString(), Number(500), 2, "friend signup otc", res);
-    
+
+    await walletActions.addWalletBonus(res._id.toString(), Number(500), 2, "friend signup otc", res);
+
     return true;
   } else {
     return false;
@@ -232,8 +232,8 @@ module.exports.filterBeforeSendSPEvent = async (userData) => {
     loginType: userData.loginType,
     uniqueId: userData.uniqueId,
     deviceId: userData.deviceId,
-    chips: userData.chips,
-    winningChips: userData.winningChips,
+    chips: Number(userData.chips),
+    winningChips: Number(userData.winningChips),
     tableId: userData.tableId || 0,
     createdAt: userData.createdAt,
     profileUrl: userData.profileUrl,

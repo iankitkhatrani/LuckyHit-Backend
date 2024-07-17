@@ -126,41 +126,39 @@ myIo.init = function (server) {
                             logger.info('CONST.DASHBOARD Exception appLunchDetail :', e);
                         }
                         break;
-                    }   
-
+                    }
 
                     case CONST.PAY_IN: {
                         try {
-                          console.log("PAY_IN ",payload.data)
-                          await initiatePayment(payload.data,socket)
+                            console.log("PAY_IN ", payload.data)
+                            await initiatePayment(payload.data, socket)
                         } catch (error) {
-                          logger.error("Error in pay in ->", error)
+                            logger.error("Error in pay in ->", error)
                         }
                         break;
-                      }
-            
-                      case CONST.CREATE_PAY_OUT: {
+                    }
+
+                    case CONST.CREATE_PAY_OUT: {
                         try {
-                          const res = await createPayout(payload.data)
-                          sendEvent(socket, CONST.CREATE_PAY_OUT, res)
-            
+                            const res = await createPayout(payload.data)
+                            sendEvent(socket, CONST.CREATE_PAY_OUT, res)
+
                         } catch (error) {
-                          logger.error("Error in pay out ->", error)
+                            logger.error("Error in pay out ->", error)
                         }
                         break;
-                      }
-            
-                      case CONST.CHECK_PAY_OUT_STATUS: {
+                    }
+
+                    case CONST.CHECK_PAY_OUT_STATUS: {
                         try {
-                          const res = await checkPayoutStatus(payload.data)
-                          sendEvent(socket, CONST.CHECK_PAY_OUT_STATUS, res)
-            
+                            const res = await checkPayoutStatus(payload.data)
+                            sendEvent(socket, CONST.CHECK_PAY_OUT_STATUS, res)
+
                         } catch (error) {
-                          logger.error("Error in pay out ->", error)
+                            logger.error("Error in pay out ->", error)
                         }
                         break;
-                      }
-            
+                    }
 
                     case CONST.JOIN_SIGN_UP: {
                         socket.uid = payload.data.playerId;
@@ -198,22 +196,20 @@ myIo.init = function (server) {
                         break;
                     }
 
-
                     case CONST.CHECKOUT: {
                         gamePlayActions.CHECKOUT(payload.data, socket);
                         break;
                     }
 
-                    case CONST.PLAYERLIST:{
+                    case CONST.PLAYERLIST: {
                         gamePlayActions.PLAYERLIST(payload.data, socket);
                         break;
                     }
 
-                    case CONST.MYREFLIST:{
+                    case CONST.MYREFLIST: {
                         gamePlayActions.MYREFLIST(payload.data, socket);
                         break;
                     }
-                    
 
                     case CONST.LEAVE_TABLE: {
                         gamePlayActions.leaveTable(payload.data, socket);
@@ -246,7 +242,7 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.MYWALLET: { 
+                    case CONST.MYWALLET: {
                         await gamePlayActions.MYWALLET(payload.data, socket);
                         break;
                     }
@@ -307,12 +303,10 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.BANNERLIST:{
+                    case CONST.BANNERLIST: {
                         await gamePlayActions.BANNERLIST(payload.data, socket);
                         break;
                     }
-
-                    
 
                     default:
                         sendEvent(socket, CONST.INVALID_EVENT, {

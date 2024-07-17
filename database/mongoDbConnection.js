@@ -11,7 +11,6 @@ const mongoDB = config.DATABASE;
   },
 */
 mongoose.connect(mongoDB,
-  
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

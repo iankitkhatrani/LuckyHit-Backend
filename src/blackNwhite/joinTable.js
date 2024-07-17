@@ -38,7 +38,7 @@ module.exports.joinTable = async (requestData, client) => {
         let gwh1 = {
             "playerInfo._id": MongoID(client.uid)
         }
-        let tableInfo = await PlayingTables.findOne(gwh1, {"playerInfo.$":1}).lean();
+        let tableInfo = await PlayingTables.findOne(gwh1, { "playerInfo.$": 1 }).lean();
         logger.info("JoinTable tableInfo : ", gwh, JSON.stringify(tableInfo));
 
         if (tableInfo != null) {
@@ -153,7 +153,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             playerId: userInfo._id,
             username: userInfo.username,
             profile: userInfo.profileUrl,
-            coins: totalWallet,
+            coins: Number(totalWallet),
             status: "",
             playerStatus: "",
             betLists: [],
@@ -245,8 +245,6 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             clearJob(jobId)
             await gameStartActions.gameTimerStart(tableInfo);
         }
-
-
 
     } catch (error) {
         logger.error("findEmptySeatAndUserSeat", error);

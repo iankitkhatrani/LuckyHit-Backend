@@ -390,7 +390,9 @@ module.exports.lastGameScoreBoard = async (requestData, client) => {
         };
 
         if (tabInfo.lastGameResult) {
-            commandAcions.sendDirectEvent(client.sck, CONST.BNW_PREVIOUS_RESULT_HISTORY, { list: tabInfo.lastGameResult });
+            const limitedLastGameResult = tabInfo.lastGameResult.slice(-50); // Get the last 50 results
+            logger.info('BnW limitedLastGameResult', limitedLastGameResult);
+            commandAcions.sendDirectEvent(client.sck, CONST.BNW_PREVIOUS_RESULT_HISTORY, { list: limitedLastGameResult });
         } else {
             commandAcions.sendDirectEvent(client.sck, CONST.BNW_PREVIOUS_RESULT_HISTORY, msg);
         }
