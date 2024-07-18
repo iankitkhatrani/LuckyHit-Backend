@@ -59,7 +59,11 @@ module.exports.startBatting = async (tbId) => {
     logger.info("table Id startBatting-- >", tbId);
     try {
 
-        let gameId = await this.getCount("gameId");
+        //genarate  8 length number of randome string
+        const randomString = generateRandomString(8);
+        logger.info("startBatting randomString : ", randomString);
+
+        let gameId = randomString// await this.getCount("gameId");
         let wh = {
             _id: tbId
         }
@@ -269,3 +273,15 @@ module.exports.getCount = async (type) => {
     let resp2 = await IdCounter.findOneAndUpdate(wh, update, { upsert: true, new: true });
     return resp2.counter;
 }
+
+function generateRandomString(length) {
+    const characters = '0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters[randomIndex];
+    }
+    return result;
+}
+
+
