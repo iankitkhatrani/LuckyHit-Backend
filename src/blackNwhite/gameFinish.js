@@ -23,9 +23,11 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
     logger.info("winnerObj::  -->", winnerObj);
 
     const winnerCardIndex = winner.filter(player => player.winResult === "Win" || player.winResult === 'Tie');
-    const winnerCard = winnerCardIndex[0].index
+    const winnerCard = winnerCardIndex.some(player => player.winResult === 'Tie') ? 'Tie' : winnerCardIndex[0].index;
+    // const winnerCard = winnerCardIndex[0].index
     logger.log("winnercard 1=>", winnerCardIndex[0].index)
     logger.log("winnercard 2=>", winnerCard)
+    logger.log("winnerCardIndex =>", winnerCardIndex)
 
     let tbid = tabInfo._id.toString()
     logger.info("winnerDeclareCall tbid ::", tbid);
