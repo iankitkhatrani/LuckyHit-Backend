@@ -234,11 +234,14 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
 
         delete client.JT;
 
-        for (let i = 0; i < 10; i++) {
-            let res = await botLogic.JoinRobot(tableInfo);
-            logger.info("BnW Result ->", res);
+        if (tableInfo.gameState == "") {
+            for (let i = 0; i < 10; i++) {
+                let res = await botLogic.JoinRobot(tableInfo);
+                logger.info("BnW Result ->", res);
+            }
         }
 
+        logger.info("findEmptySeatAndUserSeat tableInfo Active Player: ", tableInfo.activePlayer);
         if (tableInfo.gameState == "" /*&& tableInfo.activePlayer > 1*/) {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;

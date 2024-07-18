@@ -424,12 +424,12 @@ module.exports.mybetlist = async (requestData, client) => {
         logger.info("BnW mybetlist mybetlist : ", mybetlist);
 
         if (mybetlist == null) {
-            sendEvent(client, CONST.BNW_MYBET, { mybetlist: [] });
+            commandAcions.sendEvent(client, CONST.BNW_MYBET, { mybetlist: [] });
             logger.info("mybetlist bet data not found  ::", mybetlist);
             return false
         }
 
-        sendEvent(client, CONST.BNW_MYBET, { mybetlist: mybetlist });
+        commandAcions.sendEvent(client, CONST.BNW_MYBET, { mybetlist: mybetlist });
 
         return true;
     } catch (e) {
