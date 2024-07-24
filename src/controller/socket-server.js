@@ -168,21 +168,8 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.BNW_JOIN_SIGN_UP: {
-                        socket.uid = payload.data.playerId;
-                        socket.sck = socket.id;
-
-                        await BNWgamePlayActions.joinTable(payload.data, socket);
-                        break;
-                    }
-
                     case CONST.ACTION: {
                         gamePlayActions.action(payload.data, socket);
-                        break;
-                    }
-
-                    case CONST.BNW_ACTION: {
-                        await BNWgamePlayActions.action(payload.data, socket);
                         break;
                     }
 
@@ -195,13 +182,17 @@ myIo.init = function (server) {
                         gamePlayActions.mybetlist(payload.data, socket);
                         break;
                     }
-                    case CONST.BNW_MYBET: {
-                        BNWgamePlayActions.mybetlist(payload.data, socket);
-                        break;
-                    }
 
                     case CONST.CHECKOUT: {
                         gamePlayActions.CHECKOUT(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.BNW_JOIN_SIGN_UP: {
+                        socket.uid = payload.data.playerId;
+                        socket.sck = socket.id;
+
+                        await BNWgamePlayActions.joinTable(payload.data, socket);
                         break;
                     }
 
@@ -220,6 +211,22 @@ myIo.init = function (server) {
                         break;
                     }
 
+
+                    case CONST.RECONNECT: {
+                        await gamePlayActions.reconnect(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.BNW_ACTION: {
+                        await BNWgamePlayActions.action(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.BNW_MYBET: {
+                        BNWgamePlayActions.mybetlist(payload.data, socket);
+                        break;
+                    }
+
                     case CONST.BNW_LEAVE_TABLE: {
                         await BNWgamePlayActions.leaveTable(payload.data, socket);
                         break;
@@ -227,11 +234,6 @@ myIo.init = function (server) {
 
                     case CONST.BNW_PREVIOUS_RESULT_HISTORY: {
                         await BNWgamePlayActions.lastGameScoreBoard(payload.data, socket);
-                        break;
-                    }
-
-                    case CONST.RECONNECT: {
-                        await gamePlayActions.reconnect(payload.data, socket);
                         break;
                     }
 

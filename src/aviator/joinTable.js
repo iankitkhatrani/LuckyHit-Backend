@@ -243,6 +243,12 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
 
         delete client.JT;
 
+        if (tableInfo.activePlayer <= 6) {
+            setTimeout(() => {
+                botLogic.JoinRobot(tableInfo)
+            }, 2000)
+        }
+
         if (tableInfo.gameState == "" && tableInfo.activePlayer == 1) {
 
             let jobId = "LEAVE_SINGLE_USER:" + tableInfo._id;
@@ -251,14 +257,7 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
             await gameStartActions.gameTimerStart(tableInfo);
         }
 
-        if (tableInfo.activePlayer <= 6) {
-            setTimeout(() => {
-                botLogic.JoinRobot(tableInfo)
-            }, 2000)
-        }
 
-
-        //}
     } catch (error) {
         console.info("findEmptySeatAndUserSeat", error);
     }
