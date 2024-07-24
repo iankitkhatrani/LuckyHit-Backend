@@ -1,16 +1,25 @@
 const mongoose = require('mongoose');
 const MongoID = mongoose.Types.ObjectId;
-const Users = mongoose.model('users');
 const paymentin = mongoose.model('paymentin');
+// const paymentout = mongoose.model('paymentout');
+const GameUser = mongoose.model('users');
+const crypto = require('crypto');
 const axios = require('axios');
-const commandAcions = require('../helper/socketFunctions');
+const commandActions = require('../helper/socketFunctions');
+// const walletActions = require('../helper/common-function/walletTrackTransaction');
 const CONST = require('../../constant');
+const logger = require('../../logger');
 
-const PaymentInOrderCreate = {
-    url: 'https://unionepay.in/init-payment-v1.php',
-    accountID: "aid_2430304080",
-    secret_key: 'key_d9ecf7efae4dc0e2e3905e270a3395e5',
-};
+// const algorithm = "aes-128-cbc";
+// const authKey = "0jeOYcu3UnfmWyLC";
+// const authIV = "C28LAmGxXTqmK0QJ";
+
+
+// const PaymentInOrderCreate = {
+//     url: 'https://api.wowpe.in/api/GOrders/generateorder',
+//     token: "250066b4-3b16-4b6f-a76e-d5478f701ef5",
+//     secret_key: '04d34b84-e065-42a7-bbef-795965535275',
+// };
 
 // const PaymentInDeepLink = {
 //     url: 'https://api.wowpe.in/api/DeepLinks/intentinitiate',
@@ -18,111 +27,202 @@ const PaymentInOrderCreate = {
 //     secret_key: '04d34b84-e065-42a7-bbef-795965535275',
 // };
 
-/*
-    customerName
-customerEmail
-customerPhone
-amount
-*/
 
-async function initiatePayment(requestData, socket) {
+const mid = '900000000000026'
+const SecretKey = "scr2dHNWS5QYjb07vVmVOu9VGG3JhG1dPP5"
+const SaltKey = "salNeSAWnEOmCd3UiEBQozhWoUny5GIZg"
+
+async function sendPaymentRequest(requestData, socket) {
     try {
-        console.log("initiatePayment requestData ", requestData)
+        logger.info("\n Send Payment Request : ", requestData);
+        const { playerId, customerName, amount, currency, txnReqType, emailId, mobileNo, transactionMethod, optional1 } = requestData;
+
+        const orderNo = generateReferenceNumber();
+        const formattedDate = formatDate(new Date().toISOString());
+        logger.info("formattedDate ", formattedDate);
+
         const paymentindata = await paymentin.create({
-            userId: requestData.playerId,
-            transactionId: "aaa",
-            name: requestData.customerName,
-            email: requestData.customerEmail,
-            phone: requestData.customerPhone,
-            amount: requestData.amount,
+            userId: playerId,
+            transactionId: orderNo,
+            name: customerName,
+            email: emailId,
+            phone: mobileNo,
+            amount: amount,
             paymentStatus: "Pending"
         });
 
         if (paymentindata) {
+            logger.info("payload paymentindata =>", paymentindata);
+            const dataSequence = {
+                mid: mid,
+                orderNo: orderNo,
+                amount: amount,
+                currency: "INR",
+                txnReqType: "S",
+                undefinedField1: "",
+                undefinedField2: "",
+                undefinedField3: "",
+                undefinedField4: "",
+                undefinedField5: "",
+                undefinedField6: "",
+                undefinedField7: "",
+                undefinedField8: "",
+                undefinedField9: "",
+                undefinedField10: "",
+                emailId: emailId,
+                mobileNo: mobileNo,
+                address: "",
+                city: "",
+                state: "",
+                pincode: "",
+                transactionMethod: "UPI",
+                bankCode: "",
+                vpa: "",
+                cardNumber: "",
+                expiryDate: "",
+                cvv: "",
+                customerName: customerName,
+                respUrl: "",
+                optional1: "intent"
+            };
 
-            console.log("paymentindata ", paymentindata)
-            const payload = {
-                pay_request: {
-                    "accountID": PaymentInOrderCreate.accountID,
-                    "secret_key": PaymentInOrderCreate.secret_key,
-                    "buyer_name": requestData.customerName,
-                    "buyer_phone": requestData.customerPhone,
-                    "buyer_email": requestData.customerEmail,
-                    "pay_amount": requestData.amount,
-                    "payment_id": paymentindata._id.toString(),
-                    payment_purpose: "account Added"
-                }
-            }
+            const stringifiedPayload = JSON.stringify(dataSequence);
+            logger.info("stringifiedPayload =>", stringifiedPayload);
 
+            const encryptReq = encrypt(stringifiedPayload, SecretKey, SaltKey);
+            logger.info("encryptReq =>", encryptReq);
 
-            // {"pay_request":{
-            //     "accountID" : "aid_2430304080",
-            //     "secret_key" : "key_d9ecf7efae4dc0e2e3905e270a3395e5",
-            //     "payment_id" : "111111111",
-            //     "payment_purpose" : "sale",
-            //     "buyer_name" :"ankit",
-            //     "buyer_phone" : "8866672045",
-            //     "buyer_email" : "iankitkhatrani",
-            //     "pay_amount" : 11
-            // }
-            // }
+            const checkSum = calculateChecksum(encryptReq, SecretKey);
+            logger.info("checkSum =>", checkSum);
 
-            const response = await axios.post(PaymentInOrderCreate.url, payload);
-            console.log("response    ", response.data)
-            if (response.data.query == "Success") {
-                //add amount in coins
+            const postData = {
+                encryptReq,
+                checkSum,
+                mid
+            };
 
-                //await walletActions.addWallet(tableInfo.gameTracks[i]._id, Number(winnerTrack.winningAmount), 'Credit', 'Win', tableInfo);
-                if (response.data.response != undefined && response.data.response != null && response.data.response.pay_link != undefined) {
+            try {
 
-                    await paymentin.findOneAndUpdate({ _id: MongoID(paymentindata._id.toString()) }, { $set: { "OrderID": paymentindata._id.toString() } }, {
-                        new: true,
-                    });
-                    
-                    commandAcions.sendEvent(socket, CONST.PAY_IN, response.data.response);
+                const response = await axios.post('https://payin.paymor.in/PaymentGateway/api/seamless/txnReq' + postData);
+                logger.info('Response: =>', response.data);
 
-                } else {
-                    commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, response.data.message);
-                }
-            } else {
-                commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, response.data.message);
+            } catch (error) {
+                logger.error('Error: =>', error);
             }
         } else {
-            console.log("Data Not Insert ")
-            commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+            logger.info("Data Not Insert");
+            commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
         }
-
     } catch (error) {
-        console.error('Error initiating payment:', error.response ? error.response.data : error.message);
-
-        commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
-
-        throw error; // Throw the error to be caught by the caller
+        logger.error("Pay In Error -->", error);
     }
 }
 
+function encrypt(data, secretKey, saltKey) {
+    const key = crypto.scryptSync(secretKey, saltKey, 32);
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+
+    let encrypted = cipher.update(data, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag().toString('hex');
+
+    return iv.toString('hex') + encrypted + authTag;
+}
 
 
-const Account_WOWPE_PAYOUT = {
-    base_url: 'https://api.wowpe.in/api/PayoutAPI/accountverification',
-    clientId: 'aa482292-1675-444d-91d0-57d68829f560',
-    secretKey: '5ccb3ea7-a7b1-4927-8fe6-a83bd6e5a330'
-};
-
-/*
-playerId
-customerName
-customerEmail
-customerPhone
-amount
-accountNo
-ifscCode
-*/
-
-async function addBeneficiary(requestData, socket) {
+async function starPaisaPayment(requestData, socket) {
     try {
+        logger.info("Initiate Payment requestData", requestData);
 
-        //Insert Payout Table 
+        // Validate requestData
+        if (!requestData.amount || !requestData.playerId || !requestData.customerName || !requestData.customerEmail || !requestData.customerPhone) {
+            throw new Error('Missing required fields in requestData');
+        }
+
+        const amountNumber = parseFloat(requestData.amount);
+        if (isNaN(amountNumber) || amountNumber <= 0) {
+            throw new Error('Invalid amount value');
+        }
+
+        logger.info("Amount", amountNumber.toFixed(2));
+
+        const reference = generateReferenceNumber();
+        logger.info("Reference", reference);
+
+        const formattedDate = formatDate(new Date().toISOString());
+        logger.info("Formatted Date", formattedDate);
+
+        // Create payment record in database
+        const paymentData = await paymentin.create({
+            userId: requestData.playerId,
+            transactionId: reference,
+            name: requestData.customerName,
+            email: requestData.customerEmail,
+            phone: requestData.customerPhone,
+            amount: requestData.amount,
+            paymentGateway: 'starPaisa',
+            paymentStatus: "Pending"
+        });
+
+        if (paymentData) {
+            logger.info("Payload paymentData =>", paymentData);
+
+            const payload = { amount: requestData.amount };
+            const stringifiedPayload = JSON.stringify(payload);
+            logger.info("Stringified Payload Star pay payload =>", stringifiedPayload);
+
+            try {
+                const response = await axios.post(
+                    'https://api.starpaisa.in/v1/merchant/generateQR',
+                    stringifiedPayload,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Basic aGFyc2hpdGhAaGFudXZlbC5jb206TGVnaXRwbGF5QDEy'
+                        }
+                    }
+                );
+
+                const responseData = response.data;
+                logger.info('Response:', responseData);
+
+                if (responseData.statusCode === 200) {
+                    if (responseData.data.status === "SUCCESS") {
+                        commandActions.sendEvent(socket, CONST.PAY_IN, responseData.data, true, 'Payment initiated successfully');
+
+                        // Update OrderID in payment record
+                        const updatedOrder = await paymentin.findOneAndUpdate(
+                            { _id: paymentData._id },
+                            { $set: { "OrderID": responseData.data.extTransactionId } },
+                            { new: true }
+                        );
+                        logger.info("Updated Order ID =>", updatedOrder);
+                    } else {
+                        commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, responseData.data.respMessage || 'Payment initiation failed');
+                    }
+                } else {
+                    commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, responseData.message || 'Something went wrong. Please try again');
+                }
+            } catch (error) {
+                logger.error("Payin error =>", error.response ? error.response.data : error.message);
+                commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something went wrong. Please try again');
+            }
+        } else {
+            logger.info("Data not inserted");
+            commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something went wrong. Please try again');
+        }
+
+    } catch (error) {
+        logger.error('Error initiating payment:', error.response ? error.response.data : error.message);
+        commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something went wrong. Please try again');
+        throw error; // Throw the error to be caught by the caller if necessary
+    }
+}
+
+async function initiatePayment(requestData, socket) {
+    try {
+        logger.info("initiatePayment requestData ", requestData)
         const paymentindata = await paymentin.create({
             userId: requestData.playerId,
             transactionId: "aaa",
@@ -130,30 +230,23 @@ async function addBeneficiary(requestData, socket) {
             email: requestData.customerEmail,
             phone: requestData.customerPhone,
             amount: requestData.amount,
-            accountNo: requestData.accountNo,
-            ifscCode: requestData.ifscCode,
             paymentStatus: "Pending"
         });
 
         if (paymentindata) {
 
-            console.log("paymentindata ", paymentindata)
-            const Paylod = {
-                "clientId": Account_WOWPE_PAYOUT.clientId,
-                "secretKey": Account_WOWPE_PAYOUT.secretKey,
-                "number": requestData.customerPhone,
-                "accountNo": requestData.accountNo,
-                "ifscCode": requestData.ifscCode,
-                "orderID": paymentindata._id.toString()
-            }
+            logger.info("paymentindata ", paymentindata)
+            const payload = {
+                "token": PaymentInOrderCreate.token,
+                "name": requestData.customerName,
+                "mobileNo": requestData.customerPhone,
+                "emailID": requestData.customerEmail,
+                "amount": requestData.amount,
+                "orderInfo": paymentindata._id.toString()
+            };
 
-            const response = await axios.post(Account_WOWPE_PAYOUT.base_url, Paylod, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'accept': 'application/json'
-                }
-            });
-
+            const response = await axios.post(PaymentInOrderCreate.url, payload);
+            logger.info("response    ", response.data)
             if (response.data.code == "OK") {
                 //add amount in coins
 
@@ -163,7 +256,7 @@ async function addBeneficiary(requestData, socket) {
                     const Updatedata = await paymentin.findOneAndUpdate({ _id: MongoID(paymentindata._id.toString()) }, { $set: { "OrderID": response.data.body.orderID } }, {
                         new: true,
                     });
-                    console.log("Updatedata ", Updatedata)
+                    logger.info("Updatedata ", Updatedata)
                     const payloaddeeplink = {
                         "note": "rechargeMoney_103",
                         "OrderID": response.data.body.orderID,
@@ -171,135 +264,468 @@ async function addBeneficiary(requestData, socket) {
                     }
 
                     const responseDeep = await axios.post(PaymentInDeepLink.url, payloaddeeplink);
-                    console.log("response Deeplink ", responseDeep.data)
-                    commandAcions.sendEvent(socket, CONST.PAY_IN, responseDeep.data);
+                    logger.info("response Deeplink ", responseDeep.data)
+                    commandActions.sendEvent(socket, CONST.PAY_IN, responseDeep.data);
 
                 } else {
-                    commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, response.data.message);
+                    commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, response.data.message);
                 }
             } else {
-                commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, response.data.message);
+                commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, response.data.message);
             }
         } else {
-            console.log("Data Not Insert ")
-            commandAcions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+            logger.info("Data Not Insert ")
+            commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
         }
 
+    } catch (error) {
+        console.error('Error initiating payment:', error.response ? error.response.data : error.message);
+
+        commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+
+        throw error; // Throw the error to be caught by the caller
+    }
+}
+
+async function newInitiatePayment(requestData, socket) {
+    try {
+        logger.info("initiatePayment requestData ", requestData)
+        const amountNumber = parseFloat(requestData.amount);
+        logger.info("amount ", amountNumber)
+        logger.info("amount check ", amountNumber.toFixed(2))
+        const reference = generateReferenceNumber()
+        logger.info("reference ", reference)
+        const formateDate = formatDate(new Date().toISOString())
+        logger.info("formateDate ", formateDate)
+
+
+        const paymentindata = await paymentin.create({
+            userId: requestData.playerId,
+            transactionId: reference,
+            name: requestData.customerName,
+            email: requestData.customerEmail,
+            phone: requestData.customerPhone,
+            amount: requestData.amount,
+            paymentGateway: 'paylotus',
+            paymentStatus: "Pending"
+        });
+
+        if (paymentindata) {
+
+            logger.info("payload paymentindata =>", paymentindata)
+
+            const payload = {
+                "AuthID": "M00006500",
+                "AuthKey": "WW0DN9DY8ji8mE0sx9Zf4Lg1sp9xY9wF",
+                "CustRefNum": reference,
+                "txn_Amount": amountNumber.toFixed(2),
+                "PaymentDate": formateDate,
+                "ContactNo": requestData.customerPhone,
+                "EmailId": requestData.customerEmail,
+                "IntegrationType": "seamless",
+                "CallbackURL": "https://rummylegit.com:3000/admin/api/PayinAPI/newPayInNotify",
+                "adf1": "NA",
+                "adf2": "NA",
+                "adf3": "NA",
+                "MOP": "UPI",
+                "MOPType": "UPI",
+                "MOPDetails": "I"
+            };
+
+
+            const stringifiedPayload = JSON.stringify(payload, null, 2)
+            logger.info("stringifiedPayload payload =>", stringifiedPayload);
+
+
+            const data = stringifiedPayload;
+            const secretKey = 'WW0DN9DY8ji8mE0sx9Zf4Lg1sp9xY9wF';
+            const initializationVector = 'WW0DN9DY8ji8mE0s';
+
+            const encryptedData = encrypt(data, secretKey, initializationVector);
+            logger.info('Encrypted data:', encryptedData);
+            try {
+                const response = await axios.post('https://live.paylotus.in/pay/paymentinit?AuthID=M00006500&encData=' + encryptedData);
+                logger.info('Response:', response);
+
+                if (response.data && response.data.respData) {
+                    const receivedEncryptedData = response.data.respData;
+                    const decryptedData1 = decrypt(receivedEncryptedData, secretKey, initializationVector);
+                    logger.info('Decrypted data:', decryptedData1);
+                    const decryptedData = JSON.parse(decryptedData1);
+                    logger.info("final Response -> ", decryptedData);
+
+                    if (decryptedData && decryptedData.AggRefNo !== undefined && decryptedData.AggRefNo !== null) {
+                        commandActions.sendEvent(socket, CONST.PAY_IN, decryptedData);
+                        let upOrderId = await paymentin.findOneAndUpdate({ _id: MongoID(paymentindata._id.toString()) }, { $set: { "OrderID": decryptedData.AggRefNo } }, { new: true });
+                        logger.info("Update Order Id =>", upOrderId)
+                    } else {
+
+                        commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, decryptedData);
+                    }
+                } else {
+                    logger.info('Response data or respData not found:', response);
+                }
+            } catch (error) {
+                logger.error("check Payin error =>", error)
+            }
+        } else {
+            logger.info("Data Not Insert ")
+            commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+        }
+
+    } catch (error) {
+        console.error('Error initiating payment:', error.response ? error.response.data : error.message);
+
+        commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+
+        throw error; // Throw the error to be caught by the caller
+    }
+}
+
+async function sabPaisaInitiatePayment(requestData, socket) {
+    try {
+        // Log the incoming request data
+        logger.info("sabPaisaInitiatePayment requestData =>", requestData);
+
+        // Create a payment record in the database
+        const paymentindata = await paymentin.create({
+            userId: requestData.playerId,
+            transactionId: requestData.clientTxnId,
+            name: requestData.payerName,
+            email: requestData.payerEmail,
+            phone: requestData.payerMobile,
+            amount: requestData.amount,
+            paymentGateway: 'sabpaisa',
+            paymentStatus: requestData.status,
+            OrderID: requestData.sabpaisaTxnId
+        });
+
+        logger.info("sab paisa paymentindata=>", paymentindata);
+
+        // Check the payment status and handle success or failure accordingly
+        if (requestData.status === "SUCCESS") {
+            const amount = Number(requestData.amount);
+            const userId = paymentindata.userId;
+
+            // Add the payment amount to the user's wallet
+            await walletActions.addWalletPayin(userId, amount, 'Credit', 'PayIn', 'Payment', 'sabPaisa', socket);
+
+            await walletActions.locktounlockbonus(userId, ((Number(amount) * 50) / 1000), 'Credit', 'LockBonustoUnlockBonus');
+
+
+            //GAMELOGICCONFIG.DEPOSIT_BONUS_PER
+            if (Number(amount) >= 100 && Number(amount) <= 50000) {
+                const depositbonus = ((Number(amount) * 2) / 100)
+
+                await walletActions.addWalletBonusDeposit(userId, Number(depositbonus), 'Credit', 'Deposit Bonus', 'Bonus', socket);
+
+                // //check reffreal date is validate or not
+                // await walletActions.addWalletBonusDeposit(PaymentIndata.userId, Number(depositbonus), 'Credit', 'Reffral Bonus');
+
+            }
+
+        }
+    } catch (error) {
+        logger.error('Error sabpaisa initiating payment:', error.response ? error.response.data : error.message);
+
+        commandActions.sendEvent(socket, CONST.SAB_PAISA_PAY_IN, {
+            success: 0,
+            msg: 'Something went wrong, please try again',
+            error: error.response ? error.response.data : error.message
+        });
+
+        throw error; // Throw the error to be caught by the caller
+    }
+}
+
+const Account_WOWPE_PAYOUT = {
+    // base_url: 'https://api.wowpe.in/api/PayoutAPI/paymenttransafer',//old
+    base_url: 'https://api.wowpe.in/api/api/api-module/payout/payout',
+    clientId: '4352f542-c412-4563-8292-bbe2d9a1a9ff',
+    secretKey: 'a3ebf105-22cd-4f8d-9dff-bf1fd7a04b4c'
+};
+
+async function PayOutTransfer(requestData, socket) {
+    try {
+
+        logger.info(" Create PayOut Transfer =>", requestData);
+        let query = { _id: MongoID(requestData.playerId) };
+        let userDetails = await GameUser.findOne(query, {}).lean();
+        logger.info("PayOutTransfer userDetails Transfer =>", userDetails);
+
+        // Check if withdrawal amount is within the allowed range
+        if (requestData.amount < 100 || requestData.amount > 1000) {
+            commandActions.sendEvent(socket, CONST.CREATE_PAY_OUT, false, "Withdrawal amount must be between 100 and 1000.");
+            return;
+        }
+
+        // Check if user has sufficient winning chips
+        if (userDetails.winningChips < requestData.amount) {
+            commandActions.sendEvent(socket, CONST.CREATE_PAY_OUT, false, "Insufficient Withdrawal Chips.");
+            return;
+        }
+
+        // Check the number of withdrawals made today
+        let startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        let endOfToday = new Date();
+        endOfToday.setHours(23, 59, 59, 999);
+
+        let withdrawalCount = await paymentout.countDocuments({
+            userId: requestData.playerId,
+            createdAt: { $gte: startOfToday, $lte: endOfToday }
+        });
+        logger.info("withdrawalCount->", withdrawalCount)
+        if (withdrawalCount >= 5) {
+            commandActions.sendEvent(socket, CONST.CREATE_PAY_OUT, false, "You can only withdraw 5 times per day.");
+            return;
+        }
+
+
+        let redeemAmount = requestData.amount
+        const reference = generateReferenceNumber()
+        logger.info("PayOutTransfer reference==> ", reference)
+
+        requestData.amount = requestData.amount - ((requestData.amount * 2) / 100)
+
+
+        //Insert Payout Table 
+        const paymentoutdata = await paymentout.create({
+            userId: requestData.playerId,
+            transactionId: reference,
+            name: requestData.customerName,
+            email: requestData.customerEmail,
+            phone: requestData.customerPhone,
+            amount: requestData.amount,
+            accountNo: requestData.accountNo,
+            ifscCode: requestData.ifscCode,
+            redeemAmount: redeemAmount,
+            paymentGateway: 'wowpe',
+            "beneficiaryName": requestData.BeneficiaryName.trim(),
+            "transferMode": requestData.transferMode,
+            paymentStatus: "Pending"
+        });
+
+        if (paymentoutdata) {
+
+            logger.info("payment out data  ==>", paymentoutdata)
+
+            const Paylod = {
+                "clientId": '4352f542-c412-4563-8292-bbe2d9a1a9ff',
+                "secretKey": 'a3ebf105-22cd-4f8d-9dff-bf1fd7a04b4c',
+                "number": requestData.customerPhone,
+                "amount": requestData.amount.toString(),
+                "transferMode": requestData.transferMode,
+                "accountNo": requestData.accountNo,
+                "ifscCode": requestData.ifscCode,
+                "beneficiaryName": requestData.BeneficiaryName.trim(),
+                "vpa": "",
+                "clientOrderId": paymentoutdata._id.toString()
+            }
+
+            logger.info("check Paylod -->", Paylod)
+
+            const response = await axios.post(Account_WOWPE_PAYOUT.base_url, Paylod, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                }
+            });
+
+            logger.info("get response init payout =>", response.data)
+
+            if (response.data.statusCode == 1) {
+                //add amount in coins
+                logger.info("chec response data =======> ", response.data)
+                //await walletActions.addWallet(tableInfo.gameTracks[i]._id, Number(winnerTrack.winningAmount), 'Credit', 'Win', tableInfo);
+                if (response.data && response.data != null && response.data.orderId != undefined && response.data.orderId != null && response.data.status == 1) {
+
+                    const Updatedata = await paymentout.findOneAndUpdate({ _id: MongoID(paymentoutdata._id.toString()) }, { $set: { "OrderID": response.data.clientOrderId } }, {
+                        new: true,
+                    });
+                    logger.info("payout  Update data ", Updatedata)
+
+
+                    commandActions.sendEvent(socket, CONST.CREATE_PAY_OUT, response.data);
+
+                    //deduct user chips
+
+                    await walletActions.deductWalletPayOut(requestData.playerId, -Number(redeemAmount), 'Debit', 'PayOut', 'Payment', 'wowPe');
+
+
+
+                } else if (response.data.status == 2) {
+                    logger.info("response elase 1 ", response.data)
+
+                    const Updatedata = await paymentout.findOneAndUpdate({ _id: MongoID(paymentoutdata._id.toString()) }, { $set: { "OrderID": response.data.clientOrderId } }, {
+                        new: true,
+                    });
+                    logger.info("payout Status Update data ", Updatedata)
+
+                    commandActions.sendEvent(socket, CONST.CREATE_PAY_OUT, response.data);
+                    await walletActions.deductWalletPayOut(requestData.playerId, -Number(redeemAmount), 'Debit', 'PayOut', 'Payment', 'wowPe');
+
+                }
+
+            } else {
+                logger.info(" Response else ->", response.data)
+                commandActions.sendEvent(socket, CONST.CREATE_PAY_OUT, {}, false, response.data);
+            }
+        } else {
+            logger.info("Data Not Insert ")
+
+            commandActions.sendEvent(socket, CONST.CREATE_PAY_OUT, {}, false, 'Something Went Wrong Please try again');
+
+        }
+
+    } catch (error) {
+        logger.info("error ::::::::::::", error)
+
+        throw error.response ? error.response.data : error.message;
+    }
+}
+
+const Account_WOWPE_VERIFICATION = {
+    base_url: 'https://api.wowpe.in/PayoutAPI/accountverification',
+    clientId: 'aa482292-1675-444d-91d0-57d68829f560',
+    secretKey: '5ccb3ea7-a7b1-4927-8fe6-a83bd6e5a330'
+};
+
+async function checkPayoutStatus(requestData, callback) {
+    try {
+        const Paylod = {
+            "clientId": Account_WOWPE_VERIFICATION.clientId,
+            "secretKey": Account_WOWPE_VERIFICATION.secretKey,
+            "number": requestData.customerPhone,
+            "accountNo": requestData.accountNo,
+            "ifscCode": requestData.ifscCode,
+            "orderID": requestData.orderID
+        }
+        logger.info("PayOut ::::::::::::::::::::::", Paylod)
+        const response = await axios.post(Account_WOWPE_VERIFICATION.base_url, Paylod, {
+            headers: {
+                'Content-Type': 'application/json',
+                'accept': 'application/json'
+            }
+        });
+        logger.info("checkPayoutStatus ", response)
+        return callback(response.data);
     } catch (error) {
         throw error.response ? error.response.data : error.message;
     }
 }
 
-// const FRENZOPAY_PAYOUT = {
-//     base_url: 'https://api.frenzopay.com/api/v1',
-//     add_beneficiary_endpoint: '/payout/beneficiary',
-//     create_payout_endpoint: '/payout/',
-//     check_payout_status_endpoint: '/payout',
-//     account_balance_endpoint: '/payout/balance',
-//     access_key: '188dda4667a6b9f0873f87a98cb29074',
-//     secret_key: '9ddfe1310dd91ad14996f6c5d64deb3b',
-//     business_id: 204
-// };
+function generateReferenceNumber() {
+    // Create a string of all digits (0-9)
+    const digits = '0123456789';
 
-// async function addBeneficiary(beneficiaryData) {
+    // Generate a random string of 10 characters from the digits string
+    let referenceNumber = '';
+    for (let i = 0; i < 10; i++) {
+        const randomIndex = Math.floor(Math.random() * digits.length);
+        referenceNumber += digits[randomIndex];
+    }
+
+    return referenceNumber;
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function encrypt(data, secretKey, saltKey) {
+    const key = crypto.scryptSync(secretKey, saltKey, 32);
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+
+    let encrypted = cipher.update(data, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag().toString('hex');
+
+    return iv.toString('hex') + encrypted + authTag;
+}
+
+// function encrypt(data, key, iv) {
 //     try {
-//         const url = `${FRENZOPAY_PAYOUT.base_url}${FRENZOPAY_PAYOUT.add_beneficiary_endpoint}`;
-//         const response = await axios.post(url, beneficiaryData, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'X-Access-Key': FRENZOPAY_PAYOUT.access_key,
-//                 'X-Secret-Key': FRENZOPAY_PAYOUT.secret_key
-//             }
-//         });
-//         return response.data;
+//         const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
+//         let encrypted = cipher.update(data, 'utf8', 'base64'); // Update with base64 encoding
+//         encrypted += cipher.final('base64');
+//         return encrypted;
 //     } catch (error) {
-//         throw error.response ? error.response.data : error.message;
+//         console.error('Encryption error:', error);
+//         throw error; // Re-throw for handling in caller
 //     }
 // }
 
-// //payoutData (amount,payment_method_name,account_number,ifsc,name,address,email,bank_name,mobile_number)
-// async function createPayout(payoutData) {
-//     try {
-//         const url = `${FRENZOPAY_PAYOUT.base_url}${FRENZOPAY_PAYOUT.create_payout_endpoint}`;
-//         const response = await axios.post(url, payoutData, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'X-Access-Key': FRENZOPAY_PAYOUT.access_key,
-//                 'X-Secret-Key': FRENZOPAY_PAYOUT.secret_key
-//             }
-//         });
-//         if (response.data) {
-//             //Deduct a coin
-//         }
-//         return response.data;
-//     } catch (error) {
-//         throw error.response ? error.response.data : error.message;
-//     }
-// }
+// Function to decrypt data using AES/CBC/PKCS5PADDING
+function decrypt(encryptedData, key, iv) {
+    try {
+        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+        let decrypted = decipher.update(encryptedData, 'base64', 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
+    } catch (error) {
+        console.error('Decryption error:', error);
+        throw error; // Re-throw for handling in caller
+    }
+}
 
-// //
-// async function checkPayoutStatus(payoutId) {
-//     try {
-//         const url = `${FRENZOPAY_PAYOUT.base_url}${FRENZOPAY_PAYOUT.check_payout_status_endpoint}/${payoutId}`;
-//         const response = await axios.get(url, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'X-Access-Key': FRENZOPAY_PAYOUT.access_key,
-//                 'X-Secret-Key': FRENZOPAY_PAYOUT.secret_key
-//             }
-//         });
-//         return response.data;
-//     } catch (error) {
-//         throw error.response ? error.response.data : error.message;
-//     }
-// }
+function calculateChecksum(data) {
+    // Placeholder for the actual checksum logic
+    return crypto.createHash('sha256').update(data).digest('hex'); // Example: SHA-256 checksum
+}
 
-// async function getAccountBalance() {
-//     try {
-//         const url = `${FRENZOPAY_PAYOUT.base_url}${FRENZOPAY_PAYOUT.account_balance_endpoint}`;
-//         const response = await axios.get(url, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'X-Access-Key': FRENZOPAY_PAYOUT.access_key,
-//                 'X-Secret-Key': FRENZOPAY_PAYOUT.secret_key
-//             }
-//         });
-//         return response.data;
-//     } catch (error) {
-//         throw error.response ? error.response.data : error.message;
-//     }
-// }
+function sabPaisaEncrypt(text) {
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(authKey), authIV);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return encrypted.toString("base64");
+}
 
-// Example usage:
-// (async () => {
-//     try {
-//         // Add beneficiary
-//         const beneficiaryData = { /* Add beneficiary data here */ };
-//         const addedBeneficiary = await addBeneficiary(beneficiaryData);
-//         console.log('Added beneficiary:', addedBeneficiary);
+function sabPaisaDecrypt(text) {
+    // let iv = Buffer.from(text.iv, 'hex');
+    // let encryptedText = Buffer.from(text.encryptedData, 'hex');
+    let decipher = crypto.createDecipheriv(
+        algorithm,
+        Buffer.from(authKey),
+        authIV
+    );
+    let decrypted = decipher.update(Buffer.from(text, "base64"));
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+}
 
-//         // Create payout
-//         const payoutData = { /* Add payout data here */ };
-//         const createdPayout = await createPayout(payoutData);
-//         console.log('Created payout:', createdPayout);
-
-//         // Check payout status
-//         const payoutId = '123'; // Replace with actual payout ID
-//         const payoutStatus = await checkPayoutStatus(payoutId);
-//         console.log('Payout status:', payoutStatus);
-
-//         // Get account balance
-//         const accountBalance = await getAccountBalance();
-//         console.log('Account balance:', accountBalance);
-//     } catch (error) {
-//         console.error('Error:', error);
-//     }
-// })();
+//generate random string
+function randomStr(len, arr) {
+    let ans = "";
+    for (let i = len; i > 0; i--) {
+        ans += arr[Math.floor(Math.random() * arr.length)];
+    }
+    return ans;
+}
 
 
 module.exports = {
+    sendPaymentRequest,
     initiatePayment,
-    addBeneficiary,
+    PayOutTransfer,
+    checkPayoutStatus,
+    newInitiatePayment,
+    generateReferenceNumber,
+    starPaisaPayment,
+    encrypt,
+    decrypt,
+    sabPaisaInitiatePayment,
+    sabPaisaEncrypt,
+    sabPaisaDecrypt
     // createPayout,
     // checkPayoutStatus,
     // getAccountBalance
