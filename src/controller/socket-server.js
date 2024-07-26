@@ -16,9 +16,7 @@ const mainCtrl = require('./mainController');
 const { sendEvent, sendDirectEvent } = require('../helper/socketFunctions');
 const { userReconnect } = require('../aviator/reConnectFunction');
 const { getBannerList } = require('./adminController');
-const { initiatePayment } = require('./paymentController,js');
-const { createPayout } = require('./paymentController,js');
-const { checkPayoutStatus, sendPaymentRequest } = require('./paymentController,js');
+const { checkPayoutStatus, sendPaymentRequest, initiatePayment } = require('./paymentController.js');
 
 const myIo = {};
 
@@ -131,7 +129,7 @@ myIo.init = function (server) {
                     case CONST.PAY_IN: {
                         try {
                             console.log("PAY_IN ", payload.data)
-                            await sendPaymentRequest(payload.data, socket);
+                            await initiatePayment(payload.data, socket);
                         } catch (error) {
                             logger.error("Error in pay in ->", error)
                         }
