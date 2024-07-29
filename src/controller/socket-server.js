@@ -209,7 +209,6 @@ myIo.init = function (server) {
                         break;
                     }
 
-
                     case CONST.RECONNECT: {
                         await gamePlayActions.reconnect(payload.data, socket);
                         break;

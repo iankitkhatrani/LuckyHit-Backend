@@ -1,122 +1,146 @@
 const mongoose = require('mongoose');
 const MongoID = mongoose.Types.ObjectId;
 const paymentin = mongoose.model('paymentin');
-
 const GameUser = mongoose.model('users');
 const crypto = require('crypto');
+const CryptoJS = require("crypto-js");
 const axios = require('axios');
 const commandActions = require('../helper/socketFunctions');
 const CONST = require('../../constant');
 const logger = require('../../logger');
 
-
-const mid = '900000000000026'
-const SecretKey = "scr2dHNWS5QYjb07vVmVOu9VGG3JhG1dPP5"
-const SaltKey = "salNeSAWnEOmCd3UiEBQozhWoUny5GIZg"
+const mid = '900000000000026';
+const SecretKey = "scr2dHNWS5QYjb07vVmVOu9VGG3JhG1dPP5";
+const SaltKey = "salNeSAWnEOmCd3UiEBQozhWoUny5GIZg";
 const StaticSalt = "Asdf@1234";
+const keyLen = 35;
 
 async function initiatePayment(requestData, socket) {
     try {
         logger.info("\n Send Payment Request : ", requestData);
-        const { playerId, customerName, amount, currency, txnReqType, emailId, mobileNo, optional1 } = requestData;
 
-        let testAmount = 10
+        let customerName = 'test';
+        let emailId = 'anilnikam619@gmail.com';
+        let mobileNo = '8128154143';
+        let testAmount = 10;
+
         const orderNo = generateReferenceNumber();
         const formattedDate = formatDate(new Date().toISOString());
         logger.info("formattedDate ", formattedDate);
 
-        const paymentindata = await paymentin.create({
-            userId: playerId,
-            transactionId: orderNo,
-            name: customerName,
-            email: emailId,
-            phone: mobileNo,
-            amount: testAmount,
-            paymentStatus: "Pending"
-        });
-
         let paisaAmount = testAmount * 100;
         logger.info("paisaAmount ", paisaAmount);
         let finalAmount = paisaAmount.toString();
-        logger.info("final paisaAmount ", finalAmount);
+        logger.info("finalAmount ", finalAmount);
 
-        if (paymentindata) {
-            logger.info("payload paymentindata =>", paymentindata);
+        let dataSequence = [
+            mid,
+            orderNo,
+            finalAmount,
+            "INR",
+            "S",
+            "", "", "", "", "", "", "", "", "", "",
+            emailId,
+            mobileNo,
+            "", "", "", "",
+            "UPI",
+            "", "", "", "", "",
+            customerName, "",
+            "intent"
+        ].join(',');
 
-            let dataSequence = [
-                mid,
-                orderNo,
-                finalAmount,
-                "INR",
-                "S",
-                "", "", "", "", "", "", "", "", "",
-                emailId,
-                mobileNo,
-                "", "", "", "",
-                "UPI",
-                "", "", "", "", "",
-                customerName, "",
-                "intent"
-            ].join(',');
+        logger.info("data Sequence =>", dataSequence);
 
-            logger.info("data Sequence =>", dataSequence);
+        const encryptReq = getEncrypt("TrnPayment", dataSequence, SecretKey, SaltKey, StaticSalt);
+        logger.info("encryptReq =>", encryptReq);
 
-            const encryptReq = encrypt(dataSequence, SecretKey, SaltKey, StaticSalt);
-            logger.info("encryptReq =>", encryptReq);
+        let transactionMethod = '';
+        let vpa = '';
+        let cardNumber = '';
+        let expiryDate = '';
+        let cvv = '';
+        let bankCode = '';
 
+        const checkSum = getCheckSum(SaltKey, orderNo, finalAmount, transactionMethod, bankCode, vpa, cardNumber, expiryDate, cvv);
+        logger.info("checkSum =>", checkSum);
 
-            // const checkSum = getCheckSum(dataSequence, SecretKey);
-            let transactionMethod = ''
-            let vpa = ''
-            let cardNumber = ''
-            let expiryDate = ''
-            let cvv = ''
-            let bankCode = ''
+        let postData = {
+            mid: mid,
+            encryptReq: encryptReq,
+            checkSum: checkSum,
+        };
 
+        logger.info("postData =>", postData);
 
-
-            const checkSum = getCheckSum(SaltKey, orderNo, finalAmount, transactionMethod, bankCode, vpa, cardNumber, expiryDate, cvv);
-            logger.info("checkSum =>", checkSum);
-
-            const postData = {
-                encryptReq,
-                checkSum,
-                mid
-            };
-
-            try {
-                const response = await axios.post('https://payin.paymor.in/PaymentGateway/api/seamless/txnReq', postData, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                logger.info('Response: =>', response.data);
-            } catch (error) {
-                logger.error('Error: =>', error.response ? error.response.data : error.message);
-            }
-        } else {
-            logger.info("Data Not Insert");
-            commandActions.sendEvent(socket, CONST.PAY_IN, {}, false, 'Something Went Wrong Please try again');
+        try {
+            const response = await axios.post('https://payin.paymor.in/PaymentGateway/api/seamless/txnReq', JSON.stringify(postData), {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            logger.info('Response: =>', response.data);
+        } catch (error) {
+            logger.error('Error: =>', error.response ? error.response.data : error.message);
         }
+
     } catch (error) {
         logger.error("Pay In Error -->", error);
     }
 }
 
-function derivateKey(password, salt, iterations, keyLengthBits) {
-    const key = crypto.pbkdf2Sync(password, salt, iterations, keyLengthBits / 8, 'sha256');
-    return key;
+function getEncrypt(msg, context, secretKey, saltKey, staticSalt) {
+    let hashVarsSeq = [];
+
+    // Use context to get the sequences for TrnPayment and TrnStatus
+    if (msg === "TrnPayment") {
+        hashVarsSeq = context.split(",");
+    } else if (msg === "TrnStatus") {
+        hashVarsSeq = context.split(",");
+    }
+
+    let hashString = "";
+    let count = hashVarsSeq.length;
+
+    hashVarsSeq.forEach((hash_var, index) => {
+        hashString += hash_var;
+        if (index !== count - 1) {
+            hashString += ",";
+        }
+    });
+
+    return encrypt(hashString, secretKey);
 }
 
-function encrypt(data, secretKey, saltKey, staticSalt) {
-    const iv = crypto.randomBytes(16);
-    const key = derivateKey(secretKey, saltKey + staticSalt, 65536, 256);
-    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+function derivateKey(password, salt, iterations, keyLengthBits) {
+    return CryptoJS.PBKDF2(password, CryptoJS.enc.Utf8.parse(salt), {
+        keySize: keyLengthBits / 32,
+        iterations: iterations
+    });
+}
 
-    let encrypted = cipher.update(data, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
+function encrypt(hashString, key) {
+    const iv = CryptoJS.lib.WordArray.create(16); // Generate random IV
+    key = fixKey(key);
+    key = derivateKey(key, SaltKey, 65536, 256);
+    const cipher = CryptoJS.AES.encrypt(hashString, key, {
+        iv: iv,
+        format: CryptoJS.format.OpenSSL,
+    });
+    return cipher.toString();
+}
 
-    return iv.toString('hex') + encrypted;
+function fixKey(key) {
+    logger.info("key =>", key);
+
+    if (key.length < keyLen) {
+        return key.padEnd(keyLen, '0');
+    }
+
+    if (key.length > keyLen) {
+        return key.substring(0, keyLen);
+    }
+
+    return key;
 }
 
 function base64Encode(data) {
@@ -125,22 +149,21 @@ function base64Encode(data) {
 
 function getCheckSum(saltKey, orderNo, amount, transactionMethod, bankCode, vpa, cardNumber, expiryDate, cvv) {
     const dataString = `${orderNo},${amount},${transactionMethod},${bankCode},${vpa},${cardNumber},${expiryDate},${cvv}`;
-    const base64SaltKey = base64Encode(saltKey);
-    let hashValue = crypto.createHmac('sha512', Buffer.from(base64SaltKey, 'base64')).update(dataString).digest('hex');
+    saltKey = base64Encode(saltKey);
+
+    let hashValue = CryptoJS.HmacSHA512(dataString, saltKey);
+    hashValue = CryptoJS.enc.Hex.stringify(hashValue);
+    logger.info("hashValue =>", hashValue);
     return hashValue.toUpperCase();
 }
 
 function generateReferenceNumber() {
-    // Create a string of all digits (0-9)
     const digits = '0123456789';
-
-    // Generate a random string of 10 characters from the digits string
     let referenceNumber = '';
     for (let i = 0; i < 10; i++) {
         const randomIndex = Math.floor(Math.random() * digits.length);
         referenceNumber += digits[randomIndex];
     }
-
     return referenceNumber;
 }
 
@@ -152,15 +175,11 @@ function formatDate(dateString) {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
-
 
 module.exports = {
     initiatePayment,
     generateReferenceNumber,
     encrypt,
 };
-
-
