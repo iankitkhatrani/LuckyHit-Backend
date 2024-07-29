@@ -8,6 +8,7 @@ const axios = require('axios');
 const commandActions = require('../helper/socketFunctions');
 const CONST = require('../../constant');
 const logger = require('../../logger');
+const { log } = require('console');
 
 const mid = '900000000000026';
 const SecretKey = "scr2dHNWS5QYjb07vVmVOu9VGG3JhG1dPP5";
@@ -61,7 +62,7 @@ async function initiatePayment(requestData, socket) {
         let cvv = '';
         let bankCode = '';
 
-        const checkSum = getCheckSum(SaltKey, orderNo, finalAmount, transactionMethod, bankCode, vpa, cardNumber, expiryDate, cvv);
+        const checkSum = getCheckSum(SaltKey, orderNo, finalAmount, "UPI", bankCode, vpa, cardNumber, expiryDate, cvv);
         logger.info("checkSum =>", checkSum);
 
         let postData = {
@@ -78,7 +79,31 @@ async function initiatePayment(requestData, socket) {
                     'Content-Type': 'application/json'
                 }
             });
-            logger.info('Response: =>', response.data);
+            logger.info('Response: =>', response);
+
+            const responseData = response.data;
+            logger.info('\n ResponseData: =>', responseData);
+
+            const parsedData = JSON.parse(responseData.data)
+            logger.info('\n parsedData 111111 =>', parsedData);
+            logger.info('\n parsedData respData.respData 222222 =>', parsedData.respData);
+
+            // const data = JSON.parse(responseData?.data);
+            // const respData = data?.respData;
+            // const checkSum = data?.checkSum;
+
+            if (responseData.respCode === '0') {
+                logger.info('Payment Successfull');
+                // const decryptedData = getResponse(parsedData.respData, mid, checkSum);
+                let decryptedData = decrypt(parsedData.respData, SecretKey);
+
+                logger.info('Decrypted Response Data: =>', decryptedData);
+            } else {
+                logger.error('Error in response:', responseData.respMsg);
+            }
+
+            // let res = decrypt(responseData, SecretKey);
+
         } catch (error) {
             logger.error('Error: =>', error.response ? error.response.data : error.message);
         }
@@ -112,21 +137,40 @@ function getEncrypt(msg, context, secretKey, saltKey, staticSalt) {
 }
 
 function derivateKey(password, salt, iterations, keyLengthBits) {
-    return CryptoJS.PBKDF2(password, CryptoJS.enc.Utf8.parse(salt), {
+    return CryptoJS.PBKDF2(password, salt, {
         keySize: keyLengthBits / 32,
-        iterations: iterations
+        iterations: iterations,
+        hasher: CryptoJS.algo.SHA256,
     });
 }
 
 function encrypt(hashString, key) {
+    logger.info("\n encrypt hashString =>", hashString);
+    logger.info("\n encrypt key =>", key);
     const iv = CryptoJS.lib.WordArray.create(16); // Generate random IV
     key = fixKey(key);
-    key = derivateKey(key, SaltKey, 65536, 256);
+    key = derivateKey(key, StaticSalt, 65536, 256);
     const cipher = CryptoJS.AES.encrypt(hashString, key, {
         iv: iv,
         format: CryptoJS.format.OpenSSL,
     });
     return cipher.toString();
+}
+
+function decrypt(data, key) {
+    logger.info("\n decrypt data =>", data);
+    logger.info("\n decrypt key =>", key);
+
+    const iv = CryptoJS.lib.WordArray.create(16);
+    key = fixKey(key);
+    key = derivateKey(key, StaticSalt, 65536, 256);
+    const decryptedRespponse = CryptoJS.AES.decrypt(data, key, {
+        iv: iv,
+        format: CryptoJS.format.OpenSSL,
+    });
+    logger.info("\n decryptedRespponse =>", decryptedRespponse);
+
+    return decryptedRespponse.toString();
 }
 
 function fixKey(key) {
@@ -144,10 +188,14 @@ function fixKey(key) {
 }
 
 function base64Encode(data) {
-    return Buffer.from(data, 'utf8').toString('base64');
+    // return Buffer.from(data, 'utf8').toString('base64');
+    return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(data));
 }
 
 function getCheckSum(saltKey, orderNo, amount, transactionMethod, bankCode, vpa, cardNumber, expiryDate, cvv) {
+    logger.info("\n saltKey =>", saltKey);
+    logger.info("\n all data =>", orderNo, " + amount + ", amount, " + transactionMethod =>", transactionMethod, " + bankCode =>", bankCode, " + vpa =>", vpa, " + ", cardNumber, " + ", expiryDate, " + ", cvv);
+
     const dataString = `${orderNo},${amount},${transactionMethod},${bankCode},${vpa},${cardNumber},${expiryDate},${cvv}`;
     saltKey = base64Encode(saltKey);
 
@@ -177,6 +225,8 @@ function formatDate(dateString) {
     const seconds = String(date.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
+
 
 module.exports = {
     initiatePayment,
