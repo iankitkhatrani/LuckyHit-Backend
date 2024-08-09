@@ -108,7 +108,7 @@ async function initiatePayment(requestData, socket) {
                 let upi = finalResponse[26].split(" ").join()
 
                 logger.info("\n UPi string =>", upi)
-                commandActions.sendDirectEvent(socket, CONST.PAY_IN, {
+                commandActions.sendEvent(socket, CONST.PAY_IN, {
                     upi: upi,
                     orderNo: orderNo,
                     amount: testAmount,
