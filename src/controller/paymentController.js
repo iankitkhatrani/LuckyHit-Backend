@@ -20,10 +20,10 @@ async function initiatePayment(requestData, socket) {
     try {
         logger.info("\n Send Payment Request : ", requestData);
 
-        let customerName = 'test';
-        let emailId = 'anilnikam619@gmail.com';
-        let mobileNo = '8128154143';
-        let testAmount = 10;
+        let customerName = requestData.customerName;
+        let emailId = requestData.emailId;
+        let mobileNo = requestData.mobileNo;
+        let testAmount = requestData.amount;
 
         const orderNo = generateReferenceNumber();
         const formattedDate = formatDate(new Date().toISOString());
