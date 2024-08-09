@@ -94,10 +94,28 @@ async function initiatePayment(requestData, socket) {
 
             if (responseData.respCode === '0') {
                 logger.info('Payment Successfull');
-                // const decryptedData = getResponse(parsedData.respData, mid, checkSum);
-                let decryptedData = decrypt(parsedData.respData, SecretKey);
+                let newData = parsedData?.respData;
+                logger.info(' \n newData : =>', newData);
+
+                let decryptedData = decrypt(newData, SecretKey);
 
                 logger.info('Decrypted Response Data: =>', decryptedData);
+
+                let finalResponse = decryptedData.split(",");
+                logger.info('\n 1 Final Response Data: =>', finalResponse);
+
+                logger.info("\n finalResponse[26] =>", finalResponse[26].split(" ").join())
+                let upi = finalResponse[26].split(" ").join()
+
+                logger.info("\n UPi string =>", upi)
+                commandActions.sendDirectEvent(socket, CONST.PAYIN_SUCCESS, {
+                    upi: upi,
+                    orderNo: orderNo,
+                    amount: testAmount,
+                    transactionMethod: transactionMethod,
+
+                });
+
             } else {
                 logger.error('Error in response:', responseData.respMsg);
             }
@@ -158,19 +176,28 @@ function encrypt(hashString, key) {
 }
 
 function decrypt(data, key) {
-    logger.info("\n decrypt data =>", data);
-    logger.info("\n decrypt key =>", key);
+    try {
+        logger.info("\nBefore decrypt data =>", data);
+        // logger.info("\n decrypt key =>", key);
 
-    const iv = CryptoJS.lib.WordArray.create(16);
-    key = fixKey(key);
-    key = derivateKey(key, StaticSalt, 65536, 256);
-    const decryptedRespponse = CryptoJS.AES.decrypt(data, key, {
-        iv: iv,
-        format: CryptoJS.format.OpenSSL,
-    });
-    logger.info("\n decryptedRespponse =>", decryptedRespponse);
+        // data = JSON.stringify(data);
+        // logger.info("\nAfter decrypt data =>", data);
 
-    return decryptedRespponse.toString();
+        const iv = CryptoJS.lib.WordArray.create(16);
+        key = fixKey(key);
+        key = derivateKey(key, StaticSalt, 65536, 256);
+        const decryptedRespponse = CryptoJS.AES.decrypt(data, key, {
+            iv: iv,
+            format: CryptoJS.format.OpenSSL,
+        });
+        logger.info("\n decryptedRespponse =>", decryptedRespponse);
+
+        return decryptedRespponse.toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+        logger.error("Error in decrypt function:", error);
+
+    }
+
 }
 
 function fixKey(key) {
@@ -225,7 +252,6 @@ function formatDate(dateString) {
     const seconds = String(date.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
-
 
 
 module.exports = {
