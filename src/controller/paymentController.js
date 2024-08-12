@@ -21,13 +21,11 @@ const keyLen = 35;
 
 //submbhav paymnet
 
-const mid = '900000000000026';
-const SecretKey = "scrXZugIax27WugPSeWAqtvokSnabciESvQ";
+const mid = '900000000000375';
 const SaltKey = "salGvKxLAoVzJ3v8lk7g90qHKTD5xl5f3";
+const SecretKey = "scrXZugIax27WugPSeWAqtvokSnabciESvQ";
 const StaticSalt = "Asdf@1234";
 const keyLen = 35;
-
-
 
 async function initiatePayment(requestData, socket) {
     try {
@@ -87,11 +85,16 @@ async function initiatePayment(requestData, socket) {
         logger.info("postData =>", postData);
 
         try {
-            const response = await axios.post('https://payin.paymor.in/PaymentGateway/api/seamless/txnReq', JSON.stringify(postData), {
+            const response = await axios.post('https://pg.sambhavpay.com/api/seamless/txnReq', JSON.stringify(postData), {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
+            // const response = await axios.post('https://payin.paymor.in/PaymentGateway/api/seamless/txnReq', JSON.stringify(postData), {
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     }
+            // });
             logger.info('Response: =>', response);
 
             const responseData = response.data;
@@ -130,12 +133,15 @@ async function initiatePayment(requestData, socket) {
 
             } else {
                 logger.error('Error in response:', responseData.respMsg);
+                commandActions.sendEvent(socket, CONST.PAY_IN, { msg: "Error in response" });
             }
 
             // let res = decrypt(responseData, SecretKey);
 
         } catch (error) {
             logger.error('Error: =>', error.response ? error.response.data : error.message);
+            commandActions.sendEvent(socket, CONST.PAY_IN, { msg: "Error in response" });
+
         }
 
     } catch (error) {
