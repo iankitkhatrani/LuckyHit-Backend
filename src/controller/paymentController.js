@@ -10,11 +10,24 @@ const CONST = require('../../constant');
 const logger = require('../../logger');
 const { log } = require('console');
 
+
+/*
 const mid = '900000000000026';
 const SecretKey = "scr2dHNWS5QYjb07vVmVOu9VGG3JhG1dPP5";
 const SaltKey = "salNeSAWnEOmCd3UiEBQozhWoUny5GIZg";
 const StaticSalt = "Asdf@1234";
 const keyLen = 35;
+*/
+
+//submbhav paymnet
+
+const mid = '900000000000026';
+const SecretKey = "scrXZugIax27WugPSeWAqtvokSnabciESvQ";
+const SaltKey = "salGvKxLAoVzJ3v8lk7g90qHKTD5xl5f3";
+const StaticSalt = "Asdf@1234";
+const keyLen = 35;
+
+
 
 async function initiatePayment(requestData, socket) {
     try {
