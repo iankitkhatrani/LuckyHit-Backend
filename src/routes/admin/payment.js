@@ -1,34 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const logger = require('../../../logger');
 const mongoose = require('mongoose');
-const users = mongoose.model("users");
-const paymentin = mongoose.model("paymentin");
+const paymentin = mongoose.model('paymentin');
+const logger = require('../../../logger');
+const walletActions = require("../../common-function/walletTrackTransaction");
 
 router.post('/payment-callback', async (req, res) => {
     try {
-        logger.info(':::::::::::::::::::::::::::::::::::::response => ', req.body);
+        const callbackData = req.body;
+        logger.info('Callback Data Received: ', callbackData);
 
-        if (req.body != undefined && req.body.Status != undefined) {
-            console.log("res.body. ", req.body.OrderId)
-            const PaymentIndata = await paymentin.findOneAndUpdate({ "OrderID": req.body.OrderId }, { $set: { webhook: req.body } }, {
-                new: true,
-            });
-            console.log("PaymentIndata ", PaymentIndata)
-            if (PaymentIndata && PaymentIndata.userId && req.body.Status == "Success") {
+        if (callbackData && callbackData.orderId) {
+            const paymentData = await paymentin.findOneAndUpdate(
+                { "OrderID": callbackData.orderId },
+                { $set: { webhook: callbackData } },
+                { new: true }
+            );
+            logger.info("Payment Data: ", paymentData);
 
-                await walletActions.addWalletPayin(PaymentIndata.userId, Number(req.body.Amount), 'Credit', 'PayIn');
-
+            if (paymentData && paymentData.userId && callbackData.txnStatus === "Transaction Successful") {
+                await walletActions.addUserWalletGame(paymentData.userId, Number(callbackData.amount), 'Credit', 'PayIn');
+                logger.info('Wallet updated successfully for user:', paymentData.userId);
             } else {
-                logger.info("PaymentIndata ", PaymentIndata)
-                logger.info("req.body Faild  ", req.body)
+                logger.info("Payment not successful or no associated user ID found.");
             }
         } else {
-            logger.info("req.body ", req.body)
+            logger.info("Invalid callback data received: ", callbackData);
         }
-        res.send("check API ok")
+
+        res.status(200).json({ status: "200", message: "SUCCESS" });
     } catch (error) {
-        res.send("check API ok / try catch error")
+        logger.error("Error in payment callback processing: ", error);
+        res.status(500).json({ status: "500", message: "Internal Server Error" });
     }
 });
 
