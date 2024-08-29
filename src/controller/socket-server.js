@@ -8,7 +8,7 @@ const logger = (module.exports = require('../../logger'));
 const CONST = require('../../constant');
 const signupActions = require('../helper/signups/index');
 const commonHelper = require('../helper/commonHelper');
-const gamePlayActions = require('../aviator/');
+const gamePlayActions = require('../aviator');
 
 const BNWgamePlayActions = require('../blackNwhite/');
 const { registerUser } = require('../helper/signups/signupValidation');
@@ -186,13 +186,6 @@ myIo.init = function (server) {
                         break;
                     }
 
-                    case CONST.BNW_JOIN_SIGN_UP: {
-                        socket.uid = payload.data.playerId;
-                        socket.sck = socket.id;
-
-                        await BNWgamePlayActions.joinTable(payload.data, socket);
-                        break;
-                    }
 
                     case CONST.PLAYERLIST: {
                         gamePlayActions.PLAYERLIST(payload.data, socket);
@@ -211,6 +204,14 @@ myIo.init = function (server) {
 
                     case CONST.RECONNECT: {
                         await gamePlayActions.reconnect(payload.data, socket);
+                        break;
+                    }
+
+                    case CONST.BNW_JOIN_SIGN_UP: {
+                        socket.uid = payload.data.playerId;
+                        socket.sck = socket.id;
+
+                        await BNWgamePlayActions.joinTable(payload.data, socket);
                         break;
                     }
 
