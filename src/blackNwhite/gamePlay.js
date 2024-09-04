@@ -136,8 +136,6 @@ module.exports.action = async (requestData, client) => {
             await this.MybetInsertType(tabInfo.gameId, requestData.betAmount, requestData.type, 0, client)
         }
 
-
-
         delete client.action;
         return true;
     } catch (e) {
@@ -463,7 +461,8 @@ module.exports.MybetInsert = async (gameId, amount, type, winAmount, client) => 
 
             const tb = await MyBetTable.findOneAndUpdate(upWh, updateData, { new: true });
             logger.info("Bnw MybetInsert tb : ", tb);
-        } else {
+        }
+        /*else {
 
             let insertobj = {
                 gameId: gameId,
@@ -476,7 +475,7 @@ module.exports.MybetInsert = async (gameId, amount, type, winAmount, client) => 
             let insertInfo = await MyBetTable.create(insertobj);
             logger.info("Bnw MybetInsert insertInfo : ", insertInfo);
 
-        }
+        }*/
     } catch (e) {
         logger.info("Bnw Exception Mybetlist : ", e);
     }
