@@ -5,7 +5,6 @@ const AviatorTables = mongoose.model("aviatorTables");
 const BetLists = mongoose.model("betList")
 const commandAcions = require("../helper/socketFunctions");
 const { sendEvent, sendDirectEvent, AddTime, setDelay, clearJob } = require('../helper/socketFunctions');
-
 const gameStartActions = require("./gameStart");
 const CONST = require("../../constant");
 const logger = require("../../logger");
@@ -262,8 +261,6 @@ module.exports.findEmptySeatAndUserSeat = async (table, client) => {
         console.info("findEmptySeatAndUserSeat", error);
     }
 }
-
-
 
 module.exports.findEmptySeat = (playerInfo) => {
     for (x in playerInfo) {

@@ -514,7 +514,6 @@ module.exports.mybetlist = async (requestData, client) => {
     clinet:{}
 */
 module.exports.MybetInsert = async (gameId, amount, x, winamount, client) => {
-
     try {
         logger.info("MybetInsert requestData gameId: ", gameId);
         logger.info("MybetInsert requestData amount: ", amount);
