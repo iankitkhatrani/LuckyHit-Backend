@@ -88,7 +88,7 @@ module.exports.action = async (requestData, client) => {
             logger.info(" blackAmount table Info -->", tabInfo)
             commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalBlackChips: tabInfo.counters.totalBlackChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
-            await this.MybetInsertType(tabInfo.gameId, requestData.betAmount, requestData.type, 0, client)
+            await this.MybetInsertType(tabInfo.gameId, requestData.betAmount, requestData.type, client)
 
         } else if (requestData.type === 'White') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
@@ -427,6 +427,19 @@ module.exports.mybetlist = async (requestData, client) => {
             return false
         }
 
+        mybetlist.forEach(doc => {
+            // Convert the `dateTime` string to a Date object
+            const dateTime = new Date(doc.dateTime);
+
+            // Format the date as dd/mm/yyyy
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            doc.date = dateTime.toLocaleDateString('en-IN', options); // 'en-IN' gives dd/mm/yyyy
+
+            // Format the time in HH:mm:ss format for the IST timezone
+            doc.time = dateTime.toLocaleTimeString('en-IN', { hour12: false, timeZone: 'Asia/Kolkata' });
+        });
+
+
         commandAcions.sendEvent(client, CONST.BNW_MYBET, { mybetlist: mybetlist });
 
         return true;
@@ -484,6 +497,7 @@ module.exports.MybetInsert = async (gameId, amount, type, winAmount, client) => 
 
 module.exports.MybetInsertType = async (gameId, amount, type, winAmount, client) => {
     try {
+        logger.info("<== gameId, amount, type, winAmount, client ==>", gameId, amount, type, winAmount)
 
         let count = await MyBetTable.countDocuments({ gameId: gameId, type: type });
         logger.info("Bnw MybetInsertType count : ", count);
@@ -497,14 +511,19 @@ module.exports.MybetInsertType = async (gameId, amount, type, winAmount, client)
                 gameId: gameId,
                 type: type
             }
+
             let updateData = {
-                type: type,
-                winAmount: winAmount,
-                dateTime: new Date()
+                $set: {
+                    type: type,
+                    dateTime: new Date()
+
+                }, $inc: {
+                    betAmount: amount,
+                }
             }
 
             const tb = await MyBetTable.findOneAndUpdate(upWh, updateData, { new: true });
-            logger.info("Bnw MybetInsertType tb : ", tb);
+            logger.info("Bnw MybetInsertType tb : =>", tb);
         } else {
 
             let insertobj = {
