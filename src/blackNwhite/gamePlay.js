@@ -432,11 +432,15 @@ module.exports.mybetlist = async (requestData, client) => {
             const dateTime = new Date(doc.dateTime);
 
             // Format the date as dd/mm/yyyy
-            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-            doc.date = dateTime.toLocaleDateString('en-IN', options); // 'en-IN' gives dd/mm/yyyy
+            const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            doc.date = dateTime.toLocaleDateString('en-IN', dateOptions); // 'en-IN' for dd/mm/yyyy format
 
-            // Format the time in HH:mm:ss format for the IST timezone
-            doc.time = dateTime.toLocaleTimeString('en-IN', { hour12: false, timeZone: 'Asia/Kolkata' });
+            // Format the time as HH:mm:ss
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            doc.time = dateTime.toLocaleTimeString('en-IN', timeOptions); // 24-hour format HH:mm:ss
+
+            // Optional: Remove the original `dateTime` key if no longer needed
+            // delete doc.dateTime;
         });
 
 
