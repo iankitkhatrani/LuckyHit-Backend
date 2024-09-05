@@ -75,7 +75,7 @@ const userLogin = async (requestData, socket) => {
 
       commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
     } else {
-      commandAcions.sendEvent(socket, CONST.DASHBOARD, {}, false, 'Password or mobile number is not valid');
+      commandAcions.sendEvent(socket, CONST.LOGIN, {}, false, 'Password or mobile number is not valid');
     }
 
   } else {
@@ -204,13 +204,13 @@ const registerUser = async (requestBody, socket) => {
 
       let response = await filterBeforeSendSPEvent(userData);
 
-      console.log("registerUser :::::::::::::::::::::",requestBody.other_referal_code)
+      console.log("registerUser :::::::::::::::::::::", requestBody.other_referal_code)
 
-    if(requestBody.other_referal_code != undefined){
-      console.log("registerUser :::::::::::::::::::::",requestBody.other_referal_code)
+      if (requestBody.other_referal_code != undefined) {
+        console.log("registerUser :::::::::::::::::::::", requestBody.other_referal_code)
 
-      AppStart.referralReward(requestBody.other_referal_code,userInsertInfo)
-    }
+        AppStart.referralReward(requestBody.other_referal_code, userInsertInfo)
+      }
 
       commandAcions.sendEvent(socket, CONST.DASHBOARD, response);
     } else {
