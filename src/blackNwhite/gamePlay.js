@@ -440,8 +440,10 @@ module.exports.mybetlist = async (requestData, client) => {
             doc.time = dateTime.toLocaleTimeString('en-IN', timeOptions); // 24-hour format HH:mm:ss
 
             // Optional: Remove the original `dateTime` key if no longer needed
-            // delete doc.dateTime;
+            delete doc.dateTime;
         });
+
+
 
 
         commandAcions.sendEvent(client, CONST.BNW_MYBET, { mybetlist: mybetlist });
