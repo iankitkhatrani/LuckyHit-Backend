@@ -102,9 +102,6 @@ module.exports.startBatting = async (tbId) => {
       await botLogic.PlayRobot(tabInfo, tabInfo.playerInfo);
     };
 
-    // Function to generate a random interval between min and max (in milliseconds)
-    const getRandomInterval = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
     (async () => {
       // Call the function immediately
       await playRobotInterval();
@@ -112,24 +109,14 @@ module.exports.startBatting = async (tbId) => {
       let executionCount = 0;
       const maxExecutions = 6;
 
-      // Random interval between 1 second (1000 ms) and 3 seconds (3000 ms)
-      const minInterval = 1000;
-      const maxInterval = 3000;
-
-      // Use setTimeout instead of setInterval for random intervals
-      const callWithRandomInterval = async () => {
+      const intervalId = setInterval(async () => {
         await playRobotInterval();
         executionCount++;
 
-        if (executionCount < maxExecutions) {
-          const randomDelay = getRandomInterval(minInterval, maxInterval);
-          setTimeout(callWithRandomInterval, randomDelay); // Call the function again after a random delay
+        if (executionCount >= maxExecutions) {
+          clearInterval(intervalId);
         }
-      };
-
-      // Call the first function after a random interval
-      const randomInitialDelay = getRandomInterval(minInterval, maxInterval);
-      setTimeout(callWithRandomInterval, randomInitialDelay);
+      }, 1500);
     })();
 
     tblId = tabInfo._id;
