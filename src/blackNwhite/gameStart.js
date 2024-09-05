@@ -89,17 +89,21 @@ module.exports.startBatting = async (tbId) => {
       { timer: roundTime }
     );
 
-    //2 second delay for Bet
+    // 2 second delay for Bet
     let tblId = tabInfo._id;
     let jobId = CONST.BNW_START_BATTING_TIMER_DELAY + ":" + tblId;
     let delay = commandAcions.AddTime(2);
 
     await commandAcions.setDelay(jobId, new Date(delay));
+
     // Define an asynchronous function
     const playRobotInterval = async () => {
       // Your asynchronous logic here
       await botLogic.PlayRobot(tabInfo, tabInfo.playerInfo);
     };
+
+    // Function to generate a random interval between min and max (in milliseconds)
+    const getRandomInterval = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
     (async () => {
       // Call the function immediately
@@ -108,14 +112,24 @@ module.exports.startBatting = async (tbId) => {
       let executionCount = 0;
       const maxExecutions = 6;
 
-      const intervalId = setInterval(async () => {
+      // Random interval between 1 second (1000 ms) and 3 seconds (3000 ms)
+      const minInterval = 1000;
+      const maxInterval = 3000;
+
+      // Use setTimeout instead of setInterval for random intervals
+      const callWithRandomInterval = async () => {
         await playRobotInterval();
         executionCount++;
 
-        if (executionCount >= maxExecutions) {
-          clearInterval(intervalId);
+        if (executionCount < maxExecutions) {
+          const randomDelay = getRandomInterval(minInterval, maxInterval);
+          setTimeout(callWithRandomInterval, randomDelay); // Call the function again after a random delay
         }
-      }, 1500);
+      };
+
+      // Call the first function after a random interval
+      const randomInitialDelay = getRandomInterval(minInterval, maxInterval);
+      setTimeout(callWithRandomInterval, randomInitialDelay);
     })();
 
     tblId = tabInfo._id;
