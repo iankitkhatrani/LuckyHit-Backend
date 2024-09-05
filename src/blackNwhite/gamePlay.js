@@ -111,7 +111,7 @@ module.exports.action = async (requestData, client) => {
             logger.info("whiteAmount table Info -->", tabInfo)
 
             commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalWhiteChips: tabInfo.counters.totalWhiteChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
-            await this.MybetInsertType(tabInfo.gameId, requestData.betAmount, requestData.type, 0, client)
+            await this.MybetInsertType(tabInfo.gameId, requestData.betAmount, requestData.type, client)
 
         } else if (requestData.type === 'LuckyHit') {
             let playerInfo = tabInfo.playerInfo[client.seatIndex];
@@ -133,7 +133,7 @@ module.exports.action = async (requestData, client) => {
             logger.info(" luckyHitAmount table Info -->", tabInfo)
             commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.BNW_BET_COUNTEING, { activePlayer: tabInfo.activePlayer, betAmount: requestData.betAmount, totalHitChips: tabInfo.counters.totalHitChips, playerId: client.uid, seatIndex: client.seatIndex, betType: requestData.type });
 
-            await this.MybetInsertType(tabInfo.gameId, requestData.betAmount, requestData.type, 0, client)
+            await this.MybetInsertType(tabInfo.gameId, requestData.betAmount, requestData.type, client)
         }
 
         delete client.action;
@@ -501,9 +501,9 @@ module.exports.MybetInsert = async (gameId, amount, type, winAmount, client) => 
 
 }
 
-module.exports.MybetInsertType = async (gameId, amount, type, winAmount, client) => {
+module.exports.MybetInsertType = async (gameId, amount, type, client) => {
     try {
-        logger.info("<== gameId, amount, type, winAmount, client ==>", gameId, amount, type, winAmount)
+        logger.info("<== gameId, amount, type,  client ==>", gameId, amount, type)
 
         let count = await MyBetTable.countDocuments({ gameId: gameId, type: type });
         logger.info("Bnw MybetInsertType count : ", count);
