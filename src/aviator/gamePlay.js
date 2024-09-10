@@ -625,7 +625,7 @@ module.exports.FindGameHistory = async (client) => {
         };
 
         if (tabInfo) {
-            const limitedLastGameResult = tabInfo.history.slice(-20); // Get the last 50 results
+            const limitedLastGameResult = tabInfo.history.slice(-20); // Get the last 20 results
             logger.info('BnW limitedLastGameResult', limitedLastGameResult);
             commandAcions.sendDirectEvent(client.sck, CONST.AVITOR_GAME_HISTORY, { list: limitedLastGameResult });
         } else {
