@@ -42,7 +42,7 @@ module.exports.gameTimerStart = async (tb) => {
 
         let tbId = tabInfo._id;
         let jobId = CONST.GAME_START_TIMER + ":" + tbId;
-        let delay = commandAcions.AddTime((roundTime+2));
+        let delay = commandAcions.AddTime((roundTime + 2));
         const delayRes = await commandAcions.setDelay(jobId, new Date(delay));
 
         this.startAviator(tbId)
@@ -71,7 +71,7 @@ module.exports.startAviator = async (tbId) => {
         // NORMAL 
         let Number = this.generateNumber(1, 50)
 
-        if(tb.totalbet > 0){
+        if (tb.totalbet > 0) {
             Number = this.generateNumber(1, 20)
         }
         //console.log("CONST.AVIATORLOGIC ",GAMELOGICCONFIG.AVIATORLOGIC)
@@ -87,7 +87,7 @@ module.exports.startAviator = async (tbId) => {
         //     Number = this.generateNumber(1, 10)
         // }
         //console.log("Number ", Number)
-//
+        //
         let wh = {
             _id: tbId
         }
@@ -100,7 +100,7 @@ module.exports.startAviator = async (tbId) => {
             $push: {
                 "history": {
                     $each: [Number],
-                    $slice: -8
+                    $slice: -20
                 }
             }
         }
@@ -110,7 +110,7 @@ module.exports.startAviator = async (tbId) => {
         logger.info("startAviator tabInfo :: ", tabInfo);
 
         commandAcions.sendEventInTable(tabInfo._id.toString(), CONST.STARTAVIATOR, { rendomNumber: Number });
-        
+
         botLogic.PlayRobot(tabInfo, tabInfo.playerInfo, Number)
 
         setTimeout(async () => {
@@ -126,9 +126,9 @@ module.exports.startAviator = async (tbId) => {
             this.gameTimerStart(tabInfonew);
 
             //console.log("GAME :::::::::::::::::::::::::::::::gameTimerStart")
-        }, ((((Number-1)+0.8) * 6) * 1000));
+        }, ((((Number - 1) + 0.8) * 6) * 1000));
 
-        
+
 
     } catch (error) {
         logger.error("startAviator.js error ->", error)

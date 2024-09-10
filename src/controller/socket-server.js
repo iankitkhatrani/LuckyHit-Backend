@@ -166,6 +166,11 @@ myIo.init = function (server) {
                         break;
                     }
 
+                    case CONST.AVITOR_GAME_HISTORY: {
+                        gamePlayActions.FindGameHistory(payload.data, socket);
+                        break;
+                    }
+
                     case CONST.ACTION: {
                         gamePlayActions.action(payload.data, socket);
                         break;

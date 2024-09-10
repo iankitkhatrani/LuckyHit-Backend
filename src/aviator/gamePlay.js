@@ -604,3 +604,40 @@ module.exports.AddGameHistory = async (obj) => {
 
     return false
 }
+
+module.exports.FindGameHistory = async (client) => {
+
+    try {
+        const wh = {
+            _id: MongoID(client.tbid.toString()),
+        };
+
+        const project = {};
+        const tabInfo = await AviatorTables.findOne(wh, project).lean();
+
+        if (tabInfo === null) {
+            logger.info('table not found', tabInfo);
+            return false;
+        }
+
+        let msg = {
+            msg: 'Data is not available',
+        };
+
+        if (tabInfo) {
+            const limitedLastGameResult = tabInfo.history.slice(-20); // Get the last 50 results
+            logger.info('BnW limitedLastGameResult', limitedLastGameResult);
+            commandAcions.sendDirectEvent(client.sck, CONST.AVITOR_GAME_HISTORY, { list: limitedLastGameResult });
+        } else {
+            commandAcions.sendDirectEvent(client.sck, CONST.AVITOR_GAME_HISTORY, msg);
+        }
+
+        return true;
+    } catch (e) {
+        logger.error('game Score Board', e)
+    }
+
+    // await GameHistory.find(obj)
+
+    // return false
+}

@@ -371,7 +371,6 @@ module.exports.playerLastScoreBoard = async (requestData, client) => {
     }
 };
 
-
 module.exports.lastGameScoreBoard = async (requestData, client) => {
     try {
         const wh = {
