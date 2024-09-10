@@ -184,14 +184,14 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
     }
 }
 
-module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, seatIndex) => {
+module.exports.addWallet = async (id, addedChips, tType, t, tbInfo, client, seatIndex) => {
     try {
         logger.info('\nBNW addWallet : call.-->>>', id, added_chips, t);
         const wh = (typeof id == 'string') ? { _id: MongoID(id) } : { _id: id };
         if (typeof wh == 'undefined' || typeof wh._id == 'undefined' || wh._id == null || typeof tType == 'undefined') {
             return false;
         }
-        added_chips = Number(added_chips.toFixed(2));
+        let added_chips = Number(addedChips.toFixed(2));
         let projection = {
             id: 1,
             username: 1,

@@ -134,11 +134,14 @@ module.exports.action = async (requestData, client) => {
 
         commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLEACTION, response);
 
+        commandAcions.sendEventInTable(client.tbid.toString(), CONST.PLAYERLIST, {
+            ap: tb.activePlayer,
+            playerDetail: tb.playerInfo,
+        });
+
         delete client.action;
-
-
-
         return true;
+
     } catch (e) {
         logger.info("Exception action : ", e);
     }
@@ -264,6 +267,11 @@ module.exports.Cancel = async (requestData, client) => {
 
 
         commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLECANCEL, response);
+
+        commandAcions.sendEventInTable(client.tbid.toString(), CONST.PLAYERLIST, {
+            ap: tb.activePlayer,
+            playerDetail: tb.playerInfo,
+        });
 
 
         delete client.CANCEL;
