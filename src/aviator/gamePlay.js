@@ -135,8 +135,9 @@ module.exports.action = async (requestData, client) => {
         commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLEACTION, response);
 
         commandAcions.sendEventInTable(client.tbid.toString(), CONST.PLAYERLIST, {
-            ap: tb.activePlayer,
-            playerDetail: tb.playerInfo,
+            chalValue: chalvalue,
+            userid: client.uid,
+            name: UserInfo.username
         });
 
         delete client.action;
@@ -397,6 +398,16 @@ module.exports.CHECKOUT = async (requestData, client) => {
         //commandAcions.sendEventInTable(tb._id.toString(), CONST.CHECKOUT, response);
         sendEvent(client, CONST.CHECKOUT, response);
         commandAcions.sendEventInTable(tb._id.toString(), CONST.TABLECHECKOUT, response);
+
+        commandAcions.sendEventInTable(client.tbid.toString(), CONST.PLAYERLIST, {
+            chalValue: requestData.bet,
+            userid: client.uid,
+            name: UserInfo.username,
+            winamount: winAmount,
+            checkout: requestData.checkout
+        });
+
+        
         delete client.action;
 
         return true;
