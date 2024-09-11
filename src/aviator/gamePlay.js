@@ -605,11 +605,12 @@ module.exports.AddGameHistory = async (obj) => {
     return false
 }
 
-module.exports.FindGameHistory = async (client) => {
+module.exports.FindGameHistory = async (obj, client) => {
 
+    console.log("WGH Log : ",obj)
     try {
         const wh = {
-            _id: MongoID(client.tbid.toString()),
+            _id: MongoID(obj.tableId.toString()),
         };
 
         const project = {};
