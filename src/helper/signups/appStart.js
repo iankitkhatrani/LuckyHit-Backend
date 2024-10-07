@@ -233,7 +233,7 @@ module.exports.filterBeforeSendSPEvent = async (userData) => {
     uniqueId: userData.uniqueId,
     deviceId: userData.deviceId,
     chips: Number(userData.chips),
-    winningChips: Number(userData.winningChips),
+    // winningChips: Number(userData.winningChips),
     tableId: userData.tableId || 0,
     createdAt: userData.createdAt,
     profileUrl: userData.profileUrl,
