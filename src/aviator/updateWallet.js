@@ -226,10 +226,10 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
         };
         let totalDeductChips = added_chips;
 
-        setInfo['$inc']['winningChips'] = Number(Number(added_chips).toFixed(2));
+        setInfo['$inc']['chips'] = Number(Number(added_chips).toFixed(2));
 
-        userInfo.winningChips = Number(userInfo.winningChips) + Number(added_chips);
-        userInfo.winningChips = Number(userInfo.winningChips.toFixed(2))
+        userInfo.chips = Number(userInfo.chips) + Number(added_chips);
+        // userInfo.winningChips = Number(userInfo.winningChips.toFixed(2))
 
 
         logger.info("\ndedudctWallet setInfo :: ", setInfo);
@@ -251,7 +251,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
 
         upReps.chips = (typeof upReps.chips == 'undefined' || isNaN(upReps.chips)) ? 0 : Number(upReps.chips);
         // upReps.winningChips = (typeof upReps.winningChips == 'undefined' || isNaN(upReps.winningChips)) ? 0 : Number(upReps.winningChips);
-        let totalRemaningAmount = upReps.chips + upReps.winningChips;
+        let totalRemaningAmount = upReps.chips //+ upReps.winningChips;
 
         if (typeof tType != 'undefined') {
 
