@@ -76,7 +76,7 @@ module.exports.action = async (requestData, client) => {
         let chalvalue = currentBet;
         updateData.$set["playerInfo.$.playStatus"] = "action"
 
-        let totalWallet = Number(UserInfo.chips) + Number(UserInfo.winningChips)
+        let totalWallet = Number(UserInfo.chips) //+ Number(UserInfo.winningChips)
 
         if (Number(chalvalue) > Number(totalWallet)) {
             logger.info("action client.su ::", client.seatIndex);
@@ -407,7 +407,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
             checkout: requestData.checkout
         });
 
-        
+
         delete client.action;
 
         return true;
@@ -618,7 +618,7 @@ module.exports.AddGameHistory = async (obj) => {
 
 module.exports.FindGameHistory = async (obj, client) => {
 
-    console.log("WGH Log : ",obj)
+    console.log("WGH Log : ", obj)
     try {
         const wh = {
             _id: MongoID(obj.tableId.toString()),

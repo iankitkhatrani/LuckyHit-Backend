@@ -186,7 +186,7 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
 
 module.exports.addWallet = async (id, addedChips, tType, t, tbInfo, client, seatIndex) => {
     try {
-        logger.info('\nBNW addWallet : call.-->>>', id, added_chips, t);
+        logger.info('\nBNW addWallet : call.-->>>', id, addedChips, t);
         const wh = (typeof id == 'string') ? { _id: MongoID(id) } : { _id: id };
         if (typeof wh == 'undefined' || typeof wh._id == 'undefined' || wh._id == null || typeof tType == 'undefined') {
             return false;
@@ -277,20 +277,20 @@ module.exports.addWallet = async (id, addedChips, tType, t, tbInfo, client, seat
             await this.trackUserWallet(walletTrack);
         }
 
-        if ((typeof upReps.chips.toString().split(".")[1] != "undefined" && upReps.chips.toString().split(".")[1].length > 2)) //|| (typeof upReps.winningChips.toString().split(".")[1] != "undefined" && upReps.winningChips.toString().split(".")[1].length > 2)) {
-        {
-            let updateData = {
-                $set: {}
-            }
-            updateData["$set"]["chips"] = parseFloat(upReps.chips.toFixed(2))
+        // if ((typeof upReps.chips.toString().split(".")[1] != "undefined" && upReps.chips.toString().split(".")[1].length > 2)) //|| (typeof upReps.winningChips.toString().split(".")[1] != "undefined" && upReps.winningChips.toString().split(".")[1].length > 2)) {
+        // {
+        //     let updateData = {
+        //         $set: {}
+        //     }
+        //     updateData["$set"]["chips"] = parseFloat(upReps.chips.toFixed(2))
 
-            // updateData["$set"]["winningChips"] = parseFloat(upReps.winningChips.toFixed(2))
+        //     // updateData["$set"]["winningChips"] = parseFloat(upReps.winningChips.toFixed(2))
 
-            if (Object.keys(updateData.$set).length > 0) {
-                let upRepss = await GameUser.findOneAndUpdate(wh, updateData, { new: true });
-                logger.info("\naddWallet upRepss  :: ", upRepss);
-            }
-        }
+        //     if (Object.keys(updateData.$set).length > 0) {
+        //         let upRepss = await GameUser.findOneAndUpdate(wh, updateData, { new: true });
+        //         logger.info("\naddWallet upRepss  :: ", upRepss);
+        //     }
+        // }
         commandAcions.sendDirectEvent(client, CONST.BNW_WALLET_UPDATE, {
             // winningChips: upReps.winningChips,
             chips: upReps.chips,

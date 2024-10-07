@@ -243,7 +243,7 @@ module.exports.checkUserInRound = async (playerInfo, tb) => {
 
         for (let i = 0; i < userInfos.length; i++)
             if (typeof userInfos[i]._id != "undefined") {
-                let totalWallet = Number(userInfos[i].chips) + Number(userInfos[i].winningChips)
+                let totalWallet = Number(userInfos[i].chips) //+ Number(userInfos[i].winningChips)
                 userInfo[userInfos[i]._id] = {
                     coins: totalWallet,
                 }
