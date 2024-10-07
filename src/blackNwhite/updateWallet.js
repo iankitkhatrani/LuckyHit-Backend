@@ -221,7 +221,8 @@ module.exports.addWallet = async (id, addedChips, tType, t, tbInfo, client, seat
         };
         let totalDeductChips = added_chips;
 
-        setInfo['$inc']['winningChips'] = Number(Number(added_chips).toFixed(2));
+        // setInfo['$inc']['winningChips'] = Number(Number(added_chips).toFixed(2));
+        setInfo['$inc']['chips'] = Number(Number(added_chips).toFixed(2));
 
         userInfo.chips = Number(userInfo.chips) + Number(added_chips);
         userInfo.chips = Number(userInfo.chips.toFixed(2))
@@ -293,7 +294,7 @@ module.exports.addWallet = async (id, addedChips, tType, t, tbInfo, client, seat
         commandAcions.sendDirectEvent(client, CONST.BNW_WALLET_UPDATE, {
             // winningChips: upReps.winningChips,
             chips: upReps.chips,
-            totalWallet: totalRemaningAmount,
+            // totalWallet: totalRemaningAmount,
             msg: t,
             seatIndex: seatIndex
         });

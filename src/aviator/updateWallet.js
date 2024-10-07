@@ -230,6 +230,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
 
         userInfo.chips = Number(userInfo.chips) + Number(added_chips);
         // userInfo.winningChips = Number(userInfo.winningChips.toFixed(2))
+        userInfo.chips = Number(userInfo.chips.toFixed(2));
 
 
         logger.info("\ndedudctWallet setInfo :: ", setInfo);
@@ -279,7 +280,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
             await this.trackUserWallet(walletTrack);
         }
 
-        if ((typeof upReps.chips.toString().split(".")[1] != "undefined" && upReps.chips.toString().split(".")[1].length > 2) || (typeof upReps.winningChips.toString().split(".")[1] != "undefined" && upReps.winningChips.toString().split(".")[1].length > 2)) {
+        if ((typeof upReps.chips.toString().split(".")[1] != "undefined" && upReps.chips.toString().split(".")[1].length > 2) /*|| (typeof upReps.winningChips.toString().split(".")[1] != "undefined" && upReps.winningChips.toString().split(".")[1].length > 2)*/) {
 
             let updateData = {
                 $set: {}
@@ -290,7 +291,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
 
             if (Object.keys(updateData.$set).length > 0) {
                 let upRepss = await GameUser.findOneAndUpdate(wh, updateData, { new: true });
-                logger.info("\ndedudctWallet upRepss  :: ", upRepss);
+                logger.info("\n added upRepss  :: ", upRepss);
             }
         }
         commandAcions.sendDirectEvent(client, CONST.WALLET_UPDATE, {
