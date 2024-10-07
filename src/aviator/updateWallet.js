@@ -44,33 +44,32 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
         logger.info("dedudctWallet userInfo :: ", userInfo);
 
         userInfo.chips = (typeof userInfo.chips == 'undefined' || isNaN(userInfo.chips)) ? 0 : Number(userInfo.chips);
-        userInfo.winningChips = (typeof userInfo.winningChips == 'undefined' || isNaN(userInfo.winningChips)) ? 0 : Number(userInfo.winningChips);
+        // userInfo.winningChips = (typeof userInfo.winningChips == 'undefined' || isNaN(userInfo.winningChips)) ? 0 : Number(userInfo.winningChips);
 
-        let opGameWinning = userInfo.winningChips;
+        // let opGameWinning = userInfo.winningChips;
         let opChips = userInfo.chips;
 
 
         logger.info("userInfo.chips =>", userInfo.chips)
-        logger.info("userInfo.winningChips =>", userInfo.winningChips)
 
         let setInfo = {
             $inc: {}
         };
         let totalDeductChips = deductChips;
 
-        if (userInfo.winningChips > 0 && deductChips < 0) {
+        // if (userInfo.winningChips > 0 && deductChips < 0) {
 
-            setInfo['$inc']['winningChips'] = (userInfo.winningChips + deductChips) >= 0 ? Number(deductChips) : Number(-userInfo.winningChips);
-            setInfo['$inc']['winningChips'] = Number(setInfo['$inc']['winningChips'].toFixed(2))
+        //     setInfo['$inc']['winningChips'] = (userInfo.winningChips + deductChips) >= 0 ? Number(deductChips) : Number(-userInfo.winningChips);
+        //     setInfo['$inc']['winningChips'] = Number(setInfo['$inc']['winningChips'].toFixed(2))
 
-            let winningChips = userInfo.winningChips;
+        //     let winningChips = userInfo.winningChips;
 
-            userInfo.winningChips = (userInfo.winningChips + deductChips) >= 0 ? (Number(userInfo.winningChips) + Number(deductChips)) : 0;
-            userInfo.winningChips = Number(Number(userInfo.winningChips).toFixed(2));
+        //     userInfo.winningChips = (userInfo.winningChips + deductChips) >= 0 ? (Number(userInfo.winningChips) + Number(deductChips)) : 0;
+        //     userInfo.winningChips = Number(Number(userInfo.winningChips).toFixed(2));
 
-            deductChips = (deductChips + userInfo.winningChips) >= 0 ? 0 : (Number(deductChips) + Number(winningChips));
-            deductChips = Number(Number(deductChips).toFixed(2));
-        }
+        //     deductChips = (deductChips + userInfo.winningChips) >= 0 ? 0 : (Number(deductChips) + Number(winningChips));
+        //     deductChips = Number(Number(deductChips).toFixed(2));
+        // }
 
         if (userInfo.chips > 0 && deductChips < 0) {
 
@@ -104,8 +103,8 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
         logger.info("\ndedudctWallet upReps :: ", upReps);
 
         upReps.chips = (typeof upReps.chips == 'undefined' || isNaN(upReps.chips)) ? 0 : Number(upReps.chips);
-        upReps.winningChips = (typeof upReps.winningChips == 'undefined' || isNaN(upReps.winningChips)) ? 0 : Number(upReps.winningChips);
-        let totalRemaningAmount = upReps.chips + upReps.winningChips;
+        // upReps.winningChips = (typeof upReps.winningChips == 'undefined' || isNaN(upReps.winningChips)) ? 0 : Number(upReps.winningChips);
+        let totalRemaningAmount = upReps.chips //+ upReps.winningChips;
 
         if (typeof tType != 'undefined') {
 
@@ -117,9 +116,9 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
                 trnxTypeTxt: t,
                 trnxAmount: tranferAmount,
                 oppChips: opChips,
-                oppWinningChips: opGameWinning,
+                // oppWinningChips: opGameWinning,
                 chips: upReps.chips,
-                winningChips: upReps.winningChips,
+                // winningChips: upReps.winningChips,
                 totalBucket: totalRemaningAmount,
                 depositId: (tbInfo && tbInfo.depositId) ? tbInfo.depositId : "",
                 withdrawId: (tbInfo && tbInfo.withdrawId) ? tbInfo.withdrawId : "",
@@ -140,7 +139,7 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
             }
             updateData["$set"]["chips"] = parseFloat(upReps.chips.toFixed(2))
 
-            updateData["$set"]["winningChips"] = parseFloat(upReps.winningChips.toFixed(2))
+            // updateData["$set"]["winningChips"] = parseFloat(upReps.winningChips.toFixed(2))
 
             if (Object.keys(updateData.$set).length > 0) {
                 let upRepss = await GameUser.findOneAndUpdate(wh, updateData, { new: true });
@@ -153,9 +152,9 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
         logger.info(" client userInfo.sckId => ", client)
 
         commandAcions.sendEventInTable(tbInfo._id.toString(), CONST.WALLET_UPDATE, {
-            winningChips: upReps.winningChips,
+            // winningChips: upReps.winningChips,
             chips: upReps.chips,
-            totalWallet: totalRemaningAmount,
+            // totalWallet: totalRemaningAmount,
             msg: t,
             seatIndex: seatIndex
         });
@@ -165,7 +164,7 @@ module.exports.deductWallet = async (id, deductChips, tType, t, tbInfo, client, 
                 for (let i = 0; i < tbInfo.pi.length; i++) {
                     if (typeof tbInfo.pi[i] != "undefined" && typeof tbInfo.pi[i].ui != "undefined" && tbInfo.pi[i].ui._id.toString() == wh._id.toString()) {
 
-                        let uChips = Number(upReps.chips) + Number(upReps.winningChips)
+                        let uChips = Number(upReps.chips) //+ Number(upReps.winningChips)
 
                         let tbWh = {
                             _id: MongoID(tbInfo._id.toString()),
@@ -216,9 +215,9 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
         logger.info("dedudctWallet userInfo :: ", userInfo);
 
         userInfo.chips = (typeof userInfo.chips == 'undefined' || isNaN(userInfo.chips)) ? 0 : Number(userInfo.chips);
-        userInfo.winningChips = (typeof userInfo.winningChips == 'undefined' || isNaN(userInfo.winningChips)) ? 0 : Number(userInfo.winningChips);
+        // userInfo.winningChips = (typeof userInfo.winningChips == 'undefined' || isNaN(userInfo.winningChips)) ? 0 : Number(userInfo.winningChips);
 
-        let opGameWinning = userInfo.winningChips;
+        // let opGameWinning = userInfo.winningChips;
         let opChips = userInfo.chips;
 
 
@@ -251,7 +250,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
         logger.info("\ndedudctWallet upReps :: ", upReps);
 
         upReps.chips = (typeof upReps.chips == 'undefined' || isNaN(upReps.chips)) ? 0 : Number(upReps.chips);
-        upReps.winningChips = (typeof upReps.winningChips == 'undefined' || isNaN(upReps.winningChips)) ? 0 : Number(upReps.winningChips);
+        // upReps.winningChips = (typeof upReps.winningChips == 'undefined' || isNaN(upReps.winningChips)) ? 0 : Number(upReps.winningChips);
         let totalRemaningAmount = upReps.chips + upReps.winningChips;
 
         if (typeof tType != 'undefined') {
@@ -264,9 +263,9 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
                 trnx_type_txt: t,
                 trnx_amount: tranferAmount,
                 opChips: opChips,
-                opGameWinning: opGameWinning,
+                // opGameWinning: opGameWinning,
                 chips: upReps.chips,
-                winningChips: upReps.winningChips,
+                // winningChips: upReps.winningChips,
                 total_bucket: totalRemaningAmount,
                 deposit_id: (tbInfo && tbInfo.diposit_id) ? tbInfo.diposit_id : "",
                 withdraw_id: (tbInfo && tbInfo.withdraw_id) ? tbInfo.withdraw_id : "",
@@ -287,7 +286,7 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
             }
             updateData["$set"]["chips"] = parseFloat(upReps.chips.toFixed(2))
 
-            updateData["$set"]["winningChips"] = parseFloat(upReps.winningChips.toFixed(2))
+            // updateData["$set"]["winningChips"] = parseFloat(upReps.winningChips.toFixed(2))
 
             if (Object.keys(updateData.$set).length > 0) {
                 let upRepss = await GameUser.findOneAndUpdate(wh, updateData, { new: true });
@@ -295,9 +294,9 @@ module.exports.addWallet = async (id, added_chips, tType, t, tbInfo, client, sea
             }
         }
         commandAcions.sendDirectEvent(client, CONST.WALLET_UPDATE, {
-            winningChips: upReps.winningChips,
+            // winningChips: upReps.winningChips,
             chips: upReps.chips,
-            totalWallet: totalRemaningAmount,
+            // totalWallet: totalRemaningAmount,
             msg: t,
             seatIndex: seatIndex
         });
@@ -346,7 +345,7 @@ module.exports.addWalletBonus = async (id, added_chips, tType, t, client) => {
             uniqueId: 1,
             chips: 1,
             winningChips: 1,
-            bonusChips:1,
+            bonusChips: 1,
             sck_id: 1,
             flags: 1
         }
@@ -412,10 +411,10 @@ module.exports.addWalletBonus = async (id, added_chips, tType, t, client) => {
                 bonusChips: upReps.bonusChips,
                 total_bucket: totalRemaningAmount
             }
-            await this.trackUserWallet(walletTrack,"Referral");
+            await this.trackUserWallet(walletTrack, "Referral");
         }
 
-      
+
         commandAcions.sendDirectEvent(client, CONST.WALLET_UPDATE, {
             bonusChips: upReps.bonusChips,
             chips: upReps.chips,
@@ -424,7 +423,7 @@ module.exports.addWalletBonus = async (id, added_chips, tType, t, client) => {
             seatIndex: seatIndex
         });
 
-        
+
         return totalRemaningAmount;
     } catch (e) {
         logger.info("deductWallet : 1 : Exception : 1", e)
@@ -724,7 +723,7 @@ module.exports.ADDCARD = async (requestData, client) => {
         }
 
 
-        console.log("response ", response)
+        logger.info("response =>", response)
         // let RecentUser = await registerUser(response)
         //let RecentUser = await registerUser(response)
 
@@ -807,7 +806,7 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
 
         logger.info("WITHDRAWALREQ requestData : ", requestData);
 
-    
+
 
         if (typeof client.uid == "undefined" || typeof requestData.name == "undefined" || typeof requestData.userId == "undefined"
             || typeof requestData.mobileno == "undefined"
@@ -825,7 +824,7 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
             userId: requestData.userId,
             email: "",
             mobileno: requestData.mobileno,
-            bankName:requestData.bankName,
+            bankName: requestData.bankName,
             payoutAmount: requestData.payoutAmount,
             bankAcNum: requestData.bankAcNum,
             IFSCcode: requestData.IFSCcode,
@@ -840,7 +839,7 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
 
 
 
-        console.log("response ", response)
+        logger.info("response WITHDRAWALREQ", response)
         // let RecentUser = await registerUser(response)
         //let RecentUser = await registerUser(response)
 
@@ -851,7 +850,7 @@ module.exports.WITHDRAWALREQ = async (requestData, client) => {
         logger.info('634admin/dahboard.js post dahboard  error =>client  ', client.id);
 
         if (RecentUser.acname != undefined) {
-            commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, RecentUser,true,"Withdrawal Request Forward to Admin Successfully...!!");
+            commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, RecentUser, true, "Withdrawal Request Forward to Admin Successfully...!!");
 
         } else {
             commandAcions.sendDirectEvent(client.id, CONST.WITHDRAWALREQ, {}, false, "User session not set, please restart game!");
