@@ -289,11 +289,9 @@ module.exports.Cancel = async (requestData, client) => {
     betAmount : 10,
     actionPlace:1 || 2
     checkout: 2.5
-
     CheckOut(int betAmount, int ,float checkout)
-
-
 */
+
 module.exports.CHECKOUT = async (requestData, client) => {
     try {
         logger.info("check out requestData : ", requestData);
@@ -347,7 +345,7 @@ module.exports.CHECKOUT = async (requestData, client) => {
 
         Deductcom = Number((winAmount * 1) / 100)
 
-        winAmount = Number(winAmount - Deductcom).toFixed(2);
+        winAmount = Number(winAmount /*- Deductcom*/).toFixed(2);
 
         //console.log("winAmount :::::::::::::::::::::::::::::", winAmount)
 
@@ -416,7 +414,6 @@ module.exports.CHECKOUT = async (requestData, client) => {
     }
 }
 
-
 module.exports.PLAYERLIST = async (requestData, client) => {
     try {
         logger.info("check out requestData : ", requestData);
@@ -453,7 +450,6 @@ module.exports.PLAYERLIST = async (requestData, client) => {
     }
 }
 
-
 module.exports.MYREFLIST = async (requestData, client) => {
     try {
         logger.info("check out requestData : ", requestData);
@@ -489,9 +485,6 @@ module.exports.MYREFLIST = async (requestData, client) => {
     }
 }
 
-/*
-    
-*/
 module.exports.mybetlist = async (requestData, client) => {
     try {
         logger.info("MYBET requestData : ", requestData);

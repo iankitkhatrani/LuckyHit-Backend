@@ -63,11 +63,11 @@ module.exports.winnerDeclareCall = async (winner, tabInfo) => {
         if (typeAmounts[winnerCard] == 'Tie') {
           doublebet = (typeAmounts[winnerCard] * 6)
           amount = (doublebet * 1) / 100
-          finalAmount = doublebet - amount
+          finalAmount = doublebet //- amount
         } else {
           doublebet = (typeAmounts[winnerCard] * 2)
           amount = (doublebet * 1) / 100
-          finalAmount = doublebet - amount
+          finalAmount = doublebet //- amount
         }
 
         userInfo.push({
