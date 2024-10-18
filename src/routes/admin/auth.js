@@ -26,7 +26,7 @@ router.post('/signup-admin', async (req, res) => {
 
 
 router.post('/signup-admin-update', async (req, res) => {
-  console.log("signup-admin :::::::::::::::",req.body)
+  console.log("signup-admin :::::::::::::::", req.body)
   res.json(await mainCtrl.registerAdminUpdate(req.body));
 });
 
@@ -86,6 +86,17 @@ router.get('/DeletePlayingAV', async (req, res) => {
   try {
 
     await AviatorTables.deleteMany({})
+    let wh = { Iscom: 1 }; // Ensure Iscom is an integer or modify accordingly
+    let updateData = {
+      $set: {
+        type: "free"
+      }
+    };
+
+    // Perform the update
+    let updateBotstatus = await GameUser.updateMany(wh, updateData);
+    logger.info("updateBotstatus ==>", updateBotstatus);
+
 
     logger.info('admin/dahboard.js post dahboard  error => ');
 
@@ -97,13 +108,13 @@ router.get('/DeletePlayingAV', async (req, res) => {
 });
 
 router.post('/webhook', async (req, res) => {
-  console.log("sdddddddddddddddddddddd",req.body)
+  console.log("sdddddddddddddddddddddd", req.body)
   logger.info(':::::::::::::::::::::::::::::::::::::responce => ', req.body);
 
   //Find Any reacod here 
 
   // if there 
-  
+
   // if(req.body != undefined && req.body.Status != undefined){
   //   console.log("res.body. ",req.body.OrderId)
   //     const PaymentIndata = await paymentin.findOneAndUpdate({"OrderID": req.body.OrderId}, {$set:{webhook:req.body}}, {
@@ -111,7 +122,7 @@ router.post('/webhook', async (req, res) => {
   //     }); 
   //     console.log("PaymentIndata ",PaymentIndata)
   //     if(PaymentIndata && PaymentIndata.userId && req.body.Status == "Success"){ 
-        
+
   //       await walletActions.addWalletPayin(PaymentIndata.userId, Number(req.body.Amount), 'Credit', 'PayIn');
   //     }else{
   //       console.log("PaymentIndata ",PaymentIndata)
