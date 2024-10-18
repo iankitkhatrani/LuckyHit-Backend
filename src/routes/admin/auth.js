@@ -86,6 +86,7 @@ router.get('/DeletePlayingAV', async (req, res) => {
   try {
 
     await AviatorTables.deleteMany({})
+
     let wh = { Iscom: 1 }; // Ensure Iscom is an integer or modify accordingly
     let updateData = {
       $set: {
@@ -98,7 +99,7 @@ router.get('/DeletePlayingAV', async (req, res) => {
     logger.info("updateBotstatus ==>", updateBotstatus);
 
 
-    logger.info('admin/dahboard.js post dahboard  error => ');
+    logger.info('admin/DeletePlayingAV  error => ');
 
     res.json({ status: "ok" });
   } catch (error) {
